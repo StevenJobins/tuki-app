@@ -1,0 +1,144 @@
+{
+  "common": {
+    "learnMore": "Learn more",
+    "tryNow": "Try now",
+    "getTower": "Get the Learning Tower",
+    "price": "CHF 299",
+    "mandatory": "* Required field",
+    "submit": "Submit",
+    "close": "Close",
+    "print": "Print",
+    "share": "Share",
+    "copied": "Copied!",
+    "minutes": "minutes",
+    "ingredients": "Ingredients",
+    "steps": "Instructions",
+    "difficulty": {
+      "label": "Difficulty",
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Challenging"
+    }
+  },
+  "nav": {
+    "home": "Home",
+    "activities": "Activities",
+    "recipes": "Recipes",
+    "development": "Development",
+    "product": "Product"
+  },
+  "hero": {
+    "tagline": "Help me do it myself",
+    "title": "TUKI Learning Tower",
+    "subtitle": "Foster your child's independence - safe & playful",
+    "ctaPrimary": "Order now",
+    "ctaSecondary": "Discover activities",
+    "price": "CHF 299",
+    "shipping": "Free shipping in Switzerland"
+  },
+  "activities": {
+    "title": "Activity Generator",
+    "subtitle": "Discover age-appropriate activities for your child",
+    "filterByAge": "Filter by age",
+    "ageRanges": {
+      "0-2": "0-2 years",
+      "2-4": "2-4 years",
+      "4-6": "4-6 years",
+      "6-8": "6-8 years"
+    },
+    "categories": {
+      "all": "All Categories",
+      "sensory": "Sensory Exploration",
+      "motor": "Motor Skills",
+      "cognitive": "Cognitive Development",
+      "creative": "Creativity",
+      "language": "Language",
+      "math": "Early Math"
+    },
+    "details": {
+      "materials": "Materials",
+      "steps": "Steps",
+      "benefits": "Development Benefits",
+      "variations": "Variations",
+      "duration": "Duration",
+      "difficulty": "Difficulty",
+      "skills": "Skills Developed",
+      "similarActivities": "Similar Activities",
+      "printActivity": "Print activity",
+      "shareActivity": "Share activity"
+    },
+    "noResults": "No activities found. Try different filters."
+  },
+  "recipes": {
+    "title": "Healthy Recipes",
+    "subtitle": "Delicious, child-friendly recipes for cooking together",
+    "categories": {
+      "all": "All",
+      "breakfast": "Breakfast",
+      "snack": "Snack",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "dessert": "Dessert"
+    },
+    "prepTime": "Preparation time",
+    "servings": "Servings",
+    "allergens": "Allergens",
+    "nutrients": "Nutrition",
+    "printRecipe": "Print recipe"
+  },
+  "development": {
+    "title": "Development Guide",
+    "subtitle": "Montessori-based milestones by age group",
+    "categories": {
+      "motor": "Motor Development",
+      "cognitive": "Cognitive Development",
+      "social": "Social Development",
+      "language": "Language Development",
+      "sensory": "Sensory Development"
+    },
+    "ageRanges": {
+      "0-1": "0-1 year",
+      "1-2": "1-2 years",
+      "2-3": "2-3 years",
+      "3-4": "3-4 years",
+      "4-5": "4-5 years",
+      "5-6": "5-6 years"
+    }
+  },
+  "product": {
+    "title": "The TUKI Learning Tower",
+    "subtitle": "Premium quality for safe independence",
+    "features": {
+      "adjustable": "Height Adjustable",
+      "safe": "Safety Tested",
+      "sustainable": "Sustainable Wood",
+      "easy": "Easy to Clean",
+      "swiss": "Swiss Design"
+    },
+    "specs": {
+      "title": "Technical Details",
+      "height": "Height: 90cm",
+      "width": "Width: 42cm",
+      "depth": "Depth: 42cm",
+      "weight": "Weight: 8kg",
+      "material": "Material: Beech Wood",
+      "adjustable": "3 height levels"
+    },
+    "gallery": "Product Gallery",
+    "reviews": "Customer Reviews",
+    "warranty": "5 Year Warranty"
+  },
+  "footer": {
+    "about": "About TUKI",
+    "contact": "Contact",
+    "shipping": "Shipping & Returns",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "newsletter": {
+      "title": "Newsletter",
+      "placeholder": "Your email address",
+      "button": "Subscribe",
+      "success": "Thank you! You will receive a confirmation soon."
+    }
+  }
+}

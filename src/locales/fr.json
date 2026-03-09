@@ -1,0 +1,144 @@
+{
+  "common": {
+    "learnMore": "En savoir plus",
+    "tryNow": "Essayer maintenant",
+    "getTower": "Acheter la Learning Tower",
+    "price": "CHF 299",
+    "mandatory": "* Champ obligatoire",
+    "submit": "Envoyer",
+    "close": "Fermer",
+    "print": "Imprimer",
+    "share": "Partager",
+    "copied": "Copié!",
+    "minutes": "minutes",
+    "ingredients": "Ingrédients",
+    "steps": "Préparation",
+    "difficulty": {
+      "label": "Difficulté",
+      "easy": "Facile",
+      "medium": "Moyen",
+      "hard": "Difficile"
+    }
+  },
+  "nav": {
+    "home": "Accueil",
+    "activities": "Activités",
+    "recipes": "Recettes",
+    "development": "Développement",
+    "product": "Produit"
+  },
+  "hero": {
+    "tagline": "Aide-moi à le faire moi-même",
+    "title": "TUKI Learning Tower",
+    "subtitle": "Développe l'indépendance de ton enfant - en toute sécurité",
+    "ctaPrimary": "Commander",
+    "ctaSecondary": "Découvrir les activités",
+    "price": "CHF 299",
+    "shipping": "Livraison gratuite en Suisse"
+  },
+  "activities": {
+    "title": "Générateur d'Activités",
+    "subtitle": "Découvre des activités adaptées à l'âge de ton enfant",
+    "filterByAge": "Filtrer par âge",
+    "ageRanges": {
+      "0-2": "0-2 ans",
+      "2-4": "2-4 ans",
+      "4-6": "4-6 ans",
+      "6-8": "6-8 ans"
+    },
+    "categories": {
+      "all": "Toutes les catégories",
+      "sensory": "Exploration sensorielle",
+      "motor": "Motricité",
+      "cognitive": "Développement cognitif",
+      "creative": "Créativité",
+      "language": "Langage",
+      "math": "Mathématiques"
+    },
+    "details": {
+      "materials": "Matériaux",
+      "steps": "Étapes",
+      "benefits": "Bienfaits pour le développement",
+      "variations": "Variations",
+      "duration": "Durée",
+      "difficulty": "Difficulté",
+      "skills": "Compétences développées",
+      "similarActivities": "Activités similaires",
+      "printActivity": "Imprimer l'activité",
+      "shareActivity": "Partager l'activité"
+    },
+    "noResults": "Aucune activité trouvée. Essaye d'autres filtres."
+  },
+  "recipes": {
+    "title": "Recettes Saines",
+    "subtitle": "Recettes délicieuses et adaptées aux enfants pour cuisiner ensemble",
+    "categories": {
+      "all": "Toutes",
+      "breakfast": "Petit-déjeuner",
+      "snack": "Collation",
+      "lunch": "Déjeuner",
+      "dinner": "Dîner",
+      "dessert": "Dessert"
+    },
+    "prepTime": "Temps de préparation",
+    "servings": "Portions",
+    "allergens": "Allergènes",
+    "nutrients": "Valeurs nutritionnelles",
+    "printRecipe": "Imprimer la recette"
+  },
+  "development": {
+    "title": "Accompagnement du Développement",
+    "subtitle": "Étapes de développement basées sur Montessori par âge",
+    "categories": {
+      "motor": "Développement moteur",
+      "cognitive": "Développement cognitif",
+      "social": "Développement social",
+      "language": "Développement du langage",
+      "sensory": "Développement sensoriel"
+    },
+    "ageRanges": {
+      "0-1": "0-1 an",
+      "1-2": "1-2 ans",
+      "2-3": "2-3 ans",
+      "3-4": "3-4 ans",
+      "4-5": "4-5 ans",
+      "5-6": "5-6 ans"
+    }
+  },
+  "product": {
+    "title": "La Learning Tower TUKI",
+    "subtitle": "Qualité supérieure pour une indépendance en toute sécurité",
+    "features": {
+      "adjustable": "Hauteur réglable",
+      "safe": "Testé sécurité",
+      "sustainable": "Bois durable",
+      "easy": "Facile à nettoyer",
+      "swiss": "Design suisse"
+    },
+    "specs": {
+      "title": "Caractéristiques techniques",
+      "height": "Hauteur: 90cm",
+      "width": "Largeur: 42cm",
+      "depth": "Profondeur: 42cm",
+      "weight": "Poids: 8kg",
+      "material": "Matériau: Hêtre",
+      "adjustable": "3 niveaux de hauteur"
+    },
+    "gallery": "Galerie produit",
+    "reviews": "Avis clients",
+    "warranty": "Garantie 5 ans"
+  },
+  "footer": {
+    "about": "À propos de TUKI",
+    "contact": "Contact",
+    "shipping": "Livraison & Retours",
+    "privacy": "Politique de confidentialité",
+    "terms": "CGV",
+    "newsletter": {
+      "title": "Newsletter",
+      "placeholder": "Ton adresse email",
+      "button": "S'abonner",
+      "success": "Merci! Tu recevras bientôt une confirmation."
+    }
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "common": {
+    "learnMore": "Mehr erfahren",
+    "tryNow": "Jetzt ausprobieren",
+    "getTower": "Learning Tower kaufen",
+    "price": "CHF 299",
+    "mandatory": "* Pflichtfeld",
+    "submit": "Absenden",
+    "close": "Schließen",
+    "print": "Drucken",
+    "share": "Teilen",
+    "copied": "Kopiert!",
+    "minutes": "Minuten",
+    "ingredients": "Zutaten",
+    "steps": "Zubereitung",
+    "difficulty": {
+      "label": "Schwierigkeitsgrad",
+      "easy": "Einfach",
+      "medium": "Mittel",
+      "hard": "Anspruchsvoll"
+    }
+  },
+  "nav": {
+    "home": "Start",
+    "activities": "Aktivitäten",
+    "recipes": "Rezepte",
+    "development": "Entwicklung",
+    "product": "Produkt"
+  },
+  "hero": {
+    "tagline": "Hilf mir, es selbst zu tun",
+    "title": "TUKI Learning Tower",
+    "subtitle": "Fördere die Unabhängigkeit deines Kindes - sicher & spielerisch",
+    "ctaPrimary": "Jetzt bestellen",
+    "ctaSecondary": "Aktivitäten entdecken",
+    "price": "CHF 299",
+    "shipping": "Kostenloser Versand in der Schweiz"
+  },
+  "activities": {
+    "title": "Aktivitäten-Generator",
+    "subtitle": "Entdecke altersgerechte Aktivitäten für dein Kind",
+    "filterByAge": "Nach Alter filtern",
+    "ageRanges": {
+      "0-2": "0-2 Jahre",
+      "2-4": "2-4 Jahre",
+      "4-6": "4-6 Jahre",
+      "6-8": "6-8 Jahre"
+    },
+    "categories": {
+      "all": "Alle Kategorien",
+      "sensory": "Sinneserfahrung",
+      "motor": "Motorik",
+      "cognitive": "Kognitive Entwicklung",
+      "creative": "Kreativität",
+      "language": "Sprache",
+      "math": "Frühe Mathematik"
+    },
+    "details": {
+      "materials": "Materialien",
+      "steps": "Schritte",
+      "benefits": "Entwicklungsförderung",
+      "variations": "Variationen",
+      "duration": "Dauer",
+      "difficulty": "Schwierigkeitsgrad",
+      "skills": "Geförderte Fähigkeiten",
+      "similarActivities": "Ähnliche Aktivitäten",
+      "printActivity": "Aktivität drucken",
+      "shareActivity": "Aktivität teilen"
+    },
+    "noResults": "Keine Aktivitäten gefunden. Versuche andere Filter."
+  },
+  "recipes": {
+    "title": "Gesunde Rezepte",
+    "subtitle": "Leckere, kindgerechte Rezepte zum gemeinsamen Kochen",
+    "categories": {
+      "all": "Alle",
+      "breakfast": "Frühstück",
+      "snack": "Snack",
+      "lunch": "Mittagessen",
+      "dinner": "Abendessen",
+      "dessert": "Dessert"
+    },
+    "prepTime": "Vorbereitung",
+    "servings": "Portionen",
+    "allergens": "Allergene",
+    "nutrients": "Nährwerte",
+    "printRecipe": "Rezept drucken"
+  },
+  "development": {
+    "title": "Entwicklungsbegleitung",
+    "subtitle": "Montessori-basierte Meilensteine nach Altersgruppen",
+    "categories": {
+      "motor": "Motorische Entwicklung",
+      "cognitive": "Kognitive Entwicklung",
+      "social": "Soziale Entwicklung",
+      "language": "Sprachentwicklung",
+      "sensory": "Sensorische Entwicklung"
+    },
+    "ageRanges": {
+      "0-1": "0-1 Jahr",
+      "1-2": "1-2 Jahre",
+      "2-3": "2-3 Jahre",
+      "3-4": "3-4 Jahre",
+      "4-5": "4-5 Jahre",
+      "5-6": "5-6 Jahre"
+    }
+  },
+  "product": {
+    "title": "Die TUKI Learning Tower",
+    "subtitle": "Hochwertige Qualität für sichere Unabhängigkeit",
+    "features": {
+      "adjustable": "Höhenverstellbar",
+      "safe": "Sicherheits-getestet",
+      "sustainable": "Nachhaltiges Holz",
+      "easy": "Leichte Reinigung",
+      "swiss": "Schweizer Design"
+    },
+    "specs": {
+      "title": "Technische Details",
+      "height": "Höhe: 90cm",
+      "width": "Breite: 42cm",
+      "depth": "Tiefe: 42cm",
+      "weight": "Gewicht: 8kg",
+      "material": "Material: Buchenholz",
+      "adjustable": "3-fach höhenverstellbar"
+    },
+    "gallery": "Produktgalerie",
+    "reviews": "Kundenbewertungen",
+    "warranty": "5 Jahre Garantie"
+  },
+  "footer": {
+    "about": "Über TUKI",
+    "contact": "Kontakt",
+    "shipping": "Versand & Rückgabe",
+    "privacy": "Datenschutz",
+    "terms": "AGB",
+    "newsletter": {
+      "title": "Newsletter",
+      "placeholder": "Deine E-Mail-Adresse",
+      "button": "Anmelden",
+      "success": "Vielen Dank! Du erhältst bald eine Bestätigung."
+    }
+  }
+}
