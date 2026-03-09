@@ -105,35 +105,6 @@ function App() {
         </div>
       </section>
 
-      {/* Color Showcase */}
-      <section className="bg-tuki-schwarz text-tuki-weiss px-6 py-12">
-        <div className="max-w-6xl mx-auto">
-          <h3 className="text-2xl font-medium mb-6">TUKI Farbwelt</h3>
-          <div className="flex flex-wrap gap-4">
-            <div className="flex flex-col items-center">
-              <div className="w-20 h-20 rounded-lg bg-tuki-rot mb-2 border-2 border-tuki-weiss"></div>
-              <span className="text-sm">TUKI ROT</span>
-              <span className="text-xs text-gray-400">#8F5652</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="w-20 h-20 rounded-lg bg-tuki-mint mb-2 border-2 border-tuki-schwarz"></div>
-              <span className="text-sm">TUKI MINT</span>
-              <span className="text-xs text-gray-400">#AADBD7</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="w-20 h-20 rounded-lg bg-tuki-blau mb-2 border-2 border-tuki-weiss"></div>
-              <span className="text-sm">BLAU</span>
-              <span className="text-xs text-gray-400">#5E6578</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="w-20 h-20 rounded-lg bg-tuki-orange mb-2 border-2 border-tuki-schwarz"></div>
-              <span className="text-sm">ORANGE</span>
-              <span className="text-xs text-gray-400">#E18B63</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
       <footer className="bg-tuki-rot text-tuki-weiss px-6 py-8">
         <div className="max-w-6xl mx-auto text-center">
