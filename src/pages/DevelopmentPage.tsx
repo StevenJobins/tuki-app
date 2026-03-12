@@ -73,7 +73,7 @@ export function DevelopmentPage({ lang, t }: DevelopmentPageProps) {
 
           {/* Timeline */}
           <div className="space-y-6">
-            {milestones.map((milestone, index) => (
+            {milestones.map((milestone) => (
               <div key={milestone.age} className="bg-tuki-sand rounded-2xl p-6 lg:p-8 flex flex-col lg:flex-row lg:items-center gap-6">
                 {/* Age Badge */}
                 <div className="flex-shrink-0">

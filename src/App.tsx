@@ -33,7 +33,7 @@ function App() {
         <Route path="activities" element={<ActivitiesPage lang={language} t={t} />} />
         <Route path="recipes" element={<RecipesPage lang={language} t={t} />} />
         <Route path="development" element={<DevelopmentPage lang={language} t={t} />} />
-        <Route path="shop" element={<ShopPage lang={language} t={t} />} />
+        <Route path="shop" element={<ShopPage lang={language} />} />
         <Route path="*" element={<HomePage lang={language} t={t} />} />
       </Route>
     </Routes>
