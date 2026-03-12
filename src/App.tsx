@@ -15,24 +15,28 @@ function App() {
 
   const handleLangChange = (lang: Language) => {
     setLanguage(lang);
+    // Update URL without reload
+    const path = window.location.pathname;
+    const currentLang = path.split('/')[2];
+    const newPath = lang === 'de' 
+      ? path.replace(new RegExp(`^/tuki-app/${currentLang}`), '/tuki-app')
+      : path.replace(/^\/tuki-app(\/|$)/, `/tuki-app/${lang}/`);
+    if (newPath !== path) {
+      window.history.pushState({}, '', newPath);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-tuki-sand font-tuki">
-      <Routes>
-        <Route
-          path="/"
-          element={<Layout lang={language} onLangChange={handleLangChange} />}
-        >
-          <Route index element={<HomePage lang={language} t={t} />} />
-          <Route path="activities" element={<ActivitiesPage lang={language} t={t} />} />
-          <Route path="recipes" element={<RecipesPage lang={language} t={t} />} />
-          <Route path="development" element={<DevelopmentPage lang={language} t={t} />} />
-          <Route path="shop" element={<ShopPage lang={language} t={t} />} />
-          <Route path="*" element={<HomePage lang={language} t={t} />} />
-        </Route>
-      </Routes>
-    </div>
+    <Routes>
+      <Route path="/" element={<Layout lang={language} t={t} onLangChange={handleLangChange} />}>
+        <Route index element={<HomePage lang={language} t={t} />} />
+        <Route path="activities" element={<ActivitiesPage lang={language} t={t} />} />
+        <Route path="recipes" element={<RecipesPage lang={language} t={t} />} />
+        <Route path="development" element={<DevelopmentPage lang={language} t={t} />} />
+        <Route path="shop" element={<ShopPage lang={language} t={t} />} />
+        <Route path="*" element={<HomePage lang={language} t={t} />} />
+      </Route>
+    </Routes>
   );
 }
 

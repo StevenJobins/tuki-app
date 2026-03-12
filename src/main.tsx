@@ -8,7 +8,7 @@ import App from './App.tsx';
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <HelmetProvider>
-      <BrowserRouter>
+      <BrowserRouter basename="/tuki-app">
         <App />
       </BrowserRouter>
     </HelmetProvider>
