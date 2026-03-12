@@ -1,101 +1,141 @@
-import { type Translation } from '../types';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import type { Language, Translation } from '../types';
 import { SEO } from '../components/SEO';
 
 interface RecipesPageProps {
-  lang: 'de' | 'en' | 'fr';
+  lang: Language;
   t: Translation;
 }
 
-const recipes = [
+interface Recipe {
+  id: string;
+  title: Record<Language, string>;
+  desc: Record<Language, string>;
+  time: string;
+  difficulty: Record<Language, string>;
+  image: string;
+  tags: Record<Language, string[]>;
+}
+
+const recipes: Recipe[] = [
   {
     id: 'banana-pancakes',
-    title: { de: 'Bananen Pancakes', en: 'Banana Pancakes', fr: 'Pancakes à la Banane' },
+    title: { de: 'Bananen-Pancakes', en: 'Banana Pancakes', fr: 'Pancakes à la Banane' },
+    desc: { 
+      de: 'Natürlich süß, ohne Zucker – Kinder lieben sie!',
+      en: 'Naturally sweet, no sugar – kids love them!',
+      fr: 'Naturellement sucré, sans sucre – les enfants adorent!'
+    },
     time: '15 min',
     difficulty: { de: 'Einfach', en: 'Easy', fr: 'Facile' },
-    image: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&h=400&fit=crop'
+    image: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&h=400&fit=crop',
+    tags: { de: ['Zuckerfrei', 'Frühstück'], en: ['Sugar-free', 'Breakfast'], fr: ['Sans sucre', 'Petit-déj'] }
   },
   {
-    id: 'fruit-smoothie',
-    title: { de: 'Frucht Smoothie', en: 'Fruit Smoothie', fr: 'Smoothie aux Fruits' },
-    time: '5 min',
-    difficulty: { de: 'Einfach', en: 'Easy', fr: 'Facile' },
-    image: 'https://images.unsplash.com/photo-1505253716362-afaea1d559d8?w=600&h=400&fit=crop'
-  },
-  {
-    id: 'pizza',
-    title: { de: 'Mini Pizza', en: 'Mini Pizza', fr: 'Mini Pizza' },
-    time: '30 min',
+    id: 'vegetable-muffins',
+    title: { de: 'Gemüse-Muffins', en: 'Veggie Muffins', fr: 'Muffins Légumes' },
+    desc: {
+      de: 'Mit Zucchini und Möhren – perfekt für unterwegs',
+      en: 'With zucchini and carrots – perfect for on-the-go',
+      fr: 'Aux courgettes et carottes – parfait à emporter'
+    },
+    time: '35 min',
     difficulty: { de: 'Mittel', en: 'Medium', fr: 'Moyen' },
-    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&h=400&fit=crop'
+    image: 'https://images.unsplash.com/photo-1607958996333-41aef7caefaa?w=600&h=400&fit=crop',
+    tags: { de: ['Gemüse', 'Snacks'], en: ['Vegetables', 'Snacks'], fr: ['Légumes', 'Snacks'] }
   },
   {
-    id: 'salad',
-    title: { de: 'Bunter Salat', en: 'Colorful Salad', fr: 'Salade Colorée' },
-    time: '10 min',
+    id: 'oat-cookies',
+    title: { de: 'Haferflocken-Kekse', en: 'Oat Cookies', fr: 'Cookies Avoine' },
+    desc: {
+      de: 'Gesund, knackig und kinderleicht zu backen',
+      en: 'Healthy, crunchy and easy to bake',
+      fr: 'Sains, croustillants et faciles à faire'
+    },
+    time: '25 min',
     difficulty: { de: 'Einfach', en: 'Easy', fr: 'Facile' },
-    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&h=400&fit=crop'
+    image: 'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=600&h=400&fit=crop',
+    tags: { de: ['Zuckerfrei', 'Snack'], en: ['Sugar-free', 'Snack'], fr: ['Sans sucre', 'Snack'] }
+  },
+  {
+    id: 'mini-pizza',
+    title: { de: 'Mini-Pizza', en: 'Mini Pizza', fr: 'Mini Pizza' },
+    desc: {
+      de: 'Selbstgemachter Teig, beliebte Beläge',
+      en: 'Homemade dough, favorite toppings',
+      fr: 'Pâte maison, garnitures favorites'
+    },
+    time: '45 min',
+    difficulty: { de: 'Mittel', en: 'Medium', fr: 'Moyen' },
+    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&h=400&fit=crop',
+    tags: { de: ['Abendessen', 'Spass'], en: ['Dinner', 'Fun'], fr: ['Dîner', 'Fun'] }
   }
 ];
 
 export function RecipesPage({ lang, t }: RecipesPageProps) {
+  const [filter, setFilter] = useState<string | null>(null);
   const pageTitle = lang === 'de' ? 'Rezepte' : lang === 'en' ? 'Recipes' : 'Recettes';
-  
+
+  const filteredRecipes = filter 
+    ? recipes.filter(r => r.tags[lang].includes(filter))
+    : recipes;
+
+  const allTags = [...new Set(recipes.flatMap(r => r.tags[lang]))];
+
   return (
     <>
       <SEO lang={lang} pageTitle={pageTitle} />
-      
-      <div className="pt-24 lg:pt-32 pb-16">
+      <div className="pt-24 lg:pt-28 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
-          <div className="text-center max-w-3xl mx-auto mb-12 lg:mb-16">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-tuki-schwarz mb-4">
-              {t.recipes}
-            </h1>
-            <p className="text-lg text-tuki-blau/70">{t.recipesDesc}</p>
-          </div>
+          <h1 className="text-3xl sm:text-4xl font-semibold text-tuki-schwarz mb-4">{pageTitle}</h1>
+          <p className="text-tuki-blau/70 mb-6">{t.recipesDesc}</p>
 
-          {/* Recipes Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {recipes.map((recipe) => (
-              <div key={recipe.id} className="bg-tuki-sand rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl group">
-                <div className="aspect-[4/3] overflow-hidden">
-                  <img
-                    src={recipe.image}
-                    alt={recipe.title[lang]}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                </div>
-                <div className="p-5">
-                  <h3 className="text-lg font-semibold text-tuki-schwarz mb-3">{recipe.title[lang]}</h3>
-                  <div className="flex items-center gap-4 text-sm text-tuki-blau/70">
-                    <span className="flex items-center gap-1">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      {recipe.time}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                      </svg>
-                      {recipe.difficulty[lang]}
-                    </span>
-                  </div>
-                </div>
-              </div>
+          {/* Filters */}
+          <div className="flex flex-wrap gap-2 mb-8">
+            <button 
+              onClick={() => setFilter(null)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${!filter ? 'bg-tuki-rot text-white' : 'bg-tuki-sand hover:bg-tuki-sand/80'}`}
+            >
+              {lang === 'de' ? 'Alle' : lang === 'en' ? 'All' : 'Tous'}
+            </button>
+            {allTags.map(tag => (
+              <button
+                key={tag}
+                onClick={() => setFilter(tag)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${filter === tag ? 'bg-tuki-rot text-white' : 'bg-tuki-sand hover:bg-tuki-sand/80'}`}
+              >
+                {tag}
+              </button>
             ))}
           </div>
 
-          {/* Coming Soon */}
-          <div className="mt-16 text-center">
-            <p className="text-tuki-blau/60">
-              {lang === 'de' 
-                ? 'Mehr Rezepte werden bald hinzugefügt...' 
-                : lang === 'en' 
-                  ? 'More recipes coming soon...'
-                  : 'Plus de recettes bientôt...'
-              }
-            </p>
+          {/* Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {filteredRecipes.map(recipe => (
+              <Link 
+                key={recipe.id} 
+                to={`/recipes/${recipe.id}`}
+                className="group bg-tuki-sand rounded-2xl overflow-hidden hover:shadow-xl transition-all"
+              >
+                <div className="aspect-[4/3] overflow-hidden">
+                  <img src={recipe.image} alt={recipe.title[lang]} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                </div>
+                <div className="p-5">
+                  <div className="flex gap-2 mb-2">
+                    {recipe.tags[lang].slice(0, 2).map(tag => (
+                      <span key={tag} className="text-xs bg-tuki-rot/10 text-tuki-rot px-2 py-1 rounded-full">{tag}</span>
+                    ))}
+                  </div>
+                  <h3 className="text-lg font-semibold mb-1">{recipe.title[lang]}</h3>
+                  <p className="text-sm text-tuki-blau/70 mb-3">{recipe.desc[lang]}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-tuki-blau">⏱ {recipe.time}</span>
+                    <span className="text-sm text-tuki-blau/70">{recipe.difficulty[lang]}</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </div>

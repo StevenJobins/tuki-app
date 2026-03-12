@@ -11,7 +11,6 @@ const navItems: { path: string; labelKey: keyof LanguageNav }[] = [
   { path: '/activities', labelKey: 'activities' },
   { path: '/recipes', labelKey: 'recipes' },
   { path: '/development', labelKey: 'development' },
-  { path: '/shop', labelKey: 'shop' },
 ];
 
 type LanguageNav = {
@@ -19,13 +18,12 @@ type LanguageNav = {
   activities: string;
   recipes: string;
   development: string;
-  shop: string;
 };
 
 const navLabels: Record<Language, LanguageNav> = {
-  de: { home: 'Start', activities: 'Aktivitäten', recipes: 'Rezepte', development: 'Entwicklung', shop: 'Shop' },
-  en: { home: 'Home', activities: 'Activities', recipes: 'Recipes', development: 'Development', shop: 'Shop' },
-  fr: { home: 'Accueil', activities: 'Activités', recipes: 'Recettes', development: 'Développement', shop: 'Boutique' },
+  de: { home: 'Start', activities: 'Aktivitäten', recipes: 'Rezepte', development: 'Entwicklung' },
+  en: { home: 'Home', activities: 'Activities', recipes: 'Recipes', development: 'Development' },
+  fr: { home: 'Accueil', activities: 'Activités', recipes: 'Recettes', development: 'Développement' },
 };
 
 export function Header({ lang, onLangChange }: HeaderProps) {
