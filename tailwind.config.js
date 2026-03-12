@@ -8,17 +8,14 @@ export default {
     extend: {
       colors: {
         tuki: {
-          'rot': '#8F5652',
-          'rot-dark': '#7A3E3A',
-          'rot-light': '#A6726E',
-          'mint': '#AADBD7',
-          'mint-dark': '#A0D1CA',
-          'mint-light': '#B4E5E1',
-          'blau': '#5E6578',
-          'orange': '#E18B63',
-          'schwarz': '#000000',
-          'weiss': '#FFFFFF',
           'sand': '#F5F0E8',
+          'schwarz': '#1A1A1A',
+          'weiss': '#FFFFFF',
+          'rot': '#E85A4F',
+          'rot-dark': '#D94A3F',
+          'blau': '#2E3A59',
+          'mint': '#A8D5BA',
+          'orange': '#F5A623',
         }
       },
       fontFamily: {
