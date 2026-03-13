@@ -4,19 +4,25 @@
   <meta charset="utf-8">
   <title>TUKI Learning Tower</title>
   <script>
-    // Single Page Apps for GitHub Pages
-    // https://github.com/rafgraph/spa-github-pages
-    var pathSegmentsToKeep = 1;
+    // Single Page Apps for GitHub Pages - Project Site version
+    // For: https://stevenjobins.github.io/tuki-app/
+    var segmentCount = 1; // /tuki-app/ = 1 segment
     var l = window.location;
-    l.replace(
-      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-      l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
-      l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
-      (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-      l.hash
-    );
+    var origin = l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '');
+    var pathname = l.pathname;
+    
+    // Extract path after /tuki-app/
+    var pathAfterBase = pathname.replace(/^\/tuki-app\//, '');
+    if (pathAfterBase && pathAfterBase !== '/') {
+      var redirectUrl = origin + '/tuki-app/?/' + pathAfterBase + l.search + l.hash;
+      window.location.replace(redirectUrl);
+    } else {
+      // Fallback - go to root
+      window.location.replace(origin + '/tuki-app/');
+    }
   </script>
 </head>
 <body>
+  <p>Redirecting...</p>
 </body>
 </html>
