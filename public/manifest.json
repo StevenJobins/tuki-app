@@ -1,0 +1,22 @@
+{
+  "short_name": "TUKI",
+  "name": "TUKI Learning Tower",
+  "description": "Montessori Rezepte und Aktivitäten für Kinder",
+  "start_url": "/tuki-app/",
+  "display": "standalone",
+  "background_color": "#AADBD7",
+  "theme_color": "#8F5652",
+  "orientation": "portrait",
+  "scope": "/tuki-app/",
+  "icons": [
+    {
+      "src": "/tuki-app/icons/tuki-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["lifestyle", "education", "kids"],
+  "lang": "de",
+  "dir": "ltr"
+}

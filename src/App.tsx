@@ -7,6 +7,7 @@ import { ActivityDetailPage } from './pages/ActivityDetailPage';
 import { RecipesPage } from './pages/RecipesPage';
 import { RecipeDetailPage } from './pages/RecipeDetailPage';
 import { DevelopmentPage } from './pages/DevelopmentPage';
+import { FavoritesPage } from './pages/FavoritesPage';
 import { translations } from './data/translations';
 import type { Language } from './types';
 
@@ -18,7 +19,7 @@ function App() {
     setLanguage(lang);
     const path = window.location.pathname;
     const currentLang = path.split('/')[2];
-    const newPath = lang === 'de' 
+    const newPath = lang === 'de'
       ? path.replace(new RegExp(`^/tuki-app/${currentLang}`), '/tuki-app')
       : path.replace(/^\/tuki-app(\/|$)/, `/tuki-app/${lang}/`);
     if (newPath !== path) {
@@ -35,6 +36,7 @@ function App() {
         <Route path="recipes" element={<RecipesPage lang={language} t={t} />} />
         <Route path="recipes/:id" element={<RecipeDetailPage lang={language} t={t} />} />
         <Route path="development" element={<DevelopmentPage lang={language} t={t} />} />
+        <Route path="favorites" element={<FavoritesPage lang={language} />} />
         <Route path="*" element={<HomePage lang={language} t={t} />} />
       </Route>
     </Routes>

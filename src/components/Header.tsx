@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import type { Language } from '../types';
+import { useFavorites } from '../hooks/useFavorites';
 
 interface HeaderProps {
   lang: Language;
@@ -10,6 +11,7 @@ const navItems: { path: string; labelKey: keyof LanguageNav }[] = [
   { path: '/', labelKey: 'home' },
   { path: '/activities', labelKey: 'activities' },
   { path: '/recipes', labelKey: 'recipes' },
+  { path: '/favorites', labelKey: 'favorites' },
   { path: '/development', labelKey: 'development' },
 ];
 
@@ -18,17 +20,20 @@ type LanguageNav = {
   activities: string;
   recipes: string;
   development: string;
+  favorites: string;
 };
 
 const navLabels: Record<Language, LanguageNav> = {
-  de: { home: 'Start', activities: 'Aktivitäten', recipes: 'Rezepte', development: 'Entwicklung' },
-  en: { home: 'Home', activities: 'Activities', recipes: 'Recipes', development: 'Development' },
-  fr: { home: 'Accueil', activities: 'Activités', recipes: 'Recettes', development: 'Développement' },
+  de: { home: 'Start', activities: 'Aktivitäten', recipes: 'Rezepte', development: 'Entwicklung', favorites: 'Favoriten' },
+  en: { home: 'Home', activities: 'Activities', recipes: 'Recipes', development: 'Development', favorites: 'Favorites' },
+  fr: { home: 'Accueil', activities: 'Activités', recipes: 'Recettes', development: 'Développement', favorites: 'Favoris' },
 };
 
 export function Header({ lang, onLangChange }: HeaderProps) {
   const location = useLocation();
   const labels = navLabels[lang];
+  const { favorites } = useFavorites();
+  const favCount = favorites.length;
 
   const isActive = (path: string) => {
     if (path === '/') return location.pathname === '/';
@@ -61,7 +66,16 @@ export function Header({ lang, onLangChange }: HeaderProps) {
                     : 'text-tuki-blau hover:text-tuki-schwarz hover:bg-white/50'
                 }`}
               >
-                {labels[item.labelKey]}
+                {item.path === '/favorites' && favCount > 0 ? (
+                  <span className="flex items-center gap-1">
+                    {labels[item.labelKey]}
+                    <span className="bg-white text-tuki-rot text-xs px-1.5 py-0.5 rounded-full min-w-[1.25rem] text-center">
+                      {favCount}
+                    </span>
+                  </span>
+                ) : (
+                  labels[item.labelKey]
+                )}
               </Link>
             ))}
           </nav>
@@ -97,7 +111,9 @@ export function Header({ lang, onLangChange }: HeaderProps) {
                     : 'text-tuki-blau hover:text-tuki-schwarz hover:bg-white/50'
                 }`}
               >
-                {labels[item.labelKey]}
+                {item.path === '/favorites' && favCount > 0
+                  ? `${labels[item.labelKey]} (${favCount})`
+                  : labels[item.labelKey]}
               </Link>
             ))}
           </nav>
