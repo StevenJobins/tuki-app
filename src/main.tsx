@@ -1,30 +1,23 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import { HelmetProvider } from 'react-helmet-async';
-import './index.css';
-import App from './App.tsx';
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { HashRouter } from 'react-router-dom'
+import App from './App'
+import { AppProvider } from './context/AppContext'
+import './index.css'
 
-// Register Service Worker for PWA
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <HashRouter>
+      <AppProvider>
+        <App />
+      </AppProvider>
+    </HashRouter>
+  </React.StrictMode>,
+)
+
+// Register Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker
-      .register('/tuki-app/sw.js')
-      .then((registration) => {
-        console.log('SW registered:', registration.scope);
-      })
-      .catch((error) => {
-        console.log('SW registration failed:', error);
-      });
-  });
+    navigator.serviceWorker.register('/tuki-app/sw.js').catch(() => {})
+  })
 }
-
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <HelmetProvider>
-      <BrowserRouter basename="/tuki-app">
-        <App />
-      </BrowserRouter>
-    </HelmetProvider>
-  </StrictMode>,
-);
