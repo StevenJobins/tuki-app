@@ -1,26 +1,29 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
         tuki: {
-          'sand': '#F5F0E8',
-          'schwarz': '#1A1A1A',
-          'weiss': '#FFFFFF',
-          'rot': '#E85A4F',
-          'rot-dark': '#D94A3F',
-          'blau': '#2E3A59',
-          'mint': '#A8D5BA',
-          'orange': '#F5A623',
-        }
+          rot: '#8F5652',
+          'rot-dark': '#7A3E3A',
+          mint: '#AADBD7',
+          'mint-dark': '#A0D1CA',
+          'mint-light': '#D4EFED',
+          'mint-bg': '#F0FAF9',
+          blau: '#5E6578',
+          orange: '#E18B63',
+          cream: '#FAF8F5',
+          warm: '#FFF9F5',
+        },
       },
       fontFamily: {
-        'tuki': ['Rubik', 'sans-serif'],
-      }
+        rubik: ['Rubik', 'system-ui', 'sans-serif'],
+      },
+      borderRadius: {
+        '2xl': '1rem',
+        '3xl': '1.5rem',
+      },
     },
   },
   plugins: [],
