@@ -83,3 +83,10 @@ body {
 .safe-bottom {
   padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px);
 }
+
+/* Desktop: remove bottom padding since we use sidebar nav */
+@media (min-width: 768px) {
+  .pb-24 {
+    padding-bottom: 2rem !important;
+  }
+}
