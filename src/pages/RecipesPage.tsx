@@ -1,56 +1,67 @@
-import { Link } from 'react-router-dom';
-import type { Language, Translation } from '../types';
-import { SEO } from '../components/SEO';
-import { FavoriteButton } from '../components/FavoriteButton';
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import Header from '../components/Header'
+import AgeFilter from '../components/AgeFilter'
+import RecipeCard from '../components/RecipeCard'
+import { recipes } from '../data/recipes'
 
-interface RecipesPageProps {
-  lang: Language;
-  t: Translation;
-}
+const difficultyFilter = [
+  { value: 'all', label: 'Alle' },
+  { value: 'leicht', label: '⚡ Leicht' },
+  { value: 'mittel', label: '🔥 Mittel' },
+  { value: 'fortgeschritten', label: '🌟 Pro' },
+]
 
-const recipes = [
-  { id: 'banana-pancakes', title: { de: 'Bananen-Pancakes', en: 'Banana Pancakes', fr: 'Pancakes' }, desc: { de: 'Natürlich süß, kinderleicht', en: 'Naturally sweet, easy', fr: 'Naturellement sucré' }, image: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&h=400&fit=crop', time: '15 min', age: '2+', tag: { de: 'Zuckerfrei', en: 'Sugar-free', fr: 'Sans sucre' } },
-  { id: 'vegetable-muffins', title: { de: 'Gemüse-Muffins', en: 'Veggie Muffins', fr: 'Muffins Légumes' }, desc: { de: 'Mit Zucchini und Karotten', en: 'With zucchini', fr: 'Aux légumes' }, image: 'https://images.unsplash.com/photo-1607958996333-41aef7caefaa?w=600&h=400&fit=crop', time: '40 min', age: '2+', tag: { de: 'Gemüse', en: 'Vegetables', fr: 'Légumes' } },
-  { id: 'mini-pizza', title: { de: 'Mini-Pizza', en: 'Mini Pizza', fr: 'Mini Pizza' }, desc: { de: 'Mit Hefeteig selbst gemacht', en: 'Homemade yeast dough', fr: 'Pâte maison' }, image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&h=400&fit=crop', time: '60 min', age: '3+', tag: { de: 'Abendessen', en: 'Dinner', fr: 'Dîner' } }
-];
+export default function RecipesPage() {
+  const [ageFilter, setAgeFilter] = useState('all')
+  const [diffFilter, setDiffFilter] = useState('all')
+  const [search, setSearch] = useState('')
 
-export function RecipesPage({ lang, t }: RecipesPageProps) {
-  const pageTitle = lang === 'de' ? 'Rezepte' : lang === 'en' ? 'Recipes' : 'Recettes';
+  const filtered = recipes.filter(r => {
+    if (ageFilter !== 'all') {
+      const [min, max] = ageFilter.split('-').map(Number)
+      if (r.ageRange[0] > max || r.ageRange[1] < min) return false
+    }
+    if (diffFilter !== 'all' && r.difficulty !== diffFilter) return false
+    if (search) {
+      const s = search.toLowerCase()
+      return r.title.toLowerCase().includes(s) || r.tags.some(t => t.toLowerCase().includes(s))
+    }
+    return true
+  })
+
   return (
-    <>
-      <SEO lang={lang} pageTitle={pageTitle} />
-      <div className="pt-24 lg:pt-28 pb-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl sm:text-4xl font-semibold text-tuki-schwarz mb-4">{pageTitle}</h1>
-          <p className="text-tuki-blau/70 mb-8 max-w-2xl">{t.recipesDesc}</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {recipes.map(recipe => (
-              <Link key={recipe.id} to={`/recipes/${recipe.id}`} className="group bg-tuki-sand rounded-2xl overflow-hidden hover:shadow-xl transition-all">
-                <div className="aspect-[4/3] overflow-hidden relative">
-                  <img src={recipe.image} alt={recipe.title[lang]} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                  <FavoriteButton
-                    id={recipe.id}
-                    type="recipe"
-                    title={recipe.title[lang]}
-                    image={recipe.image}
-                    size="sm"
-                    className="absolute top-3 right-3"
-                  />
-                </div>
-                <div className="p-5">
-                  <span className="text-xs bg-tuki-rot/10 text-tuki-rot px-2 py-1 rounded-full">{recipe.tag[lang]}</span>
-                  <h3 className="text-lg font-semibold mt-2 mb-1">{recipe.title[lang]}</h3>
-                  <p className="text-sm text-tuki-blau/70 mb-3">{recipe.desc[lang]}</p>
-                  <div className="flex items-center gap-4 text-sm text-tuki-blau">
-                    <span>⏱ {recipe.time}</span>
-                    <span>👶 {recipe.age}</span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+    <div className="pb-24">
+      <Header title="Rezepte" />
+      <div className="px-4 mb-3">
+        <div className="relative">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
+            <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input type="text" placeholder="Rezept suchen..." value={search} onChange={e => setSearch(e.target.value)} className="w-full pl-10 pr-4 py-2.5 bg-white rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-tuki-mint focus:ring-2 focus:ring-tuki-mint/30" />
         </div>
       </div>
-    </>
-  );
+      <div className="mb-2"><AgeFilter selected={ageFilter} onChange={setAgeFilter} /></div>
+      <div className="flex gap-2 px-4 mb-4 overflow-x-auto no-scrollbar">
+        {difficultyFilter.map(d => (
+          <button key={d.value} onClick={() => setDiffFilter(d.value)} className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${diffFilter === d.value ? 'bg-tuki-mint text-tuki-rot-dark' : 'bg-gray-100 text-gray-500'}`}>{d.label}</button>
+        ))}
+      </div>
+      <div className="px-4 mb-3"><p className="text-xs text-gray-400">{filtered.length} Rezepte gefunden</p></div>
+      <motion.div className="grid grid-cols-2 gap-3 px-4" initial="hidden" animate="show" variants={{hidden:{opacity:0},show:{opacity:1,transition:{staggerChildren:0.05}}}}>
+        {filtered.map(recipe => (
+          <motion.div key={recipe.id} variants={{hidden:{opacity:0,y:10},show:{ppacity:1,y:0}}}>
+            <RecipeCard recipe={recipe} />
+          </motion.div>
+        ))}
+      </motion.div>
+      {filtered.length === 0 && (
+        <div className="text-center py-12 px-4">
+          <span className="text-4xl block mb-3">🔍</span>
+          <p className="text-gray-500 text-sm">Keine Rezepte gefunden.</p>
+          <p className="text-gray-400 text-xs mt-1">Versuch einen anderen Filter!</p>
+        </div>
+      )}
+    </div>
+  )
 }
