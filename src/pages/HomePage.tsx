@@ -1,9 +1,8 @@
-import { motion } from 'framer-motion'
 import Header from '../components/Header'
 import SectionHeader from '../components/SectionHeader'
 import RecipeCard from '../components/RecipeCard'
 import ActivityCard from '../components/ActivityCard'
-import { recipes, getSeasonalRecipes } from '../data/recipes'
+import { getSeasonalRecipes } from '../data/recipes'
 import { activities } from '../data/activities'
 import { useApp } from '../context/AppContext'
 import { useNavigate } from 'react-router-dom'
@@ -32,15 +31,6 @@ function getSeasonName(): string {
   return 'Winter'
 }
 
-const container = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { staggerChildren: 0.1 } },
-}
-const item = {
-  hidden: { opacity: 0, y: 12 },
-  show: { opacity: 1, y: 0 },
-}
-
 export default function HomePage() {
   const navigate = useNavigate()
   const { tukiStars, completedActivities, completedRecipes } = useApp()
@@ -48,11 +38,11 @@ export default function HomePage() {
   const featuredActivities = activities.slice(0, 4)
 
   return (
-    <motion.div variants={container} initial="hidden" animate="show" className="pb-24">
+    <div className="pb-24">
       <Header />
 
       {/* Hero Section */}
-      <motion.div variants={item} className="px-4 mt-2 mb-6">
+      <div className="px-4 mt-2 mb-6">
         <div className="relative rounded-3xl overflow-hidden gradient-mint p-5">
           <div className="relative z-10">
             <p className="text-tuki-rot-dark text-sm font-medium">{getGreeting()} 👋</p>
@@ -80,16 +70,16 @@ export default function HomePage() {
           <div className="absolute -right-6 -top-6 w-32 h-32 rounded-full bg-white/20" />
           <div className="absolute -right-2 bottom-0 w-20 h-20 rounded-full bg-white/15" />
         </div>
-      </motion.div>
+      </div>
 
       {/* Quick Actions */}
-      <motion.div variants={item} className="px-4 mb-6">
+      <div className="px-4 mb-6">
         <div className="grid grid-cols-4 md:grid-cols-4 gap-2 md:gap-3">
           {[
             { emoji: '🍳', label: 'Rezepte', path: '/rezepte' },
             { emoji: '🎮', label: 'Aktivitäten', path: '/aktivitaeten' },
             { emoji: '📊', label: 'Entwicklung', path: '/entwicklung' },
-            { emoji: '👨‍👩‍👧', label: 'Community', path: '/community' },
+            { emoji: '�‍👩퀍👧', label: 'Community', path: '/community' },
           ].map(action => (
             <button
               key={action.path}
@@ -101,10 +91,10 @@ export default function HomePage() {
             </button>
           ))}
         </div>
-      </motion.div>
+      </div>
 
       {/* Seasonal Banner */}
-      <motion.div variants={item} className="px-4 mb-6">
+      <div className="px-4 mb-6">
         <button
           onClick={() => navigate('/rezepte')}
           className="w-full bg-tuki-warm rounded-2xl p-4 border border-orange-100 text-left"
@@ -122,30 +112,30 @@ export default function HomePage() {
             </svg>
           </div>
         </button>
-      </motion.div>
+      </div>
 
       {/* Featured Recipes */}
-      <motion.div variants={item}>
+      <div>
         <SectionHeader title="Beliebte Rezepte" emoji="🍳" linkTo="/rezepte" />
         <div className="flex gap-4 overflow-x-auto px-4 pb-2 no-scrollbar snap-x">
           {seasonalRecipes.map(recipe => (
             <RecipeCard key={recipe.id} recipe={recipe} size="featured" />
           ))}
         </div>
-      </motion.div>
+      </div>
 
       {/* Activities */}
-      <motion.div variants={item} className="mt-6">
+      <div className="mt-6">
         <SectionHeader title="Aktivitäten für heute" emoji="🎯" linkTo="/aktivitaeten" />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 px-4">
           {featuredActivities.slice(0, 4).map(activity => (
             <ActivityCard key={activity.id} activity={activity} />
           ))}
         </div>
-      </motion.div>
+      </div>
 
       {/* Tuki Tip of the Day */}
-      <motion.div variants={item} className="mt-6 px-4">
+      <div className="mt-6 px-4">
         <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
           <div className="flex items-start gap-3">
             <div className="w-10 h-10 rounded-xl gradient-rot flex items-center justify-center shrink-0">
@@ -160,28 +150,26 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Level Progress */}
-      <motion.div variants={item} className="mt-6 px-4 mb-4">
+      <div className="mt-6 px-4 mb-4">
         <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-4 border border-yellow-200/50">
           <div className="flex items-center justify-between mb-2">
             <h3 className="font-semibold text-sm text-gray-800">🏆 {tukiStars.levelName}</h3>
             <span className="text-xs text-gray-500">Level {tukiStars.level + 1}/5</span>
           </div>
           <div className="w-full h-2 bg-yellow-100 rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full"
-              initial={{ width: 0 }}
-              animate={{ width: `${Math.min((tukiStars.total / 100) * 100, 100)}%` }}
-              transition={{ duration: 1, delay: 0.5 }}
+            <div
+              className="h-full bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full transition-all duration-1000"
+              style={{ width: `${Math.min((tukiStars.total / 100) * 100, 100)}%` }}
             />
           </div>
           <p className="text-[10px] text-gray-500 mt-1.5">
             Noch {Math.max(0, [10, 25, 50, 100][tukiStars.level] || 100 - tukiStars.total)} Sterne bis zum nächsten Level
           </p>
         </div>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   )
 }
