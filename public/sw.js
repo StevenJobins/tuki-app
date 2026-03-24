@@ -9,31 +9,14 @@ self.addEventListener('install', (event) => {
 })
 
 self.addEventListener('fetch', (event) => {
-  // Network-first for HTML documents to always get the latest
-  if (event.request.destination === 'document' || event.request.mode === 'navigate') {
-    event.respondWith(
-      fetch(event.request)
-        .then((response) => {
-          const clone = response.clone()
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone))
-          return response
-        })
-        .catch(() => caches.match('/tuki-app/index.html'))
-    )
+  // Never cache API calls (Supabase, etc.)
+  if (event.request.url.includes('supabase.co') || event.request.url.includes('/auth/') || event.request.url.includes('/rest/')) {
     return
   }
-
-  // Cache-first for static assets (JS, CSS, images)
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      if (response) return response
-      return fetch(event.request).then((fetchResponse) => {
-        if (fetchResponse && fetchResponse.status === 200) {
-          const clone = fetchResponse.clone()
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone))
-        }
-        return fetchResponse
-      }).catch(() => {
+    fetch(event.request).catch(() => {
+      return caches.match(event.request).then((response) => {
+        if (response) return response
         if (event.request.destination === 'document') {
           return caches.match('/tuki-app/index.html')
         }
