@@ -64,7 +64,7 @@ export default function ActivityDetailPage() {
           <p className="text-xs font-semibold text-gray-700 mt-0.5">{activity.ageRange[0]}-{activity.ageRange[1]} J.</p>
         </div>
         <div className="text-center">
-          <span className="text-lg">🌊</span>
+          <span className="text-lg">📊</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5 capitalize">{activity.difficulty}</p>
         </div>
         <div className="text-center">
@@ -116,7 +116,7 @@ export default function ActivityDetailPage() {
 
       {/* Steps */}
       <div className="px-4 mt-6">
-        <h2 className="font-semibold text-base text-gray-800 mb-3">🌋 So geht's</h2>
+        <h2 className="font-semibold text-base text-gray-800 mb-3">📋 So geht's</h2>
         <div className="space-y-4">
           {activity.steps.map((step, i) => (
             <motion.div
