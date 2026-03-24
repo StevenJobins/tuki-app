@@ -9,6 +9,9 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: false,
-    lock: false,
+    // Use a simple no-op lock to avoid navigator.locks deadlocks
+    lock: async (_name: string, _acquireTimeout: number, fn: () => Promise<any>) => {
+      return fn()
+    },
   }
 })
