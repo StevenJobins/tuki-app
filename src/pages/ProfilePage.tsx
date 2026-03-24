@@ -1,13 +1,21 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import Header from '../components/Header'
 import { useApp } from '../context/AppContext'
+import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import { recipes } from '../data/recipes'
 import { activities } from '../data/activities'
 
+const AVATAR_OPTIONS = ['👨‍👩‍👧', '👨‍👩‍👦', '👩‍👧', '👨‍👧', '👩‍👦', '👨‍👦', '👩‍👧‍👦', '👨‍👩‍👧‍👦', '🏠', '🌻']
+
 export default function ProfilePage() {
   const navigate = useNavigate()
-  const { tukiStars, completedActivities, completedRecipes, favorites, children } = useApp()
+  const { tukiStars, completedActivities, completedRecipes, favorites } = useApp()
+  const { user, profile, signOut, updateProfile } = useAuth()
+  const [editingName, setEditingName] = useState(false)
+  const [newName, setNewName] = useState(profile?.display_name || '')
+  const [showAvatars, setShowAvatars] = useState(false)
 
   const favoriteRecipes = recipes.filter(r => favorites.includes(r.id))
   const favoriteActivities = activities.filter(a => favorites.includes(a.id))
@@ -21,6 +29,22 @@ export default function ProfilePage() {
     { min: 100, name: 'Küchenchef', emoji: '🏆' },
   ]
 
+  const handleSaveName = async () => {
+    if (newName.trim()) {
+      await updateProfile({ display_name: newName.trim() })
+    }
+    setEditingName(false)
+  }
+
+  const handleAvatarSelect = async (emoji: string) => {
+    await updateProfile({ avatar_emoji: emoji })
+    setShowAvatars(false)
+  }
+
+  const handleLogout = async () => {
+    await signOut()
+  }
+
   return (
     <div className="pb-24">
       <Header title="Profil" />
@@ -28,11 +52,50 @@ export default function ProfilePage() {
       {/* Profile Card */}
       <div className="mx-4 mt-2 mb-6">
         <div className="bg-white rounded-3xl p-6 border border-gray-100 text-center">
-          <div className="w-20 h-20 rounded-full gradient-mint flex items-center justify-center text-3xl mx-auto mb-3">
-            👨‍👩‍👧
-          </div>
-          <h2 className="font-bold text-lg text-gray-800">Unsere Tuki-Familie</h2>
-          <p className="text-gray-500 text-sm mt-1">Mitglied seit März 2026</p>
+          {/* Avatar - tap to change */}
+          <button
+            onClick={() => setShowAvatars(!showAvatars)}
+            className="w-20 h-20 rounded-full gradient-mint flex items-center justify-center text-3xl mx-auto mb-3 active:scale-95 transition-transform"
+          >
+            {profile?.avatar_emoji || '👨‍👩‍👧'}
+          </button>
+
+          {/* Avatar picker */}
+          {showAvatars && (
+            <div className="flex flex-wrap justify-center gap-2 mb-3">
+              {AVATAR_OPTIONS.map(emoji => (
+                <button
+                  key={emoji}
+                  onClick={() => handleAvatarSelect(emoji)}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center text-xl border-2 ${
+                    profile?.avatar_emoji === emoji ? 'border-tuki-rot bg-red-50' : 'border-gray-100 bg-white'
+                  }`}
+                >
+                  {emoji}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Name - tap to edit */}
+          {editingName ? (
+            <div className="flex items-center gap-2 justify-center mb-1">
+              <input
+                type="text"
+                value={newName}
+                onChange={e => setNewName(e.target.value)}
+                className="text-center font-bold text-lg text-gray-800 bg-gray-50 rounded-lg px-3 py-1 border border-gray-200 focus:outline-none focus:border-tuki-mint"
+                autoFocus
+                onKeyDown={e => e.key === 'Enter' && handleSaveName()}
+              />
+              <button onClick={handleSaveName} className="text-tuki-rot text-sm font-medium">OK</button>
+            </div>
+          ) : (
+            <button onClick={() => { setNewName(profile?.display_name || ''); setEditingName(true) }}>
+              <h2 className="font-bold text-lg text-gray-800">{profile?.display_name || 'Meine Familie'}</h2>
+            </button>
+          )}
+          <p className="text-gray-500 text-sm mt-1">{user?.email}</p>
 
           {/* Stats Grid */}
           <div className="grid grid-cols-3 gap-3 mt-5">
@@ -124,32 +187,18 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {/* Menu Items */}
-      <div className="mx-4">
-        <h3 className="font-semibold text-sm text-gray-800 mb-3">Einstellungen</h3>
-        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-          {[
-            { emoji: '🌐', label: 'Sprache', value: 'Deutsch' },
-            { emoji: '🔔', label: 'Benachrichtigungen', value: 'An' },
-            { emoji: '🎨', label: 'Erscheinungsbild', value: 'Hell' },
-            { emoji: '📱', label: 'App-Version', value: '2.0.0' },
-            { emoji: '🔗', label: 'tuki.ch besuchen', value: '' },
-          ].map((item, i) => (
-            <div
-              key={i}
-              className={`flex items-center gap-3 px-4 py-3.5 ${i < 4 ? 'border-b border-gray-50' : ''}`}
-            >
-              <span className="text-lg">{item.emoji}</span>
-              <span className="text-sm text-gray-700 flex-1">{item.label}</span>
-              <span className="text-xs text-gray-400">{item.value}</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
-            </div>
-          ))}
-        </div>
+      {/* Logout Button */}
+      <div className="mx-4 mt-6 mb-4">
+        <button
+          onClick={handleLogout}
+          className="w-full py-3 bg-white border border-red-200 text-red-500 font-medium rounded-xl text-sm active:scale-[0.98] transition-transform"
+        >
+          Abmelden
+        </button>
       </div>
 
       {/* Footer */}
-      <div className="text-center mt-8 mb-4">
+      <div className="text-center mt-4 mb-4">
         <div className="w-8 h-8 rounded-lg gradient-rot flex items-center justify-center mx-auto mb-2">
           <span className="text-white font-bold text-sm">T</span>
         </div>
