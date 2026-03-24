@@ -107,7 +107,7 @@ export default function CommunityPage() {
 
       {activeTab === 'feed' ? (
         <motion.div
-          className="space-y-4 px-4"
+          className="space-y-4 px-4 md:grid md:grid-cols-2 md:gap-4 md:space-y-0"
           initial="hidden"
           animate="show"
           variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}
