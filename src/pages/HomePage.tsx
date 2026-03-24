@@ -84,7 +84,7 @@ export default function HomePage() {
 
       {/* Quick Actions */}
       <motion.div variants={item} className="px-4 mb-6">
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-4 md:grid-cols-4 gap-2 md:gap-3">
           {[
             { emoji: '🍳', label: 'Rezepte', path: '/rezepte' },
             { emoji: '🎮', label: 'Aktivitäten', path: '/aktivitaeten' },
@@ -137,7 +137,7 @@ export default function HomePage() {
       {/* Activities */}
       <motion.div variants={item} className="mt-6">
         <SectionHeader title="Aktivitäten für heute" emoji="🎯" linkTo="/aktivitaeten" />
-        <div className="grid grid-cols-2 gap-3 px-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 px-4">
           {featuredActivities.slice(0, 4).map(activity => (
             <ActivityCard key={activity.id} activity={activity} />
           ))}
