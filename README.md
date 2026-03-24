@@ -1,27 +1,32 @@
-# Tuki Learning Tower App
+# Tuki Family App 2.0
 
-A React + TypeScript web application for [Tuki](https://tuki.ch) - Swiss-designed Montessori Learning Towers.
+A premium React + TypeScript companion app for **Tuki Learning Tower** families. Built with love in Switzerland.
 
-## Brand Identity (Official)
+## Features
 
-**Font:** Rubik (Light, Regular, Medium + Italics)
+- **Rezepte** — Age-filtered recipes with step-by-step instructions and Tuki-Tips
+- **Montessori-Aktivitäten** — Learning activities by development area (Motorik, Sensorik, Kreativität, Sprache, Mathe, Natur)
+- **Entwicklungs-Tracker** — Milestone tracking from 12 months to 5 years
+- **Community** — Parent feed with tips, photos, and the Tuki Family Club
+- **Tuki-Sterne** — Gamification: Kids earn stars and level up from "Kleiner Entdecker" to "Küchenchef"
+- **Saisonale Inhalte** — Season-aware recipes and activities
+- **PWA** — Installable, offline-capable, mobile-first
 
-**Primary Colors:**
-- **Tuki Rot** `#8F5652` / `#7A3E3A` (Print)
-- **Tuki Mint** `#AADBD7` / `#A0D1CA` (Print)
+## Brand Identity
 
-**Secondary Colors:**
-- **Blau** `#5E6578`
-- **Orange** `#E18B63`
-- **Schwarz** `#000000`
-- **Weiss** `#FFFFFF`
+- **Font:** Rubik (Light, Regular, Medium, SemiBold)
+- **Tuki Rot:** `#8F5652` / `#7A3E3A`
+- **Tuki Mint:** `#AADBD7` / `#A0D1CA`
+- **Secondary:** Blau `#5E6578`, Orange `#E18B63`
 
 ## Tech Stack
 
 - React 18 + TypeScript
-- Vite
-- Tailwind CSS
-- Framer Motion (animations)
+- Vite 5
+- Tailwind CSS 3
+- Framer Motion
+- React Router 6
+- PWA (Service Worker)
 
 ## Development
 
@@ -30,17 +35,26 @@ npm install
 npm run dev
 ```
 
-## Build
+## Build & Deploy
 
 ```bash
 npm run build
-npm run preview
 ```
 
-## Deployment
+Deployed automatically to GitHub Pages via `.github/workflows/deploy.yml`.
 
-Built files are in `dist/` folder. Deploy to any static hosting (Cloudflare Pages, Vercel, Netlify, GitHub Pages).
+## Project Structure
+
+```
+src/
+├── components/     # Reusable UI components
+├── context/        # App state (favorites, stars, progress)
+├── data/           # Recipes, activities, milestones
+├── hooks/          # Custom React hooks
+├── pages/          # Route pages
+└── assets/         # Static assets
+```
 
 ---
 
-Official Tuki Brand Manual source: LER_Manual_A4_Lay01 2.pdf
+**Tuki** — Auf Augenhöhe. Made by mimodo AG, Switzerland.
