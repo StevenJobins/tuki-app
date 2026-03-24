@@ -1,109 +1,168 @@
-import { useParams, Link } from 'react-router-dom';
-import { useEffect } from 'react';
-import type { Language, Translation } from '../types';
-import { SEO } from '../components/SEO';
-import { FavoriteButton } from '../components/FavoriteButton';
+import { useParams, useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { getRecipeById } from '../data/recipes'
+import FavoriteButton from '../components/FavoriteButton'
+import { useApp } from '../context/AppContext'
 
-interface RecipeDetailPageProps {
-  lang: Language;
-  t: Translation;
-}
-
-interface RecipeDetail {
-  id: string;
-  title: Record<Language, string>;
-  desc: Record<Language, string>;
-  image: string;
-  time: string;
-  age: string;
-  materials: Record<Language, string[]>;
-  steps: Record<Language, string[]>;
-}
-
-const recipes: RecipeDetail[] = [
-  {
-    id: 'banana-pancakes',
-    title: { de: 'Bananen-Pancakes', en: 'Banana Pancakes', fr: 'Pancakes' },
-    desc: { de: 'Locker, süß und kinderleicht', en: 'Fluffy and easy', fr: 'Moelleux et facile' },
-    image: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&h=600&fit=crop',
-    time: '15 min',
-    age: '2+',
-    materials: { de: ['1 reife Banane', '1 Ei', '100g Mehl', '100ml Milch'], en: ['1 ripe banana', '1 egg', '100g flour', '100ml milk'], fr: ['1 banane mûre', '1 œuf', '100g farine', '100ml lait'] },
-    steps: { de: ['Banane zerdrücken', 'Ei hinzugeben', 'Mehl mischen', 'In Pfanne backen'], en: ['Mash banana', 'Add egg', 'Mix flour', 'Cook in pan'], fr: ['Écraser banane', 'Ajouter œuf', 'Mélanger farine', 'Cuire à la poêle'] }
-  },
-  {
-    id: 'vegetable-muffins',
-    title: { de: 'Gemüse-Muffins', en: 'Veggie Muffins', fr: 'Muffins Légumes' },
-    desc: { de: 'Mit Zucchini und Karotten', en: 'With zucchini and carrots', fr: 'Aux courgettes et carottes' },
-    image: 'https://images.unsplash.com/photo-1607958996333-41aef7caefaa?w=800&h=600&fit=crop',
-    time: '40 min',
-    age: '2+',
-    materials: { de: ['150g Zucchini', '100g Karotten', '250g Mehl', '2 Eier'], en: ['150g zucchini', '100g carrots', '250g flour', '2 eggs'], fr: ['150g courgettes', '100g carottes', '250g farine', '2 œufs'] },
-    steps: { de: ['Gemüse raspeln', 'Mehl mischen', 'Eier verquirlen', 'Backen bei 200°C'], en: ['Grate veggies', 'Mix flour', 'Whisk eggs', 'Bake at 200°C'], fr: ['Râper légumes', 'Mélanger farine', 'Battre œufs', 'Cuire à 200°C'] }
-  },
-  {
-    id: 'mini-pizza',
-    title: { de: 'Mini-Pizza', en: 'Mini Pizza', fr: 'Mini Pizza' },
-    desc: { de: 'Mit Hefeteig selbst gemacht', en: 'Homemade yeast dough', fr: 'Pâte maison' },
-    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&h=600&fit=crop',
-    time: '60 min',
-    age: '3+',
-    materials: { de: ['300g Mehl', 'Hefe', '150ml Wasser', 'Tomatensoße', 'Käse'], en: ['300g flour', 'yeast', '150ml water', 'tomato sauce', 'cheese'], fr: ['300g farine', 'levure', '150ml eau', 'sauce tomate', 'fromage'] },
-    steps: { de: ['Hefe auflösen', 'Teig kneten', '30 Min gehen lassen', 'Belegen und backen'], en: ['Dissolve yeast', 'Knead dough', 'Let rise 30 min', 'Add toppings and bake'], fr: ['Dissoudre levure', 'Pétrir pâte', 'Laisser lever 30 min', 'Garnir et cuire'] }
-  }
-];
-
-export function RecipeDetailPage({ lang, t }: RecipeDetailPageProps) {
-  const { id } = useParams<{ id: string }>();
-  useEffect(() => window.scrollTo(0, 0), [id]);
-  const recipe = recipes.find(r => r.id === id);
+export default function RecipeDetailPage() {
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const { completeRecipe, completedRecipes } = useApp()
+  const recipe = getRecipeById(id || '')
 
   if (!recipe) {
     return (
-      <div className="pt-32 pb-16 text-center">
-        <h1 className="text-2xl font-semibold mb-4">{lang === 'de' ? 'Nicht gefunden' : lang === 'en' ? 'Not found' : 'Introuvable'}</h1>
-        <Link to="/recipes" className="text-tuki-rot">← {t.recipes}</Link>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <span className="text-4xl block mb-3">🤔</span>
+          <p className="text-gray-500">Rezept nicht gefunden</p>
+          <button onClick={() => navigate('/rezepte')} className="text-tuki-rot text-sm mt-2">
+            Zurück zu Rezepten
+          </button>
+        </div>
       </div>
-    );
+    )
   }
 
+  const isCompleted = completedRecipes.includes(recipe.id)
+
   return (
-    <>
-      <SEO lang={lang} pageTitle={recipe.title[lang]} />
-      <div className="pt-24 lg:pt-28 pb-16">
-        <div className="max-w-3xl mx-auto px-4">
-          <Link to="/recipes" className="text-tuki-blau hover:text-tuki-rot mb-6 inline-block">← {t.recipes}</Link>
-          <div className="relative">
-            <img src={recipe.image} alt={recipe.title[lang]} className="w-full h-64 object-cover rounded-2xl mb-6" />
-            <FavoriteButton id={recipe.id} type="recipe" title={recipe.title[lang]} image={recipe.image} size="md" className="absolute top-4 right-4" />
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="pb-8">
+      {/* Hero Image */}
+      <div className="relative h-64">
+        <img src={recipe.image} alt={recipe.title} className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
+
+        {/* Top bar */}
+        <div className="absolute top-0 left-0 right-0 flex items-center justify-between p-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-md"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2D2D2D" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <FavoriteButton id={recipe.id} />
+        </div>
+
+        {/* Title overlay */}
+        <div className="absolute bottom-0 left-0 right-0 p-4">
+          <div className="flex items-center gap-2 mb-1">
+            {recipe.tags.map(tag => (
+              <span key={tag} className="bg-white/25 text-white text-[10px] font-medium px-2 py-0.5 rounded-full backdrop-blur-sm">
+                {tag}
+              </span>
+            ))}
           </div>
-          <h1 className="text-3xl font-semibold text-tuki-schwarz mb-2">{recipe.title[lang]}</h1>
-          <p className="text-tuki-blau/70 mb-4">{recipe.desc[lang]}</p>
-          <div className="flex gap-3 mb-8">
-            <span className="bg-tuki-rot/10 text-tuki-rot px-3 py-1 rounded-full text-sm">⏱ {recipe.time}</span>
-            <span className="bg-tuki-rot/10 text-tuki-rot px-3 py-1 rounded-full text-sm">👶 {recipe.age}</span>
+          <h1 className="text-2xl font-bold text-white">{recipe.emoji} {recipe.title}</h1>
+          <p className="text-white/80 text-sm">{recipe.subtitle}</p>
+        </div>
+      </div>
+
+      {/* Quick Info */}
+      <div className="flex justify-around py-4 bg-white border-b border-gray-100">
+        <div className="text-center">
+          <span className="text-lg">⏱️</span>
+          <p className="text-xs font-semibold text-gray-700 mt-0.5">{recipe.duration} Min.</p>
+          <p className="text-[10px] text-gray-400">Dauer</p>
+        </div>
+        <div className="text-center">
+          <span className="text-lg">👶</span>
+          <p className="text-xs font-semibold text-gray-700 mt-0.5">{recipe.ageRange[0]}-{recipe.ageRange[1]} J.</p>
+          <p className="text-[10px] text-gray-400">Alter</p>
+        </div>
+        <div className="text-center">
+          <span className="text-lg">📊</span>
+          <p className="text-xs font-semibold text-gray-700 mt-0.5 capitalize">{recipe.difficulty}</p>
+          <p className="text-[10px] text-gray-400">Level</p>
+        </div>
+        <div className="text-center">
+          <span className="text-lg">🍽️</span>
+          <p className="text-xs font-semibold text-gray-700 mt-0.5">{recipe.servings}</p>
+          <p className="text-[10px] text-gray-400">Portionen</p>
+        </div>
+      </div>
+
+      {/* Tuki Tip */}
+      <div className="mx-4 mt-4 bg-tuki-mint-bg border border-tuki-mint rounded-2xl p-4">
+        <div className="flex items-start gap-3">
+          <div className="w-8 h-8 rounded-lg gradient-rot flex items-center justify-center shrink-0">
+            <span className="text-white text-sm font-bold">T</span>
           </div>
-          <div className="bg-tuki-sand rounded-2xl p-6 mb-6">
-            <h2 className="text-xl font-semibold mb-4">📝 Zutaten</h2>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {recipe.materials[lang].map((m, i) => (
-                <li key={i} className="flex items-center gap-2"><span className="w-2 h-2 bg-tuki-rot rounded-full" />{m}</li>
-              ))}
-            </ul>
-          </div>
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold mb-4">📋 Zubereitung</h2>
-            <ol className="space-y-3">
-              {recipe.steps[lang].map((step, i) => (
-                <li key={i} className="flex gap-4">
-                  <span className="flex-shrink-0 w-8 h-8 bg-tuki-rot text-white rounded-full flex items-center justify-center">{i+1}</span>
-                  <p className="pt-1">{step}</p>
-                </li>
-              ))}
-            </ol>
+          <div>
+            <h3 className="font-semibold text-xs text-tuki-rot-dark">Tuki-Tipp</h3>
+            <p className="text-xs text-gray-600 mt-1 leading-relaxed">{recipe.tukiTip}</p>
           </div>
         </div>
       </div>
-    </>
-  );
+
+      {/* Ingredients */}
+      <div className="px-4 mt-6">
+        <h2 className="font-semibold text-base text-gray-800 mb-3">🛒 Zutaten</h2>
+        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+          {recipe.ingredients.map((ing, i) => (
+            <div
+              key={i}
+              className={`flex items-center gap-3 px-4 py-3 ${i < recipe.ingredients.length - 1 ? 'border-b border-gray-50' : ''}`}
+            >
+              <div className="w-6 h-6 rounded-full bg-tuki-mint-bg flex items-center justify-center shrink-0">
+                <span className="text-tuki-rot text-[10px] font-bold">{i + 1}</span>
+              </div>
+              <span className="text-sm font-medium text-gray-700 w-16 shrink-0">{ing.amount}</span>
+              <span className="text-sm text-gray-600">{ing.item}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Steps */}
+      <div className="px-4 mt-6">
+        <h2 className="font-semibold text-base text-gray-800 mb-3">👩‍🍳 Zubereitung</h2>
+        <div className="space-y-4">
+          {recipe.steps.map((step, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.1 }}
+              className="flex gap-3"
+            >
+              <div className="w-8 h-8 rounded-full gradient-rot flex items-center justify-center shrink-0 mt-0.5">
+                <span className="text-white text-xs font-bold">{i + 1}</span>
+              </div>
+              <div className="flex-1">
+                <p className="text-sm text-gray-700 leading-relaxed">{step.text}</p>
+                {step.tip && (
+                  <div className="mt-2 bg-yellow-50 rounded-lg p-2.5 border border-yellow-200/50">
+                    <p className="text-xs text-yellow-700">💡 {step.tip}</p>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      {/* Complete Button */}
+      <div className="px-4 mt-8">
+        <motion.button
+          whileTap={{ scale: 0.97 }}
+          onClick={() => completeRecipe(recipe.id)}
+          disabled={isCompleted}
+          className={`w-full py-4 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2 transition-colors ${
+            isCompleted
+              ? 'bg-green-100 text-green-700 border border-green-200'
+              : 'gradient-rot text-white shadow-lg shadow-tuki-rot/25'
+          }`}
+        >
+          {isCompleted ? (
+            <>✅ Geschafft! +{recipe.stars} Sterne verdient</>
+          ) : (
+            <>⭐ Rezept geschafft — {recipe.stars} Sterne verdienen</>
+          )}
+        </motion.button>
+      </div>
+    </motion.div>
+  )
 }
