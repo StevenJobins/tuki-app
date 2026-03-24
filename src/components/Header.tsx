@@ -16,7 +16,7 @@ export default function Header({ title, showBack, transparent }: HeaderProps) {
 
   return (
     <header
-      className={`sticky top-0 z-40 px-4 py-3 flex items-center justify-between ${
+      className={`sticky top-0 z-40 px-4 py-3 md:px-6 md:py-4 flex items-center justify-between ${
         transparent ? '' : 'glass border-b border-gray-100/50'
       }`}
     >
