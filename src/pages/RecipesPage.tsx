@@ -93,7 +93,7 @@ export default function RecipesPage() {
         {filtered.map(recipe => (
           <motion.div
             key={recipe.id}
-            variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
+            variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0, transition: { duration: 0.3 } } }}
           >
             <RecipeCard recipe={recipe} />
           </motion.div>
