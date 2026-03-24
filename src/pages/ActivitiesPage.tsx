@@ -60,24 +60,18 @@ export default function ActivitiesPage() {
       </div>
 
       {/* Activity Grid */}
-      <motion.div
-        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 px-4"
-        initial="hidden"
-        animate="show"
-        variants={{
-          hidden: { opacity: 0 },
-          show: { opacity: 1, transition: { staggerChildren: 0.05 } },
-        }}
-      >
-        {filtered.map(activity => (
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 px-4">
+        {filtered.map((activity, i) => (
           <motion.div
             key={activity.id}
-            variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0, transition: { duration: 0.3 } } }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: i * 0.05 }}
           >
             <ActivityCard activity={activity} />
           </motion.div>
         ))}
-      </motion.div>
+      </div>
 
       {filtered.length === 0 && (
         <div className="text-center py-12 px-4">
