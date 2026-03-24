@@ -177,17 +177,11 @@ export default function HomePage() {
               transition={{ duration: 1, delay: 0.5 }}
             />
           </div>
-          <p classNAME="text-[10px] text-gray-500 mt-1.5">
+          <p className="text-[10px] text-gray-500 mt-1.5">
             Noch {Math.max(0, [10, 25, 50, 100][tukiStars.level] || 100 - tukiStars.total)} Sterne bis zum nächsten Level
           </p>
         </div>
       </motion.div>
     </motion.div>
-  
-)3turn (\n    <motion.div variants={container} initial="hidden" animate="show" className="pb-24">
-      <header />
-      <motion.div variants={item} className="px-4 mt-2 mb-6">
-  
-  
-  
-?}
+  )
+}
