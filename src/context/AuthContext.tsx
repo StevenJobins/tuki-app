@@ -28,30 +28,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
 
-  // Fetch profile from Supabase
   async function fetchProfile(userId: string) {
-    const { data } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single()
-    if (data) setProfile(data)
+    try {
+      const { data } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single()
+      if (data) setProfile(data)
+    } catch (e) {
+      console.warn('Failed to fetch profile:', e)
+    }
   }
 
   useEffect(() => {
-    // Get initial session
+    let mounted = true
+
+    // Safety timeout: never stay loading for more than 5 seconds
+    const timeout = setTimeout(() => {
+      if (mounted) setLoading(false)
+    }, 5000)
+
     supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!mounted) return
       setSession(session)
       setUser(session?.user ?? null)
       if (session?.user) {
         fetchProfile(session.user.id)
       }
       setLoading(false)
+      clearTimeout(timeout)
+    }).catch(() => {
+      if (mounted) setLoading(false)
+      clearTimeout(timeout)
     })
 
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
+        if (!mounted) return
         setSession(session)
         setUser(session?.user ?? null)
         if (session?.user) {
@@ -59,25 +73,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } else {
           setProfile(null)
         }
+        setLoading(false)
       }
     )
 
-    return () => subscription.unsubscribe()
+    return () => {
+      mounted = false
+      clearTimeout(timeout)
+      subscription.unsubscribe()
+    }
   }, [])
 
   const signUp = async (email: string, password: string, displayName: string) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    })
+    const { data, error } = await supabase.auth.signUp({ email, password })
     if (error) return { error: error.message }
 
-    // Create profile
     if (data.user) {
       const { error: profileError } = await supabase.from('profiles').insert({
         id: data.user.id,
         display_name: displayName,
-        avatar_emoji: '👨‍👩‍👧',
+        avatar_emoji: '\u{1F468}\u200D\u{1F469}\u200D\u{1F467}',
       })
       if (profileError) return { error: profileError.message }
       await fetchProfile(data.user.id)
