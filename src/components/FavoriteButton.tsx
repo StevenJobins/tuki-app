@@ -1,85 +1,33 @@
-import { useFavorites } from '../hooks/useFavorites';
-import type { FavoriteType } from '../hooks/useFavorites';
+import { motion } from 'framer-motion'
+import { useApp } from '../context/AppContext'
 
-interface FavoriteButtonProps {
-  id: string;
-  type: FavoriteType;
-  title: string;
-  image: string;
-  size?: 'sm' | 'md' | 'lg';
-  className?: string;
-}
-
-export function FavoriteButton({
-  id,
-  type,
-  title,
-  image,
-  size = 'md',
-  className = '',
-}: FavoriteButtonProps) {
-  const { isFavorite, toggleFavorite, isLoaded } = useFavorites();
-  
-  if (!isLoaded) {
-    return (
-      <div
-        className={`rounded-full bg-gray-100 animate-pulse ${
-          size === 'sm' ? 'w-8 h-8' : size === 'lg' ? 'w-12 h-12' : 'w-10 h-10'
-        } ${className}`}
-      />
-    );
-  }
-
-  const favorited = isFavorite(id, type);
-
-  const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toggleFavorite({ id, type, title, image });
-  };
-
-  const sizeClasses = {
-    sm: 'w-8 h-8',
-    md: 'w-10 h-10',
-    lg: 'w-12 h-12',
-  };
-
-  const iconSizes = {
-    sm: 'w-4 h-4',
-    md: 'w-5 h-5',
-    lg: 'w-6 h-6',
-  };
+export default function FavoriteButton({ id }: { id: string }) {
+  const { toggleFavorite, isFavorite } = useApp()
+  const fav = isFavorite(id)
 
   return (
-    <button
-      onClick={handleClick}
-      className={`
-        ${sizeClasses[size]}
-        rounded-full flex items-center justify-center
-        transition-all duration-200
-        ${
-          favorited
-            ? 'bg-tuki-rot text-white hover:bg-red-600'
-            : 'bg-white/90 text-tuki-blau hover:bg-tuki-rot hover:text-white'
-        }
-        shadow-md hover:shadow-lg
-        ${className}
-      `}
-      aria-label={favorited ? 'Von Favoriten entfernen' : 'Zu Favoriten hinzufügen'}
+    <motion.button
+      whileTap={{ scale: 0.8 }}
+      onClick={(e) => {
+        e.stopPropagation()
+        toggleFavorite(id)
+      }}
+      className="w-8 h-8 rounded-full bg-white/90 flex items-center justify-center shadow-sm"
     >
-      <svg
-        className={iconSizes[size]}
-        fill={favorited ? 'currentColor' : 'none'}
-        stroke="currentColor"
+      <motion.svg
+        width="16"
+        height="16"
         viewBox="0 0 24 24"
-        strokeWidth={favorited ? 0 : 2}
+        fill={fav ? '#8F5652' : 'none'}
+        stroke={fav ? '#8F5652' : '#9CA3AF'}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        animate={fav ? { scale: [1, 1.3, 1] } : {}}
+        transition={{ duration: 0.3 }}
       >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-        />
-      </svg>
-    </button>
-  );
+        <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+      </motion.svg>
+    </motion.button>
+  )
 }
