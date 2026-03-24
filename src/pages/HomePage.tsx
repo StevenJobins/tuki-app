@@ -1,78 +1,193 @@
-import { Link } from 'react-router-dom';
-import type { Language, Translation } from '../types';
-import { SEO } from '../components/SEO';
+import { motion } from 'framer-motion'
+import Header from '../components/Header'
+import SectionHeader from '../components/SectionHeader'
+import RecipeCard from '../components/RecipeCard'
+import ActivityCard from '../components/ActivityCard'
+import { recipes, getSeasonalRecipes } from '../data/recipes'
+import { activities } from '../data/activities'
+import { useApp } from '../context/AppContext'
+import { useNavigate } from 'react-router-dom'
 
-interface HomePageProps {
-  lang: Language;
-  t: Translation;
+function getGreeting(): string {
+  const hour = new Date().getHours()
+  if (hour < 11) return 'Guten Morgen'
+  if (hour < 14) return 'Mahlzeit'
+  if (hour < 18) return 'Guten Nachmittag'
+  return 'Guten Abend'
 }
 
-export function HomePage({ lang, t }: HomePageProps) {
-  const welcomeText = lang === 'de' ? 'Willkommen in Ihrer Tuki-Welt!' : lang === 'en' ? 'Welcome to your Tuki world!' : 'Bienvenue dans votre monde Tuki!';
-  const ctaPrimary = lang === 'de' ? 'Rezepte entdecken' : lang === 'en' ? 'Discover recipes' : 'Découvrir recettes';
-  const ctaSecondary = lang === 'de' ? 'Aktivitäten' : lang === 'en' ? 'Activities' : 'Activités';
+function getSeasonEmoji(): string {
+  const month = new Date().getMonth()
+  if (month >= 2 && month <= 4) return '🌸'
+  if (month >= 5 && month <= 7) return '☀️'
+  if (month >= 8 && month <= 10) return '🍂'
+  return '❄️'
+}
+
+function getSeasonName(): string {
+  const month = new Date().getMonth()
+  if (month >= 2 && month <= 4) return 'Frühling'
+  if (month >= 5 && month <= 7) return 'Sommer'
+  if (month >= 8 && month <= 10) return 'Herbst'
+  return 'Winter'
+}
+
+const container = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.1 } },
+}
+const item = {
+  hidden: { opacity: 0, y: 12 },
+  show: { opacity: 1, y: 0 },
+}
+
+export default function HomePage() {
+  const navigate = useNavigate()
+  const { tukiStars, completedActivities, completedRecipes } = useApp()
+  const seasonalRecipes = getSeasonalRecipes().slice(0, 4)
+  const featuredActivities = activities.slice(0, 4)
 
   return (
-    <>
-      <SEO lang={lang} />
-      <div className="pt-24 lg:pt-32 pb-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Hero */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center mb-20">
-            <div className="space-y-6">
-              <div className="inline-flex items-center gap-2 bg-tuki-mint/30 px-4 py-2 rounded-full">
-                <span className="w-2 h-2 bg-tuki-rot rounded-full animate-pulse"></span>
-                <span className="text-sm font-medium text-tuki-rot">{welcomeText}</span>
+    <motion.div variants={container} initial="hidden" animate="show" className="pb-24">
+      <Header />
+
+      {/* Hero Section */}
+      <motion.div variants={item} className="px-4 mt-2 mb-6">
+        <div className="relative rounded-3xl overflow-hidden gradient-mint p-5">
+          <div className="relative z-10">
+            <p className="text-tuki-rot-dark text-sm font-medium">{getGreeting()} 👋</p>
+            <h1 className="text-2xl font-bold text-gray-800 mt-1 leading-tight">
+              Was entdecken wir<br />heute zusammen?
+            </h1>
+            <div className="flex items-center gap-3 mt-4">
+              <div className="bg-white/70 rounded-xl px-3 py-2 flex items-center gap-2">
+                <span>⭐</span>
+                <div>
+                  <p className="text-xs font-semibold text-gray-700">{tukiStars.total} Sterne</p>
+                  <p className="text-[10px] text-gray-500">{tukiStars.levelName}</p>
+                </div>
               </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-tuki-schwarz leading-tight">{t.title}</h1>
-              <p className="text-xl text-tuki-blau font-light">{t.subtitle}</p>
-              <p className="text-tuki-blau/80">
-                {lang === 'de' ? 'Rezepte, Aktivitäten und Entwicklungstipps speziell für Tuki-Familien.' : 
-                 lang === 'en' ? 'Recipes, activities and development tips for Tuki families.' : 
-                 'Recettes, activités et conseils pour familles Tuki.'}
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <Link to="/recipes" className="inline-flex items-center bg-tuki-rot text-white px-8 py-4 rounded-full font-medium hover:bg-tuki-rot-dark transition-all">
-                  {ctaPrimary} →
-                </Link>
-                <Link to="/activities" className="inline-flex items-center px-8 py-4 rounded-full border-2 border-tuki-schwarz/20 hover:border-tuki-rot hover:text-tuki-rot transition-all">
-                  {ctaSecondary}
-                </Link>
-              </div>
-            </div>
-            <div className="relative">
-              <div className="aspect-square rounded-3xl bg-gradient-to-br from-tuki-mint/40 to-tuki-orange/20 flex items-center justify-center">
-                <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=800&fit=crop" alt="Tuki" className="w-4/5 h-4/5 object-cover rounded-2xl shadow-xl" />
+              <div className="bg-white/70 rounded-xl px-3 py-2 flex items-center gap-2">
+                <span>✅</span>
+                <div>
+                  <p className="text-xs font-semibold text-gray-700">{completedActivities.length + completedRecipes.length}</p>
+                  <p className="text-[10px] text-gray-500">Abgeschlossen</p>
+                </div>
               </div>
             </div>
           </div>
+          {/* Decorative circles */}
+          <div className="absolute -right-6 -top-6 w-32 h-32 rounded-full bg-white/20" />
+          <div className="absolute -right-2 bottom-0 w-20 h-20 rounded-full bg-white/15" />
+        </div>
+      </motion.div>
 
-          {/* Quick Links */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Link to="/activities" className="group bg-tuki-sand rounded-2xl p-8 hover:shadow-xl transition-all">
-              <div className="w-12 h-12 bg-tuki-rot/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-tuki-rot/20">
-                <span className="text-2xl">👶</span>
-              </div>
-              <h3 className="text-xl font-semibold mb-2">{t.activities}</h3>
-              <p className="text-tuki-blau/70">{t.activitiesDesc}</p>
-            </Link>
-            <Link to="/recipes" className="group bg-tuki-sand rounded-2xl p-8 hover:shadow-xl transition-all">
-              <div className="w-12 h-12 bg-tuki-rot/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-tuki-rot/20">
-                <span className="text-2xl">🍳</span>
-              </div>
-              <h3 className="text-xl font-semibold mb-2">{t.recipes}</h3>
-              <p className="text-tuki-blau/70">{t.recipesDesc}</p>
-            </Link>
-            <Link to="/development" className="group bg-tuki-sand rounded-2xl p-8 hover:shadow-xl transition-all">
-              <div className="w-12 h-12 bg-tuki-rot/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-tuki-rot/20">
-                <span className="text-2xl">📈</span>
-              </div>
-              <h3 className="text-xl font-semibold mb-2">{t.development}</h3>
-              <p className="text-tuki-blau/70">{t.developmentDesc}</p>
-            </Link>
+      {/* Quick Actions */}
+      <motion.div variants={item} className="px-4 mb-6">
+        <div className="grid grid-cols-4 gap-2">
+          {[
+            { emoji: '🍳', label: 'Rezepte', path: '/rezepte' },
+            { emoji: '🎮', label: 'Aktivitäten', path: '/aktivitaeten' },
+            { emoji: '📊', label: 'Entwicklung', path: '/entwicklung' },
+            { emoji: '👨‍👩‍👧', label: 'Community', path: '/community' },
+          ].map(action => (
+            <button
+              key={action.path}
+              onClick={() => navigate(action.path)}
+              className="flex flex-col items-center gap-1.5 py-3 bg-white rounded-2xl shadow-sm border border-gray-100 active:scale-95 transition-transform"
+            >
+              <span className="text-2xl">{action.emoji}</span>
+              <span className="text-[10px] font-medium text-gray-600">{action.label}</span>
+            </button>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Seasonal Banner */}
+      <motion.div variants={item} className="px-4 mb-6">
+        <button
+          onClick={() => navigate('/rezepte')}
+          className="w-full bg-tuki-warm rounded-2xl p-4 border border-orange-100 text-left"
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-3xl">{getSeasonEmoji()}</span>
+            <div>
+              <h3 className="font-semibold text-sm text-gray-800">{getSeasonName()}s-Rezepte</h3>
+              <p className="text-xs text-gray-500 mt-0.5">
+                {seasonalRecipes.length} saisonale Ideen für euch entdecken
+              </p>
+            </div>
+            <svg className="ml-auto" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8F5652" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
+        </button>
+      </motion.div>
+
+      {/* Featured Recipes */}
+      <motion.div variants={item}>
+        <SectionHeader title="Beliebte Rezepte" emoji="🍳" linkTo="/rezepte" />
+        <div className="flex gap-4 overflow-x-auto px-4 pb-2 no-scrollbar snap-x">
+          {seasonalRecipes.map(recipe => (
+            <RecipeCard key={recipe.id} recipe={recipe} size="featured" />
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Activities */}
+      <motion.div variants={item} className="mt-6">
+        <SectionHeader title="Aktivitäten für heute" emoji="🎯" linkTo="/aktivitaeten" />
+        <div className="grid grid-cols-2 gap-3 px-4">
+          {featuredActivities.slice(0, 4).map(activity => (
+            <ActivityCard key={activity.id} activity={activity} />
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Tuki Tip of the Day */}
+      <motion.div variants={item} className="mt-6 px-4">
+        <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-xl gradient-rot flex items-center justify-center shrink-0">
+              <span className="text-white text-lg">💡</span>
+            </div>
+            <div>
+              <h3 className="font-semibold text-sm text-gray-800">Tuki-Tipp des Tages</h3>
+              <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+                Lass dein Kind die Zutaten für das Abendessen aus dem Kühlschrank holen —
+                im Tuki erreicht es alles auf Augenhöhe. Das stärkt die Selbstständigkeit!
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-    </>
-  );
-}
+      </motion.div>
+
+      {/* Level Progress */}
+      <motion.div variants={item} className="mt-6 px-4 mb-4">
+        <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-4 border border-yellow-200/50">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="font-semibold text-sm text-gray-800">🏆 {tukiStars.levelName}</h3>
+            <span className="text-xs text-gray-500">Level {tukiStars.level + 1}/5</span>
+          </div>
+          <div className="w-full h-2 bg-yellow-100 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full"
+              initial={{ width: 0 }}
+              animate={{ width: `${Math.min((tukiStars.total / 100) * 100, 100)}%` }}
+              transition={{ duration: 1, delay: 0.5 }}
+            />
+          </div>
+          <p classNAME="text-[10px] text-gray-500 mt-1.5">
+            Noch {Math.max(0, [10, 25, 50, 100][tukiStars.level] || 100 - tukiStars.total)} Sterne bis zum nächsten Level
+          </p>
+        </div>
+      </motion.div>
+    </motion.div>
+  
+)3turn (\n    <motion.div variants={container} initial="hidden" animate="show" className="pb-24">
+      <header />
+      <motion.div variants={item} className="px-4 mt-2 mb-6">
+  
+  
+  
+?}
