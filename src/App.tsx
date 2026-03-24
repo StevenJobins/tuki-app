@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
+import { useAuth } from './context/AuthContext'
 import BottomNav from './components/BottomNav'
 import SideNav from './components/SideNav'
 import HomePage from './pages/HomePage'
@@ -10,8 +11,27 @@ import ActivityDetailPage from './pages/ActivityDetailPage'
 import DevelopmentPage from './pages/DevelopmentPage'
 import CommunityPage from './pages/CommunityPage'
 import ProfilePage from './pages/ProfilePage'
+import LoginPage from './pages/LoginPage'
+
+function LoadingScreen() {
+  return (
+    <div className="min-h-screen bg-tuki-cream flex items-center justify-center">
+      <div className="text-center">
+        <div className="w-16 h-16 rounded-2xl gradient-rot flex items-center justify-center mx-auto mb-4 animate-pulse">
+          <span className="text-white font-bold text-2xl">T</span>
+        </div>
+        <p className="text-gray-400 text-sm">Laden...</p>
+      </div>
+    </div>
+  )
+}
 
 export default function App() {
+  const { user, loading } = useAuth()
+
+  if (loading) return <LoadingScreen />
+  if (!user) return <LoginPage />
+
   return (
     <div className="min-h-screen bg-tuki-cream flex">
       {/* Sidebar — visible on desktop (md+) */}
