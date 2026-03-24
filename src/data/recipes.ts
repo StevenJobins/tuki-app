@@ -55,7 +55,7 @@ export const recipes: Recipe[] = [
     duration: 40,
     difficulty: 'mittel',
     ageRange: [2, 8],
-    season: ['ganzjahrig'],
+    season: ['ganzjährig'],
     servings: 12,
     tags: ['Snack', 'Gemüse', 'Meal Prep'],
     ingredients: [
@@ -89,7 +89,7 @@ export const recipes: Recipe[] = [
     duration: 15,
     difficulty: 'leicht',
     ageRange: [2, 8],
-    season: ['ganzjahrig'],
+    season: ['ganzjährig'],
     servings: 15,
     tags: ['Snack', 'Zuckerfrei', 'Keine Küche nötig'],
     ingredients: [
@@ -274,5 +274,5 @@ export function getSeasonalRecipes(): Recipe[] {
   else if (month >= 5 && month <= 7) season = 'sommer'
   else if (month >= 8 && month <= 10) season = 'herbst'
   else season = 'winter'
-  return recipes.filter(r => r.season.includes(season as any) || r.season.includes('ganzjahrig'))
+  return recipes.filter(r => r.season.includes(season as any) || r.season.includes('ganzjährig'))
 }
