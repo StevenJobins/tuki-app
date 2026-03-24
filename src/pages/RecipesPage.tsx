@@ -18,11 +18,14 @@ export default function RecipesPage() {
   const [search, setSearch] = useState('')
 
   const filtered = recipes.filter(r => {
+    // Age filter
     if (ageFilter !== 'all') {
       const [min, max] = ageFilter.split('-').map(Number)
       if (r.ageRange[0] > max || r.ageRange[1] < min) return false
     }
+    // Difficulty
     if (diffFilter !== 'all' && r.difficulty !== diffFilter) return false
+    // Search
     if (search) {
       const s = search.toLowerCase()
       return r.title.toLowerCase().includes(s) || r.tags.some(t => t.toLowerCase().includes(s))
@@ -33,28 +36,70 @@ export default function RecipesPage() {
   return (
     <div className="pb-24">
       <Header title="Rezepte" />
+
+      {/* Search */}
       <div className="px-4 mb-3">
         <div className="relative">
           <svg className="absolute left-3 top-1/2 -translate-y-1/2" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
             <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
-          <input type="text" placeholder="Rezept suchen..." value={search} onChange={e => setSearch(e.target.value)} className="w-full pl-10 pr-4 py-2.5 bg-white rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-tuki-mint focus:ring-2 focus:ring-tuki-mint/30" />
+          <input
+            type="text"
+            placeholder="Rezept suchen..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 bg-white rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-tuki-mint focus:ring-2 focus:ring-tuki-mint/30"
+          />
         </div>
       </div>
-      <div className="mb-2"><AgeFilter selected={ageFilter} onChange={setAgeFilter} /></div>
+
+      {/* Age Filter */}
+      <div className="mb-2">
+        <AgeFilter selected={ageFilter} onChange={setAgeFilter} />
+      </div>
+
+      {/* Difficulty Filter */}
       <div className="flex gap-2 px-4 mb-4 overflow-x-auto no-scrollbar">
         {difficultyFilter.map(d => (
-          <button key={d.value} onClick={() => setDiffFilter(d.value)} className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${diffFilter === d.value ? 'bg-tuki-mint text-tuki-rot-dark' : 'bg-gray-100 text-gray-500'}`}>{d.label}</button>
+          <button
+            key={d.value}
+            onClick={() => setDiffFilter(d.value)}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${
+              diffFilter === d.value
+                ? 'bg-tuki-mint text-tuki-rot-dark'
+                : 'bg-gray-100 text-gray-500'
+            }`}
+          >
+            {d.label}
+          </button>
         ))}
       </div>
-      <div className="px-4 mb-3"><p className="text-xs text-gray-400">{filtered.length} Rezepte gefunden</p></div>
-      <motion.div className="grid grid-cols-2 gap-3 px-4" initial="hidden" animate="show" variants={{hidden:{opacity:0},show:{opacity:1,transition:{staggerChildren:0.05}}}}>
+
+      {/* Results count */}
+      <div className="px-4 mb-3">
+        <p className="text-xs text-gray-400">{filtered.length} Rezepte gefunden</p>
+      </div>
+
+      {/* Recipe Grid */}
+      <motion.div
+        className="grid grid-cols-2 gap-3 px-4"
+        initial="hidden"
+        animate="show"
+        variants={{
+          hidden: { opacity: 0 },
+          show: { opacity: 1, transition: { staggerChildren: 0.05 } },
+        }}
+      >
         {filtered.map(recipe => (
-          <motion.div key={recipe.id} variants={{hidden:{opacity:0,y:10},show:{ppacity:1,y:0}}}>
+          <motion.div
+            key={recipe.id}
+            variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
+          >
             <RecipeCard recipe={recipe} />
           </motion.div>
         ))}
       </motion.div>
+
       {filtered.length === 0 && (
         <div className="text-center py-12 px-4">
           <span className="text-4xl block mb-3">🔍</span>
