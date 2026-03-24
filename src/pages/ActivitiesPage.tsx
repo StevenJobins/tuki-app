@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import Header from '../components/Header'
 import AgeFilter from '../components/AgeFilter'
 import ActivityCard from '../components/ActivityCard'
@@ -61,15 +60,10 @@ export default function ActivitiesPage() {
 
       {/* Activity Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 px-4">
-        {filtered.map((activity, i) => (
-          <motion.div
-            key={activity.id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: i * 0.05 }}
-          >
+        {filtered.map(activity => (
+          <div key={activity.id}>
             <ActivityCard activity={activity} />
-          </motion.div>
+          </div>
         ))}
       </div>
 
