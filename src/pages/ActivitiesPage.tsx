@@ -1,55 +1,91 @@
-import { Link } from 'react-router-dom';
-import type { Language, Translation } from '../types';
-import { SEO } from '../components/SEO';
-import { FavoriteButton } from '../components/FavoriteButton';
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import Header from '../components/Header'
+import AgeFilter from '../components/AgeFilter'
+import ActivityCard from '../components/ActivityCard'
+import { activities, categoryInfo } from '../data/activities'
 
-interface ActivitiesPageProps {
-  lang: Language;
-  t: Translation;
-}
+export default function ActivitiesPage() {
+  const [ageFilter, setAgeFilter] = useState('all')
+  const [catFilter, setCatFilter] = useState('all')
 
-const activities = [
-  { id: 'apfel-schneiden', title: { de: 'Apfel schneiden', en: 'Cutting Apples', fr: 'Couper Pommes' }, desc: { de: 'Erste Messererfahrung – sicher und selbstständig', en: 'First knife experience', fr: 'Première expérience couteau' }, image: 'https://images.unsplash.com/photo-1568702846914-85f8fc3f27b3?w=600&h=400&fit=crop', age: '2-4', skills: ['Feinmotorik', 'Konzentration'] },
-  { id: 'eier-aufschlagen', title: { de: 'Eier aufschlagen', en: 'Cracking Eggs', fr: 'Casser Œufs' }, desc: { de: 'Zwei-Hände-Koordination', en: 'Two-hand coordination', fr: 'Coordination deux mains' }, image: 'https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=600&h=400&fit=crop', age: '2-5', skills: ['Koordination', 'Geduld'] },
-  { id: 'gemuese-waschen', title: { de: 'Gemüse waschen', en: 'Washing Vegetables', fr: 'Laver Légumes' }, desc: { de: 'Sensorisches Wassererlebnis', en: 'Sensory water play', fr: 'Expérience eau' }, image: 'https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=600&h=400&fit=crop', age: '1-4', skills: ['Sinne', 'Lebenspraxis'] },
-  { id: 'wasser-giessen', title: { de: 'Wasser gießen', en: 'Pouring Water', fr: 'Verser Eau' }, desc: { de: 'Konzentration und Kontrolle', en: 'Focus and control', fr: 'Concentration' }, image: 'https://images.unsplash.com/photo-1516726817505-f5ed825624d8?w=600&h=400&fit=crop', age: '1-3', skills: ['Gleichgewicht', 'Handkraft'] },
-  { id: 'brot-schneiden', title: { de: 'Brot schneiden', en: 'Cutting Bread', fr: 'Couper Pain' }, desc: { de: 'Frühstück mitgestalten', en: 'Help with breakfast', fr: 'Aider petit-déj' }, image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&h=400&fit=crop', age: '2-5', skills: ['Selbstständigkeit'] },
-  { id: 'tisch-decken', title: { de: 'Tisch decken', en: 'Setting Table', fr: 'Dresser Table' }, desc: { de: 'Familienritual teilen', en: 'Family ritual', fr: 'Rituel famille' }, image: 'https://images.unsplash.com/photo-1466978913421-dad2ebd01d71?w=600&h=400&fit=crop', age: '2-6', skills: ['Sozialkompetenz'] }
-];
+  const categories = [
+    { value: 'all', label: 'Alle', emoji: '🎯' },
+    ...Object.entries(categoryInfo).map(([key, val]) => ({
+      value: key,
+      label: val.label,
+      emoji: val.emoji,
+    })),
+  ]
 
-export function ActivitiesPage({ lang, t }: ActivitiesPageProps) {
-  const pageTitle = lang === 'de' ? 'Aktivitäten' : lang === 'en' ? 'Activities' : 'Activités';
+  const filtered = activities.filter(a => {
+    if (ageFilter !== 'all') {
+      const [min, max] = ageFilter.split('-').map(Number)
+      if (a.ageRange[0] > max || a.ageRange[1] < min) return false
+    }
+    if (catFilter !== 'all' && a.category !== catFilter) return false
+    return true
+  })
+
   return (
-    <>
-      <SEO lang={lang} pageTitle={pageTitle} />
-      <div className="pt-24 lg:pt-28 pb-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl sm:text-4xl font-semibold text-tuki-schwarz mb-4">{pageTitle}</h1>
-          <p className="text-tuki-blau/70 mb-8 max-w-2xl">{t.activitiesDesc}</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {activities.map(activity => (
-              <Link key={activity.id} to={`/activities/${activity.id}`} className="group bg-tuki-sand rounded-2xl overflow-hidden hover:shadow-xl transition-all flex flex-col sm:flex-row">
-                <div className="sm:w-2/5 aspect-video sm:aspect-auto overflow-hidden relative">
-                  <img src={activity.image} alt={activity.title[lang]} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                  <FavoriteButton
-                    id={activity.id}
-                    type="activity"
-                    title={activity.title[lang]}
-                    image={activity.image}
-                    size="sm"
-                    className="absolute top-3 right-3"
-                  />
-                </div>
-                <div className="p-5 flex-1 flex flex-col justify-center">
-                  <span className="text-xs bg-tuki-rot/10 text-tuki-rot px-2 py-1 rounded-full w-fit">{activity.age}</span>
-                  <h3 className="text-xl font-semibold mt-2 mb-1">{activity.title[lang]}</h3>
-                  <p className="text-tuki-blau/70 text-sm">{activity.desc[lang]}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
+    <div className="pb-24">
+      <Header title="Aktivitäten" />
+
+      {/* Category chips */}
+      <div className="flex gap-2 px-4 mb-3 overflow-x-auto no-scrollbar py-1">
+        {categories.map(cat => (
+          <button
+            key={cat.value}
+            onClick={() => setCatFilter(cat.value)}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-all ${
+              catFilter === cat.value
+                ? 'bg-tuki-rot text-white shadow-sm'
+                : 'bg-white text-gray-600 border border-gray-100'
+            }`}
+          >
+            <span>{cat.emoji}</span>
+            {cat.label}
+          </button>
+        ))}
       </div>
-    </>
-  );
+
+      {/* Age Filter */}
+      <div className="mb-4">
+        <AgeFilter selected={ageFilter} onChange={setAgeFilter} />
+      </div>
+
+      {/* Results */}
+      <div className="px-4 mb-3">
+        <p className="text-xs text-gray-400">{filtered.length} Aktivitäten gefunden</p>
+      </div>
+
+      {/* Activity Grid */}
+      <motion.div
+        className="grid grid-cols-2 gap-3 px-4"
+        initial="hidden"
+        animate="show"
+        variants={{
+          hidden: { opacity: 0 },
+          show: { opacity: 1, transition: { staggerChildren: 0.05 } },
+        }}
+      >
+        {filtered.map(activity => (
+          <motion.div
+            key={activity.id}
+            variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
+          >
+            <ActivityCard activity={activity} />
+          </motion.div>
+        ))}
+      </motion.div>
+
+      {filtered.length === 0 && (
+        <div className="text-center py-12 px-4">
+          <span className="text-4xl block mb-3">🎯</span>
+          <p className="text-gray-500 text-sm">Keine Aktivitäten gefunden.</p>
+          <p className="text-gray-400 text-xs mt-1">Versuch einen anderen Filter!</p>
+        </div>
+      )}
+    </div>
+  )
 }
