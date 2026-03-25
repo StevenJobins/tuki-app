@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import Header from '../components/Header'
 import { useApp } from '../context/AppContext'
 
@@ -19,8 +18,8 @@ const milestones: Milestone[] = [
   { id: 'm3', title: 'Erste Wörter (5-10)', emoji: '💬', ageMonths: [12, 18], category: 'Sprache', description: 'Sagt bewusst erste Wörter wie Mama, Papa, Ball, Hund...' },
   { id: 'm4', title: 'Aus Becher trinken', emoji: '🥤', ageMonths: [12, 18], category: 'Selbstständigkeit', description: 'Kann mit beiden Händen aus einem offenen Becher trinken.' },
   // 18-24 Monate
-  { id: 'm5', title: 'Treppe steigen (mit Hilfe)', emoji: '🪜', ageMonths: [18, 24], category: 'Motorik', description: 'Geht Treppen hoch, hält sich dabei am Geländer oder an der Hand.' },
-  { id: 'm6', title: '2-Wort-Sätze', emoji: '🗣️', ageMonths: [18, 24], category: 'Sprache', description: '"Mama da", "Ball haben", "Mehr Milch" — erste Zwei-Wort-Kombinationen.' },
+  { id: 'm5', title: 'Treppe steigen (mit Hilfe)', emoji: '🚜', ageMonths: [18, 24], category: 'Motorik', description: 'Geht Treppen hoch, hält sich dabei am Geländer oder an der Hand.' },
+  { id: 'm6', title: '2-Wort-Sätze', emoji: '👣️', ageMonths: [18, 24], category: 'Sprache', description: '"Mama da", "Ball haben", "Mehr Milch" — erste Zwei-Wort-Kombinationen.' },
   { id: 'm7', title: 'Mit Löffel essen', emoji: '🥄', ageMonths: [18, 24], category: 'Selbstständigkeit', description: 'Kann (meistens) selbst mit dem Löffel essen — auch wenn es kleckert!' },
   { id: 'm8', title: 'Kritzeln mit Stift', emoji: '✏️', ageMonths: [18, 24], category: 'Feinmotorik', description: 'Hält einen Stift und macht bewusste Kritzelstriche auf Papier.' },
   // 2-3 Jahre
@@ -100,65 +99,56 @@ export default function DevelopmentPage() {
             <span className="text-xs text-gray-500">{achievedCount}/{groupMilestones.length} erreicht</span>
           </div>
           <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-gradient-to-r from-tuki-mint to-tuki-mint-dark rounded-full"
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.5 }}
+            <div
+              className="h-full bg-gradient-to-r from-tuki-mint to-tuki-mint-dark rounded-full transition-all duration-500"
+              style={{ width: `${progress}%` }}
             />
           </div>
           {progress === 100 && (
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+            <p
               className="text-xs text-green-600 font-medium mt-2"
             >
               🎉 Alle Meilensteine dieser Phase erreicht!
-            </motion.p>
+            </p>
           )}
         </div>
       </div>
 
       {/* Milestones */}
       <div className="px-4 space-y-3">
-        <AnimatePresence mode="wait">
-          {groupMilestones.map(ms => {
-            const done = achieved.includes(ms.id)
-            return (
-              <motion.div
-                key={ms.id}
-                layout
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className={`rounded-2xl p-4 border transition-colors cursor-pointer ${
-                  done
-                    ? 'bg-green-50 border-green-200'
-                    : 'bg-white border-gray-100'
-                }`}
-                onClick={() => toggleMilestone(ms.id)}
-              >
-                <div className="flex items-start gap-3">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0 ${
-                    done ? 'bg-green-100' : 'bg-gray-50'
-                  }`}>
-                    {done ? '✅' : ms.emoji}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <h3 className={`font-semibold text-sm ${done ? 'text-green-700' : 'text-gray-800'}`}>
-                        {ms.title}
-                      </h3>
-                      <span className="text-[10px] text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full">
-                        {ms.category}
-                      </span>
-                    </div>
-                    <p className="text-xs text-gray-500 mt-1 leading-relaxed">{ms.description}</p>
-                  </div>
+        {groupMilestones.map(ms => {
+          const done = achieved.includes(ms.id)
+          return (
+            <div
+              key={ms.id}
+              className={`rounded-2xl p-4 border transition-colors cursor-pointer ${
+                done
+                  ? 'bg-green-50 border-green-200'
+                  : 'bg-white border-gray-100'
+              }`}
+              onClick={() => toggleMilestone(ms.id)}
+            >
+              <div className="flex items-start gap-3">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0 ${
+                  done ? 'bg-green-100' : 'bg-gray-50'
+                }`}>
+                  {done ? '✅' : ms.emoji}
                 </div>
-              </motion.div>
-            )
-          })}
-        </AnimatePresence>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className={`font-semibold text-sm ${done ? 'text-green-700' : 'text-gray-800'}`}>
+                      {ms.title}
+                    </h3>
+                    <span className="text-[10px] text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full">
+                      {ms.category}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1 leading-relaxed">{ms.description}</p>
+                </div>
+              </div>
+            </div>
+          )
+        })}
       </div>
     </div>
   )
