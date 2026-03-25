@@ -33,8 +33,8 @@ export default function OnboardingPage() {
     await updateProfile({
       display_name: familyName.trim() || 'Meine Familie',
       avatar_emoji: selectedAvatar,
-      child_age_range: selectedAge
     })
+    localStorage.setItem('tuki_child_age', selectedAge)
     localStorage.setItem('tuki_onboarded', 'true')
     navigate('/')
   }
