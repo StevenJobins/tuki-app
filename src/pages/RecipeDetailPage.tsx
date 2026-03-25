@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { getRecipeById } from '../data/recipes'
 import FavoriteButton from '../components/FavoriteButton'
+import ShareButton from '../components/ShareButton'
 import { useApp } from '../context/AppContext'
 
 export default function RecipeDetailPage() {
@@ -48,6 +49,7 @@ export default function RecipeDetailPage() {
             <h1 className="text-lg font-bold text-gray-900">{recipe.title}</h1>
           </div>
           <p className="text-xs text-gray-500 leading-relaxed">{recipe.subtitle}</p>
+              <ShareButton title={recipe.title} text={recipe.subtitle + ' \u2014 Tuki Family Rezept'} className="mt-2" />
         </div>
       </div>
 
