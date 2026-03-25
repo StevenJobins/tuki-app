@@ -1,5 +1,4 @@
 import { Routes, Route } from 'react-router-dom'
-import { AnimatePresence } from 'framer-motion'
 import { useAuth } from './context/AuthContext'
 import BottomNav from './components/BottomNav'
 import SideNav from './components/SideNav'
@@ -39,18 +38,16 @@ export default function App() {
 
       {/* Main content area */}
       <div className="flex-1 min-h-screen max-w-lg mx-auto md:max-w-none md:mx-0 relative">
-        <AnimatePresence mode="wait">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/rezepte" element={<RecipesPage />} />
-            <Route path="/rezept/:id" element={<RecipeDetailPage />} />
-            <Route path="/aktivitaeten" element={<ActivitiesPage />} />
-            <Route path="/aktivitaet/:id" element={<ActivityDetailPage />} />
-            <Route path="/entwicklung" element={<DevelopmentPage />} />
-            <Route path="/community" element={<CommunityPage />} />
-            <Route path="/profil" element={<ProfilePage />} />
-          </Routes>
-        </AnimatePresence>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/rezepte" element={<RecipesPage />} />
+          <Route path="/rezept/:id" element={<RecipeDetailPage />} />
+          <Route path="/aktivitaeten" element={<ActivitiesPage />} />
+          <Route path="/aktivitaet/:id" element={<ActivityDetailPage />} />
+          <Route path="/entwicklung" element={<DevelopmentPage />} />
+          <Route path="/community" element={<CommunityPage />} />
+          <Route path="/profil" element={<ProfilePage />} />
+        </Routes>
         {/* Bottom nav — mobile only */}
         <BottomNav />
       </div>
