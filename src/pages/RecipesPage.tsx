@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import Header from '../components/Header'
 import AgeFilter from '../components/AgeFilter'
 import RecipeCard from '../components/RecipeCard'
@@ -11,10 +12,45 @@ const difficultyFilter = [
   { value: 'fortgeschritten', label: '🌟 Pro' },
 ]
 
+function getCurrentSeason(): string {
+  const month = new Date().getMonth()
+  if (month >= 2 && month <= 4) return 'frühling'
+  if (month >= 5 && month <= 7) return 'sommer'
+  if (month >= 8 && month <= 10) return 'herbst'
+  return 'winter'
+}
+
+function getSeasonLabel(season: string): string {
+  const labels: Record<string, string> = {
+    'frühling': '🌸 Frühling',
+    'sommer': '☀️ Sommer',
+    'herbst': '🍂 Herbst',
+    'winter': '❄️ Winter',
+  }
+  return labels[season] || season
+}
+
 export default function RecipesPage() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const [ageFilter, setAgeFilter] = useState('all')
   const [diffFilter, setDiffFilter] = useState('all')
+  const [seasonFilter, setSeasonFilter] = useState(searchParams.get('season') || 'all')
   const [search, setSearch] = useState('')
+
+  useEffect(() => {
+    const s = searchParams.get('season')
+    if (s) setSeasonFilter(s)
+  }, [searchParams])
+
+  const handleSeasonChange = (val: string) => {
+    setSeasonFilter(val)
+    if (val === 'all') {
+      searchParams.delete('season')
+    } else {
+      searchParams.set('season', val)
+    }
+    setSearchParams(searchParams, { replace: true })
+  }
 
   const filtered = recipes.filter(r => {
     // Age filter
@@ -24,6 +60,10 @@ export default function RecipesPage() {
     }
     // Difficulty
     if (diffFilter !== 'all' && r.difficulty !== diffFilter) return false
+    // Season
+    if (seasonFilter !== 'all') {
+      if (!r.season.includes(seasonFilter as any) && !r.season.includes('ganzjährig')) return false
+    }
     // Search
     if (search) {
       const s = search.toLowerCase()
@@ -55,6 +95,29 @@ export default function RecipesPage() {
       {/* Age Filter */}
       <div className="mb-2">
         <AgeFilter selected={ageFilter} onChange={setAgeFilter} />
+      </div>
+
+      {/* Season Filter */}
+      <div className="flex gap-2 px-4 mb-2 overflow-x-auto no-scrollbar">
+        {[
+          { value: 'all', label: 'Alle Saisons' },
+          { value: getCurrentSeason(), label: getSeasonLabel(getCurrentSeason()) + ' (jetzt)' },
+          ...['frühling', 'sommer', 'herbst', 'winter']
+            .filter(s => s !== getCurrentSeason())
+            .map(s => ({ value: s, label: getSeasonLabel(s) }))
+        ].map(s => (
+          <button
+            key={s.value}
+            onClick={() => handleSeasonChange(s.value)}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${
+              seasonFilter === s.value
+                ? 'bg-tuki-rot text-white'
+                : 'bg-gray-100 text-gray-500'
+            }`}
+          >
+            {s.label}
+          </button>
+        ))}
       </div>
 
       {/* Difficulty Filter */}
