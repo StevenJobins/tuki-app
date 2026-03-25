@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
 import { Activity, categoryInfo } from '../data/activities'
 import FavoriteButton from './FavoriteButton'
 
@@ -14,10 +13,9 @@ export default function ActivityCard({ activity, size = 'normal' }: ActivityCard
 
   if (size === 'compact') {
     return (
-      <motion.div
-        whileTap={{ scale: 0.97 }}
+      <div
         onClick={() => navigate(`/aktivitaet/${activity.id}`)}
-        className="bg-white rounded-xl p-3 shadow-sm border border-gray-100 cursor-pointer flex items-center gap-3 min-w-[240px] snap-start"
+        className="bg-white rounded-xl p-3 shadow-sm border border-gray-100 cursor-pointer flex items-center gap-3 min-w-[240px] snap-start active:scale-[0.97] transition-transform"
       >
         <div className="w-12 h-12 rounded-xl bg-tuki-mint-bg flex items-center justify-center text-2xl shrink-0">
           {activity.emoji}
@@ -31,15 +29,14 @@ export default function ActivityCard({ activity, size = 'normal' }: ActivityCard
             <span className="text-[10px] text-gray-400">{activity.duration} Min.</span>
           </div>
         </div>
-      </motion.div>
+      </div>
     )
   }
 
   return (
-    <motion.div
-      whileTap={{ scale: 0.97 }}
+    <div
       onClick={() => navigate(`/aktivitaet/${activity.id}`)}
-      className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer"
+      className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer active:scale-[0.97] transition-transform"
     >
       <div className="relative h-36">
         <img
@@ -73,6 +70,6 @@ export default function ActivityCard({ activity, size = 'normal' }: ActivityCard
           </span>
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }
