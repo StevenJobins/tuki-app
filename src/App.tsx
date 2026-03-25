@@ -1,8 +1,7 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
 import BottomNav from './components/BottomNav'
 import SideNav from './components/SideNav'
-import InstallPrompt from './components/InstallPrompt'
 import HomePage from './pages/HomePage'
 import RecipesPage from './pages/RecipesPage'
 import RecipeDetailPage from './pages/RecipeDetailPage'
@@ -12,8 +11,8 @@ import DevelopmentPage from './pages/DevelopmentPage'
 import CommunityPage from './pages/CommunityPage'
 import ProfilePage from './pages/ProfilePage'
 import LoginPage from './pages/LoginPage'
-import OnboardingPage from './pages/OnboardingPage'
 import ZutatenCheckPage from './pages/ZutatenCheckPage'
+import WochenplanPage from './pages/WochenplanPage'
 
 function LoadingScreen() {
   return (
@@ -30,15 +29,13 @@ function LoadingScreen() {
 
 export default function App() {
   const { user, loading } = useAuth()
-  const hasOnboarded = localStorage.getItem('tuki_onboarded') === 'true'
 
   if (loading) return <LoadingScreen />
-  if (!hasOnboarded) return <OnboardingPage />
   if (!user) return <LoginPage />
 
   return (
     <div className="min-h-screen bg-tuki-cream flex">
-      {/* Sidebar - visible on desktop (md+) */}
+      {/* Sidebar — visible on desktop (md+) */}
       <SideNav />
 
       {/* Main content area */}
@@ -52,16 +49,11 @@ export default function App() {
           <Route path="/entwicklung" element={<DevelopmentPage />} />
           <Route path="/community" element={<CommunityPage />} />
           <Route path="/profil" element={<ProfilePage />} />
-          <Route path="/onboarding" element={<OnboardingPage />} />
           <Route path="/zutaten-check" element={<ZutatenCheckPage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="/wochenplan" element={<WochenplanPage />} />
         </Routes>
-
-        {/* Bottom Nav - visible on mobile only */}
+        {/* Bottom nav — mobile only */}
         <BottomNav />
-
-        {/* PWA Install Prompt */}
-        <InstallPrompt />
       </div>
     </div>
   )
