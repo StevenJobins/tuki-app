@@ -6,7 +6,7 @@ export interface Recipe {
   image: string
   duration: number
   difficulty: 'leicht' | 'mittel' | 'anspruchsvoll'
-  ageRange: string
+  ageRange: [number, number]
   season: string
   servings: string
   tags: string[]
@@ -25,7 +25,7 @@ export const recipes: Recipe[] = [
     image: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&h=300&fit=crop',
     duration: 15,
     difficulty: 'leicht',
-    ageRange: '1-8',
+    ageRange: [1, 8],
     season: 'ganzjaehrig',
     servings: '2-3 Portionen',
     tags: ['Fruehstueck', 'Schnell', 'Gesund'],
@@ -54,7 +54,7 @@ export const recipes: Recipe[] = [
     image: 'https://images.unsplash.com/photo-1607958996333-41aef7caefaa?w=400&h=300&fit=crop',
     duration: 40,
     difficulty: 'mittel',
-    ageRange: '2-8',
+    ageRange: [2, 8],
     season: 'ganzjaehrig',
     servings: '12 Muffins',
     tags: ['Snack', 'Gemuese'],
@@ -84,7 +84,7 @@ export const recipes: Recipe[] = [
     image: 'https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=400&h=300&fit=crop',
     duration: 15,
     difficulty: 'leicht',
-    ageRange: '2-8',
+    ageRange: [2, 8],
     season: 'ganzjaehrig',
     servings: '15 Stueck',
     tags: ['Snack', 'Zuckerfrei'],
@@ -112,7 +112,7 @@ export const recipes: Recipe[] = [
     image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop',
     duration: 35,
     difficulty: 'mittel',
-    ageRange: '2-8',
+    ageRange: [2, 8],
     season: 'ganzjaehrig',
     servings: '4 Mini-Pizzen',
     tags: ['Mittagessen', 'Kreativ'],
@@ -139,7 +139,7 @@ export const recipes: Recipe[] = [
     image: 'https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?w=400&h=300&fit=crop',
     duration: 10,
     difficulty: 'leicht',
-    ageRange: '1-5',
+    ageRange: [1, 5],
     season: 'Sommer',
     servings: '6 Spiesse',
     tags: ['Snack', 'Gesund'],
@@ -167,7 +167,7 @@ export const recipes: Recipe[] = [
     image: 'https://images.unsplash.com/photo-1481391319762-47dff72954d9?w=400&h=300&fit=crop',
     duration: 60,
     difficulty: 'anspruchsvoll',
-    ageRange: '2-8',
+    ageRange: [2, 8],
     season: 'Winter',
     servings: '30 Stueck',
     tags: ['Weihnachten', 'Backen'],
@@ -197,7 +197,7 @@ export const recipes: Recipe[] = [
     image: 'https://images.unsplash.com/photo-1590301157890-4810ed352733?w=400&h=300&fit=crop',
     duration: 10,
     difficulty: 'leicht',
-    ageRange: '1-6',
+    ageRange: [1, 6],
     season: 'ganzjaehrig',
     servings: '2 Bowls',
     tags: ['Fruehstueck', 'Gesund'],
@@ -223,7 +223,7 @@ export const recipes: Recipe[] = [
     image: 'https://images.unsplash.com/photo-1555507036-ab1f4038024a?w=400&h=300&fit=crop',
     duration: 90,
     difficulty: 'anspruchsvoll',
-    ageRange: '3-8',
+    ageRange: [3, 8],
     season: 'Fruehling',
     servings: '4 Hasen',
     tags: ['Ostern', 'Backen'],
@@ -256,7 +256,7 @@ export const recipes: Recipe[] = [
     image: 'https://images.unsplash.com/photo-1517673400267-0251440c45dc?w=400&h=300&fit=crop',
     duration: 10,
     difficulty: 'leicht',
-    ageRange: '1-4',
+    ageRange: [1, 4],
     season: 'ganzjaehrig',
     servings: '2 Portionen',
     tags: ['Fruehstueck', 'Schnell', 'Gesund'],
@@ -283,7 +283,7 @@ export const recipes: Recipe[] = [
     image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&h=300&fit=crop',
     duration: 15,
     difficulty: 'leicht',
-    ageRange: '1-8',
+    ageRange: [1, 8],
     season: 'ganzjaehrig',
     servings: '2 Portionen',
     tags: ['Snack', 'Gesund', 'Schnell'],
@@ -310,7 +310,7 @@ export const recipes: Recipe[] = [
     image: 'https://images.unsplash.com/photo-1576179635662-9d1983e97e1e?w=400&h=300&fit=crop',
     duration: 25,
     difficulty: 'leicht',
-    ageRange: '1-6',
+    ageRange: [1, 6],
     season: 'Herbst',
     servings: '4 Portionen',
     tags: ['Snack', 'Zuckerfrei', 'Herbst'],
@@ -336,7 +336,7 @@ export const recipes: Recipe[] = [
     image: 'https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=400&h=300&fit=crop',
     duration: 15,
     difficulty: 'leicht',
-    ageRange: '2-8',
+    ageRange: [2, 8],
     season: 'ganzjaehrig',
     servings: '4 Wraps',
     tags: ['Mittagessen', 'Schnell'],
@@ -364,7 +364,7 @@ export const recipes: Recipe[] = [
     image: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&h=300&fit=crop',
     duration: 30,
     difficulty: 'leicht',
-    ageRange: '1-8',
+    ageRange: [1, 8],
     season: 'Winter',
     servings: '4 Portionen',
     tags: ['Mittagessen', 'Winter', 'Gemuese'],
@@ -392,7 +392,7 @@ export const recipes: Recipe[] = [
     image: 'https://images.unsplash.com/photo-1605090930596-5310a8db4e1e?w=400&h=300&fit=crop',
     duration: 50,
     difficulty: 'mittel',
-    ageRange: '2-8',
+    ageRange: [2, 8],
     season: 'ganzjaehrig',
     servings: '1 Kastenbrot',
     tags: ['Snack', 'Backen', 'Zuckerfrei'],
@@ -422,7 +422,7 @@ export const recipes: Recipe[] = [
     image: 'https://images.unsplash.com/photo-1582450871972-ab5ca641643d?w=400&h=300&fit=crop',
     duration: 25,
     difficulty: 'leicht',
-    ageRange: '2-6',
+    ageRange: [2, 6],
     season: 'ganzjaehrig',
     servings: '8 Stueck',
     tags: ['Snack', 'Kreativ'],
@@ -448,7 +448,7 @@ export const recipes: Recipe[] = [
     image: 'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=400&h=300&fit=crop',
     duration: 20,
     difficulty: 'leicht',
-    ageRange: '1-8',
+    ageRange: [1, 8],
     season: 'Sommer',
     servings: '4 Portionen',
     tags: ['Mittagessen', 'Sommer', 'Schnell'],
@@ -476,7 +476,7 @@ export const recipes: Recipe[] = [
     image: 'https://images.unsplash.com/photo-1488900128323-21503983a07e?w=400&h=300&fit=crop',
     duration: 10,
     difficulty: 'leicht',
-    ageRange: '1-8',
+    ageRange: [1, 8],
     season: 'Sommer',
     servings: '6 Stueck',
     tags: ['Snack', 'Sommer', 'Zuckerfrei'],
@@ -501,7 +501,7 @@ export const recipes: Recipe[] = [
     image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=300&fit=crop',
     duration: 45,
     difficulty: 'mittel',
-    ageRange: '3-8',
+    ageRange: [3, 8],
     season: 'Herbst',
     servings: '8 Stueck',
     tags: ['Backen', 'Herbst', 'Kreativ'],
@@ -531,7 +531,7 @@ export const recipes: Recipe[] = [
     image: 'https://images.unsplash.com/photo-1490567674709-c4a386e37be7?w=400&h=300&fit=crop',
     duration: 30,
     difficulty: 'leicht',
-    ageRange: '2-8',
+    ageRange: [2, 8],
     season: 'ganzjaehrig',
     servings: '12 Riegel',
     tags: ['Snack', 'Gesund', 'Zuckerfrei'],
@@ -559,7 +559,7 @@ export const recipes: Recipe[] = [
     image: 'https://images.unsplash.com/photo-1549931319-a545753467c8?w=400&h=300&fit=crop',
     duration: 120,
     difficulty: 'anspruchsvoll',
-    ageRange: '3-8',
+    ageRange: [3, 8],
     season: 'ganzjaehrig',
     servings: '1 Zopf',
     tags: ['Backen', 'Schweizer Klassiker'],
@@ -589,7 +589,7 @@ export const recipes: Recipe[] = [
     image: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=400&h=300&fit=crop',
     duration: 15,
     difficulty: 'leicht',
-    ageRange: '2-8',
+    ageRange: [2, 8],
     season: 'ganzjaehrig',
     servings: '4 Portionen',
     tags: ['Snack', 'Kreativ', 'Gesund'],
@@ -616,7 +616,7 @@ export const recipes: Recipe[] = [
     image: 'https://images.unsplash.com/photo-1517673400267-0251440c45dc?w=400&h=300&fit=crop',
     duration: 5,
     difficulty: 'leicht',
-    ageRange: '1-8',
+    ageRange: [1, 8],
     season: 'ganzjaehrig',
     servings: '2 Portionen',
     tags: ['Fruehstueck', 'Schnell', 'Gesund'],
@@ -643,7 +643,7 @@ export const recipes: Recipe[] = [
     image: 'https://images.unsplash.com/photo-1551892374-ecf8754cf8b0?w=400&h=300&fit=crop',
     duration: 35,
     difficulty: 'mittel',
-    ageRange: '2-8',
+    ageRange: [2, 8],
     season: 'ganzjaehrig',
     servings: '6 Nester',
     tags: ['Mittagessen', 'Kreativ'],
@@ -671,7 +671,7 @@ export const recipes: Recipe[] = [
     image: 'https://images.unsplash.com/photo-1589984662646-e7b2e4962f18?w=400&h=300&fit=crop',
     duration: 10,
     difficulty: 'leicht',
-    ageRange: '1-8',
+    ageRange: [1, 8],
     season: 'Sommer',
     servings: '4 Stueck',
     tags: ['Snack', 'Sommer', 'Gesund'],
@@ -691,3 +691,19 @@ export const recipes: Recipe[] = [
     stars: 1
   }
 ]
+
+export function getRecipeById(id: string): Recipe | undefined {
+  return recipes.find(r => r.id === id)
+}
+
+export function getSeasonalRecipes(): Recipe[] {
+  const month = new Date().getMonth()
+  let season = 'ganzjaehrig'
+  if (month >= 2 && month <= 4) season = 'fruehling'
+  else if (month >= 5 && month <= 7) season = 'sommer'
+  else if (month >= 8 && month <= 10) season = 'herbst'
+  else season = 'winter'
+  const seasonal = recipes.filter(r => r.season === season)
+  if (seasonal.length >= 3) return seasonal.slice(0, 6)
+  return recipes.filter(r => r.season === 'ganzjaehrig').slice(0, 6)
+}
