@@ -31,8 +31,8 @@ export default function App() {
   const hasOnboarded = localStorage.getItem('tuki_onboarded') === 'true'
 
   if (loading) return <LoadingScreen />
-  if (!user) return <LoginPage />
   if (!hasOnboarded) return <OnboardingPage />
+  if (!user) return <LoginPage />
 
   return (
     <div className="min-h-screen bg-tuki-cream flex">
