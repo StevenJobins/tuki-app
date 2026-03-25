@@ -141,8 +141,7 @@ export default function DevelopmentPage() {
       {/* Info Banner */}
       <div className="mx-4 mb-4 bg-blue-50 rounded-xl p-3 border border-blue-100">
         <p className="text-[11px] text-blue-700 leading-relaxed">
-          📋 Jedes Kind entwickelt sich in seinem eigenen Tempo. Diese Meilensteine dienen als
-          Orientierung — nicht als Checkliste.
+          ✅ Tippe auf das Kästchen links, um einen Meilenstein als erreicht zu markieren. Jedes Kind entwickelt sich in seinem eigenen Tempo — die Meilensteine dienen als Orientierung.
         </p>
       </div>
 
@@ -170,24 +169,33 @@ export default function DevelopmentPage() {
                     done ? 'bg-green-50 border-green-200' : 'bg-white border-gray-100'
                   }`}>
                     {/* Main Row */}
-                    <div className="p-3 flex items-start gap-3" onClick={() => toggleExpand(ms.id)}>
+                    <div className="p-3 flex items-start gap-3">
+                      {/* Checkbox — clear tap target */}
                       <button
-                        className={`w-9 h-9 rounded-xl flex items-center justify-center text-lg shrink-0 transition-all ${
-                          done ? 'bg-green-200' : 'bg-gray-50'
+                        className={`w-7 h-7 rounded-lg border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all active:scale-90 ${
+                          done
+                            ? 'bg-green-500 border-green-500'
+                            : 'border-gray-300 bg-white'
                         }`}
                         onClick={(e) => { e.stopPropagation(); toggleMilestone(ms.id) }}
+                        aria-label={done ? 'Als nicht erreicht markieren' : 'Als erreicht markieren'}
                       >
-                        {done ? '✅' : ms.emoji}
+                        {done && (
+                          <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        )}
                       </button>
-                      <div className="flex-1 min-w-0">
+                      <div className="flex-1 min-w-0" onClick={() => toggleExpand(ms.id)}>
                         <div className="flex items-center gap-2">
-                          <h4 className={`font-semibold text-sm ${done ? 'text-green-700' : 'text-gray-800'}`}>
+                          <span className="text-base">{ms.emoji}</span>
+                          <h4 className={`font-semibold text-sm ${done ? 'text-green-700 line-through' : 'text-gray-800'}`}>
                             {ms.title}
                           </h4>
                         </div>
                         <p className="text-[11px] text-gray-500 mt-0.5 leading-relaxed">{ms.description}</p>
                       </div>
-                      <svg className={`w-4 h-4 text-gray-400 shrink-0 mt-1 transition-transform ${expanded ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                      <svg onClick={() => toggleExpand(ms.id)} className={`w-4 h-4 text-gray-400 shrink-0 mt-1 transition-transform cursor-pointer ${expanded ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                         <polyline points="6 9 12 15 18 9" />
                       </svg>
                     </div>
