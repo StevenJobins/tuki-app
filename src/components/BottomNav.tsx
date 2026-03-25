@@ -1,5 +1,4 @@
 import { useLocation, useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
 
 const navItems = [
   { path: '/', label: 'Home', icon: 'home' },
@@ -76,10 +75,8 @@ export default function BottomNav() {
               className="flex flex-col items-center gap-0.5 py-1 px-3 relative"
             >
               {active && (
-                <motion.div
-                  layoutId="navIndicator"
+                <div
                   className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-8 h-1 rounded-full bg-tuki-rot"
-                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                 />
               )}
               <NavIcon icon={item.icon} active={active} />
