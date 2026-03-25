@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
 import { Recipe } from '../data/recipes'
 import FavoriteButton from './FavoriteButton'
 
@@ -13,10 +12,9 @@ export default function RecipeCard({ recipe, size = 'normal' }: RecipeCardProps)
 
   if (size === 'featured') {
     return (
-      <motion.div
-        whileTap={{ scale: 0.98 }}
+      <div
         onClick={() => navigate(`/rezept/${recipe.id}`)}
-        className="relative rounded-2xl overflow-hidden shadow-md cursor-pointer min-w-[280px] h-[200px] snap-start"
+        className="relative rounded-2xl overflow-hidden shadow-md cursor-pointer min-w-[280px] h-[200px] snap-start active:scale-[0.98] transition-transform"
       >
         <img
           src={recipe.image}
@@ -38,15 +36,14 @@ export default function RecipeCard({ recipe, size = 'normal' }: RecipeCardProps)
           <h3 className="text-white font-semibold text-lg leading-tight">{recipe.title}</h3>
           <p className="text-white/70 text-xs mt-0.5">{recipe.subtitle}</p>
         </div>
-      </motion.div>
+      </div>
     )
   }
 
   return (
-    <motion.div
-      whileTap={{ scale: 0.97 }}
+    <div
       onClick={() => navigate(`/rezept/${recipe.id}`)}
-      className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer"
+      className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer active:scale-[0.97] transition-transform"
     >
       <div className="relative h-36">
         <img
@@ -86,6 +83,6 @@ export default function RecipeCard({ recipe, size = 'normal' }: RecipeCardProps)
           </span>
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }
