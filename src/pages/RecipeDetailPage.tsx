@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
 import { getRecipeById } from '../data/recipes'
 import FavoriteButton from '../components/FavoriteButton'
 import { useApp } from '../context/AppContext'
@@ -27,7 +26,7 @@ export default function RecipeDetailPage() {
   const isCompleted = completedRecipes.includes(recipe.id)
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="pb-8">
+    <div className="pb-8">
       {/* Hero Image */}
       <div className="relative h-64">
         <img src={recipe.image} alt={recipe.title} className="w-full h-full object-cover" />
@@ -121,11 +120,8 @@ export default function RecipeDetailPage() {
         <h2 className="font-semibold text-base text-gray-800 mb-3">👩‍🍳 Zubereitung</h2>
         <div className="space-y-4">
           {recipe.steps.map((step, i) => (
-            <motion.div
+            <div
               key={i}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.1 }}
               className="flex gap-3"
             >
               <div className="w-8 h-8 rounded-full gradient-rot flex items-center justify-center shrink-0 mt-0.5">
@@ -139,18 +135,17 @@ export default function RecipeDetailPage() {
                   </div>
                 )}
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
 
       {/* Complete Button */}
       <div className="px-4 mt-8">
-        <motion.button
-          whileTap={{ scale: 0.97 }}
+        <button
           onClick={() => completeRecipe(recipe.id)}
           disabled={isCompleted}
-          className={`w-full py-4 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2 transition-colors ${
+          className={`w-full py-4 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2 transition-colors active:scale-[0.97] transition-transform ${
             isCompleted
               ? 'bg-green-100 text-green-700 border border-green-200'
               : 'gradient-rot text-white shadow-lg shadow-tuki-rot/25'
@@ -161,8 +156,8 @@ export default function RecipeDetailPage() {
           ) : (
             <>⭐ Rezept geschafft — {recipe.stars} Sterne verdienen</>
           )}
-        </motion.button>
+        </button>
       </div>
-    </motion.div>
+    </div>
   )
 }
