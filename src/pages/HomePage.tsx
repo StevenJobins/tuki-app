@@ -25,7 +25,7 @@ function getSeasonEmoji(): string {
 
 function getSeasonName(): string {
   const month = new Date().getMonth()
-  if (month >= 2 && month <= 4) return 'Frühling'
+  if (month >= 2 && month <= 4) return 'Fr\u00fchling'
   if (month >= 5 && month <= 7) return 'Sommer'
   if (month >= 8 && month <= 10) return 'Herbst'
   return 'Winter'
@@ -77,9 +77,9 @@ export default function HomePage() {
         <div className="grid grid-cols-4 md:grid-cols-4 gap-2 md:gap-3">
           {[
             { emoji: '🍳', label: 'Rezepte', path: '/rezepte' },
-            { emoji: '🎮', label: 'Aktivitäten', path: '/aktivitaeten' },
+            { emoji: '🎮', label: 'Aktivit\u00e4ten', path: '/aktivitaeten' },
             { emoji: '📊', label: 'Entwicklung', path: '/entwicklung' },
-            { emoji: '�‍👩퀍👧', label: 'Community', path: '/community' },
+            { emoji: '👨‍👩‍👧', label: 'Community', path: '/community' },
           ].map(action => (
             <button
               key={action.path}
@@ -104,7 +104,7 @@ export default function HomePage() {
             <div>
               <h3 className="font-semibold text-sm text-gray-800">{getSeasonName()}s-Rezepte</h3>
               <p className="text-xs text-gray-500 mt-0.5">
-                {seasonalRecipes.length} saisonale Ideen für euch entdecken
+                {seasonalRecipes.length} saisonale Ideen f{'\u00fc'}r euch entdecken
               </p>
             </div>
             <svg className="ml-auto" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8F5652" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -126,7 +126,7 @@ export default function HomePage() {
 
       {/* Activities */}
       <div className="mt-6">
-        <SectionHeader title="Aktivitäten für heute" emoji="🎯" linkTo="/aktivitaeten" />
+        <SectionHeader title={'Aktivit\u00e4ten f\u00fcr heute'} emoji="🎯" linkTo="/aktivitaeten" />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 px-4">
           {featuredActivities.slice(0, 4).map(activity => (
             <ActivityCard key={activity.id} activity={activity} />
@@ -144,8 +144,8 @@ export default function HomePage() {
             <div>
               <h3 className="font-semibold text-sm text-gray-800">Tuki-Tipp des Tages</h3>
               <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-                Lass dein Kind die Zutaten für das Abendessen aus dem Kühlschrank holen —
-                im Tuki erreicht es alles auf Augenhöhe. Das stärkt die Selbstständigkeit!
+                Lass dein Kind die Zutaten f{'\u00fc'}r das Abendessen aus dem K{'\u00fc'}hlschrank holen {'\u2014'}{' '}
+                im Tuki erreicht es alles auf Augenh{'\u00f6'}he. Das st{'\u00e4'}rkt die Selbstst{'\u00e4'}ndigkeit!
               </p>
             </div>
           </div>
@@ -166,7 +166,7 @@ export default function HomePage() {
             />
           </div>
           <p className="text-[10px] text-gray-500 mt-1.5">
-            Noch {Math.max(0, [10, 25, 50, 100][tukiStars.level] || 100 - tukiStars.total)} Sterne bis zum nächsten Level
+            Noch {Math.max(0, [10, 25, 50, 100][tukiStars.level] || 100 - tukiStars.total)} Sterne bis zum n{'\u00e4'}chsten Level
           </p>
         </div>
       </div>
