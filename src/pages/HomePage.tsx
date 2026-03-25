@@ -2,7 +2,7 @@ import Header from '../components/Header'
 import SectionHeader from '../components/SectionHeader'
 import RecipeCard from '../components/RecipeCard'
 import ActivityCard from '../components/ActivityCard'
-import { getSeasonalRecipes } from '../data/recipes'
+import { recipes } from '../data/recipes'
 import { activities } from '../data/activities'
 import { useApp } from '../context/AppContext'
 import { useNavigate } from 'react-router-dom'
@@ -42,7 +42,10 @@ function getSeasonKey(): string {
 export default function HomePage() {
   const navigate = useNavigate()
   const { tukiStars, completedActivities, completedRecipes } = useApp()
-  const allSeasonalRecipes = getSeasonalRecipes()
+  const seasonKey = getSeasonKey()
+  const allSeasonalRecipes = recipes.filter(r =>
+    r.season.includes(seasonKey as any) || r.season.includes('ganzjaehrig' as any)
+  )
   const seasonalRecipes = allSeasonalRecipes.slice(0, 4)
   const featuredActivities = activities.slice(0, 4)
 
@@ -75,7 +78,6 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-          {/* Decorative circles */}
           <div className="absolute -right-6 -top-6 w-32 h-32 rounded-full bg-white/20" />
           <div className="absolute -right-2 bottom-0 w-20 h-20 rounded-full bg-white/15" />
         </div>
@@ -86,8 +88,8 @@ export default function HomePage() {
         <div className="grid grid-cols-4 md:grid-cols-4 gap-2 md:gap-3">
           {[
             { emoji: '🍳', label: 'Rezepte', path: '/rezepte' },
+            { emoji: '🥢', label: 'Was haben wir?', path: '/zutaten-check' },
             { emoji: '🎮', label: 'Aktivitäten', path: '/aktivitaeten' },
-            { emoji: '📊', label: 'Entwicklung', path: '/entwicklung' },
             { emoji: '👨‍👩‍👧', label: 'Community', path: '/community' },
           ].map(action => (
             <button
@@ -105,7 +107,7 @@ export default function HomePage() {
       {/* Seasonal Banner */}
       <div className="px-4 mb-6">
         <button
-          onClick={() => navigate(`/rezepte?season=${getSeasonKey()}`)}
+          onClick={() => navigate(`/rezepte?season=${seasonKey}`)}
           className="w-full bg-tuki-warm rounded-2xl p-4 border border-orange-100 text-left"
         >
           <div className="flex items-center gap-3">
@@ -125,7 +127,7 @@ export default function HomePage() {
 
       {/* Featured Recipes */}
       <div>
-        <SectionHeader title="Beliebte Rezepte" emoji="🍳" linkTo={`/rezepte?season=${getSeasonKey()}`} />
+        <SectionHeader title="Beliebte Rezepte" emoji="🍳" linkTo={`/rezepte?season=${seasonKey}`} />
         <div className="flex gap-4 overflow-x-auto px-4 pb-2 no-scrollbar snap-x">
           {seasonalRecipes.map(recipe => (
             <RecipeCard key={recipe.id} recipe={recipe} size="featured" />
