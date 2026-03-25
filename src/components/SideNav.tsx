@@ -1,5 +1,4 @@
 import { useLocation, useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
 import { useApp } from '../context/AppContext'
 
 const navItems = [
@@ -46,10 +45,8 @@ export default function SideNav() {
               }`}
             >
               {active && (
-                <motion.div
-                  layoutId="sideNavIndicator"
+                <div
                   className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full bg-tuki-rot"
-                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                 />
               )}
               <span className="text-lg">{item.emoji}</span>
