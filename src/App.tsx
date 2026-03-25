@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
 import BottomNav from './components/BottomNav'
 import SideNav from './components/SideNav'
+import InstallPrompt from './components/InstallPrompt'
 import HomePage from './pages/HomePage'
 import RecipesPage from './pages/RecipesPage'
 import RecipeDetailPage from './pages/RecipeDetailPage'
@@ -56,6 +57,9 @@ export default function App() {
 
         {/* Bottom Nav - visible on mobile only */}
         <BottomNav />
+
+        {/* PWA Install Prompt */}
+        <InstallPrompt />
       </div>
     </div>
   )
