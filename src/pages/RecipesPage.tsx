@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import AgeFilter from '../components/AgeFilter'
 import RecipeCard from '../components/RecipeCard'
@@ -32,6 +32,7 @@ function getSeasonLabel(season: string): string {
 
 export default function RecipesPage() {
   const [searchParams, setSearchParams] = useSearchParams()
+  const navigate = useNavigate()
   const [ageFilter, setAgeFilter] = useState('all')
   const [diffFilter, setDiffFilter] = useState('all')
   const [seasonFilter, setSeasonFilter] = useState(searchParams.get('season') || 'all')
@@ -75,6 +76,25 @@ export default function RecipesPage() {
   return (
     <div className="pb-24">
       <Header title="Rezepte" />
+
+      {/* Kühlschrank-Check Banner */}
+      <div className="px-4 mb-4">
+        <button
+          onClick={() => navigate('/zutaten-check')}
+          className="w-full bg-gradient-to-r from-cyan-50 to-tuki-mint/30 rounded-2xl p-3.5 border border-cyan-200/50 text-left active:scale-[0.98] transition-transform"
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">🧊</span>
+            <div className="flex-1">
+              <h3 className="font-semibold text-sm text-gray-800">Kühlschrank-Check</h3>
+              <p className="text-xs text-gray-500">Zutaten eingeben → passende Rezepte finden</p>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5E6578" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
+        </button>
+      </div>
 
       {/* Search */}
       <div className="px-4 mb-3">
