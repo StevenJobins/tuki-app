@@ -1,53 +1,49 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import { useApp } from '../context/AppContext'
-
-interface Milestone {
-  id: string
-  title: string
-  emoji: string
-  ageMonths: [number, number]
-  category: string
-  description: string
-}
-
-const milestones: Milestone[] = [
-  // 12-18 Monate
-  { id: 'm1', title: 'Erste Schritte alleine', emoji: '🚶', ageMonths: [12, 18], category: 'Motorik', description: 'Dein Kind läuft die ersten Schritte ohne Hilfe.' },
-  { id: 'm2', title: 'Turm aus 2-3 Klötzen', emoji: '🧱', ageMonths: [12, 18], category: 'Feinmotorik', description: 'Kann Bauklötze stapeln und einen kleinen Turm bauen.' },
-  { id: 'm3', title: 'Erste Wörter (5-10)', emoji: '💬', ageMonths: [12, 18], category: 'Sprache', description: 'Sagt bewusst erste Wörter wie Mama, Papa, Ball, Hund...' },
-  { id: 'm4', title: 'Aus Becher trinken', emoji: '🥤', ageMonths: [12, 18], category: 'Selbstständigkeit', description: 'Kann mit beiden Händen aus einem offenen Becher trinken.' },
-  // 18-24 Monate
-  { id: 'm5', title: 'Treppe steigen (mit Hilfe)', emoji: '🚜', ageMonths: [18, 24], category: 'Motorik', description: 'Geht Treppen hoch, hält sich dabei am Geländer oder an der Hand.' },
-  { id: 'm6', title: '2-Wort-Sätze', emoji: '👣️', ageMonths: [18, 24], category: 'Sprache', description: '"Mama da", "Ball haben", "Mehr Milch" — erste Zwei-Wort-Kombinationen.' },
-  { id: 'm7', title: 'Mit Löffel essen', emoji: '🥄', ageMonths: [18, 24], category: 'Selbstständigkeit', description: 'Kann (meistens) selbst mit dem Löffel essen — auch wenn es kleckert!' },
-  { id: 'm8', title: 'Kritzeln mit Stift', emoji: '✏️', ageMonths: [18, 24], category: 'Feinmotorik', description: 'Hält einen Stift und macht bewusste Kritzelstriche auf Papier.' },
-  // 2-3 Jahre
-  { id: 'm9', title: 'Rennen & Hüpfen', emoji: '🏃', ageMonths: [24, 36], category: 'Motorik', description: 'Kann rennen ohne hinzufallen und versucht zu hüpfen.' },
-  { id: 'm10', title: 'Farben benennen', emoji: '🎨', ageMonths: [24, 36], category: 'Kognition', description: 'Erkennt und benennt mindestens 3-4 Grundfarben.' },
-  { id: 'm11', title: 'Sich selbst anziehen (teilweise)', emoji: '👕', ageMonths: [24, 36], category: 'Selbstständigkeit', description: 'Kann Schuhe, Mütze oder Jacke (teilweise) selbst an- und ausziehen.' },
-  { id: 'm12', title: 'Bis 10 zählen', emoji: '🔢', ageMonths: [24, 36], category: 'Kognition', description: 'Zählt (mit oder ohne Fehler) bis mindestens 10.' },
-  // 3-5 Jahre
-  { id: 'm13', title: 'Mit Schere schneiden', emoji: '✂️', ageMonths: [36, 60], category: 'Feinmotorik', description: 'Kann mit einer Kinderschere entlang einer Linie schneiden.' },
-  { id: 'm14', title: 'Eigenen Namen schreiben', emoji: '📝', ageMonths: [36, 60], category: 'Kognition', description: 'Schreibt (vielleicht spiegelverkehrt) den eigenen Namen.' },
-  { id: 'm15', title: 'Freundschaften schliessen', emoji: '🤝', ageMonths: [36, 60], category: 'Sozial', description: 'Spielt gezielt mit bestimmten Kindern und nennt sie "Freund".' },
-  { id: 'm16', title: 'Geschichten nacherzählen', emoji: '📖', ageMonths: [36, 60], category: 'Sprache', description: 'Kann eine einfache Geschichte in eigenen Worten nacherzählen.' },
-]
-
-const ageGroups = [
-  { label: '12-18 Mon.', range: [12, 18] },
-  { label: '18-24 Mon.', range: [18, 24] },
-  { label: '2-3 Jahre', range: [24, 36] },
-  { label: '3-5 Jahre', range: [36, 60] },
-]
+import {
+  milestones,
+  agePhases,
+  categoryInfo,
+  getMilestonesForAge,
+  getPhaseForAge,
+  type Milestone,
+} from '../data/milestones'
+import { recipes } from '../data/recipes'
+import { activities } from '../data/activities'
 
 export default function DevelopmentPage() {
-  const [selectedGroup, setSelectedGroup] = useState(0)
+  const navigate = useNavigate()
+  const { children } = useApp()
+  const [selectedPhaseIdx, setSelectedPhaseIdx] = useState(0)
+  const [expandedMilestone, setExpandedMilestone] = useState<string | null>(null)
   const [achieved, setAchieved] = useState<string[]>(() => {
     try {
       return JSON.parse(localStorage.getItem('tuki-milestones') || '[]')
     } catch { return [] }
   })
+
+  // Calculate child age in months
+  const childAge = useMemo(() => {
+    if (children.length === 0) return 24
+    const birth = new Date(children[0].birthDate)
+    const now = new Date()
+    return (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth())
+  }, [children])
+
+  // Auto-select phase based on child age
+  useState(() => {
+    const idx = agePhases.findIndex(p => childAge >= p.range[0] && childAge < p.range[1])
+    if (idx >= 0) setSelectedPhaseIdx(idx)
+  })
+
+  const phase = agePhases[selectedPhaseIdx]
+  const phaseMilestones = milestones.filter(
+    m => m.ageMonths[0] >= phase.range[0] && m.ageMonths[1] <= phase.range[1]
+  )
+  const achievedCount = phaseMilestones.filter(m => achieved.includes(m.id)).length
+  const progress = phaseMilestones.length > 0 ? (achievedCount / phaseMilestones.length) * 100 : 0
 
   const toggleMilestone = (id: string) => {
     const next = achieved.includes(id) ? achieved.filter(a => a !== id) : [...achieved, id]
@@ -55,100 +51,273 @@ export default function DevelopmentPage() {
     localStorage.setItem('tuki-milestones', JSON.stringify(next))
   }
 
-  const group = ageGroups[selectedGroup]
-  const groupMilestones = milestones.filter(
-    m => m.ageMonths[0] >= group.range[0] && m.ageMonths[0] < group.range[1]
-  )
-  const achievedCount = groupMilestones.filter(m => achieved.includes(m.id)).length
-  const progress = groupMilestones.length > 0 ? (achievedCount / groupMilestones.length) * 100 : 0
+  const toggleExpand = (id: string) => {
+    setExpandedMilestone(prev => prev === id ? null : id)
+  }
+
+  // Find linked recipe/activity objects
+  const getLinkedRecipes = (ids: string[]) => recipes.filter(r => ids.includes(r.id))
+  const getLinkedActivities = (ids: string[]) => activities.filter(a => ids.includes(a.id))
+
+  // Group milestones by category
+  const categories = Object.keys(categoryInfo)
+  const milestonesByCategory = categories
+    .map(cat => ({
+      cat,
+      info: categoryInfo[cat],
+      items: phaseMilestones.filter(m => m.category === cat),
+    }))
+    .filter(g => g.items.length > 0)
 
   return (
-    <div className="pb-24">
+    <div className="pb-24 bg-gray-50 min-h-screen">
       <Header title="Entwicklung" />
 
-      {/* Info Banner */}
-      <div className="mx-4 mt-2 mb-4 bg-blue-50 rounded-2xl p-4 border border-blue-100">
-        <p className="text-xs text-blue-700 leading-relaxed">
-          📋 Jedes Kind entwickelt sich in seinem eigenen Tempo. Diese Meilensteine dienen als
-          Orientierung — nicht als Checkliste. Bei Fragen sprecht mit eurer Kinderärztin.
-        </p>
+      {/* Phase Header with Child Info */}
+      <div className="mx-4 mt-2 mb-4">
+        <div className="bg-gradient-to-br from-purple-500 via-purple-600 to-indigo-600 rounded-2xl p-5 text-white relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-8 translate-x-8" />
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-2xl">{children[0]?.avatarEmoji || '👶'}</span>
+              <span className="text-white/80 text-xs font-medium bg-white/20 px-2 py-0.5 rounded-full">
+                {childAge} Monate
+              </span>
+            </div>
+            <h2 className="text-xl font-bold mt-1">{phase.title}</h2>
+            <p className="text-white/80 text-xs mt-1 leading-relaxed max-w-[280px]">
+              {phase.description}
+            </p>
+
+            {/* Progress Circle */}
+            <div className="flex items-center gap-3 mt-4">
+              <div className="relative w-14 h-14">
+                <svg className="w-14 h-14 -rotate-90" viewBox="0 0 56 56">
+                  <circle cx="28" cy="28" r="24" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="4" />
+                  <circle cx="28" cy="28" r="24" fill="none" stroke="white" strokeWidth="4"
+                    strokeDasharray={`${progress * 1.508} 150.8`} strokeLinecap="round" />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-white text-sm font-bold">{Math.round(progress)}%</span>
+                </div>
+              </div>
+              <div>
+                <p className="text-white text-sm font-semibold">{achievedCount} von {phaseMilestones.length}</p>
+                <p className="text-white/70 text-xs">Meilensteine erreicht</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Age Group Selector */}
+      {/* Phase Selector */}
       <div className="flex gap-2 px-4 mb-4 overflow-x-auto no-scrollbar">
-        {ageGroups.map((ag, i) => (
+        {agePhases.map((ap, i) => (
           <button
-            key={i}
-            onClick={() => setSelectedGroup(i)}
+            key={ap.id}
+            onClick={() => { setSelectedPhaseIdx(i); setExpandedMilestone(null) }}
             className={`px-4 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-all ${
-              selectedGroup === i
-                ? 'bg-tuki-rot text-white shadow-sm'
-                : 'bg-white text-gray-600 border border-gray-100'
+              selectedPhaseIdx === i
+                ? 'bg-purple-600 text-white shadow-sm'
+                : 'bg-white text-gray-600 border border-gray-200'
             }`}
           >
-            {ag.label}
+            {ap.label}
           </button>
         ))}
       </div>
 
-      {/* Progress */}
+      {/* Focus Areas */}
       <div className="px-4 mb-4">
-        <div className="bg-white rounded-2xl p-4 border border-gray-100">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-semibold text-gray-700">{group.label}</span>
-            <span className="text-xs text-gray-500">{achievedCount}/{groupMilestones.length} erreicht</span>
-          </div>
-          <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-tuki-mint to-tuki-mint-dark rounded-full transition-all duration-500"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-          {progress === 100 && (
-            <p
-              className="text-xs text-green-600 font-medium mt-2"
-            >
-              🎉 Alle Meilensteine dieser Phase erreicht!
-            </p>
-          )}
+        <div className="flex gap-2 overflow-x-auto no-scrollbar">
+          {phase.focusAreas.map((area, i) => (
+            <span key={i} className="bg-purple-50 text-purple-700 text-[10px] font-medium px-3 py-1.5 rounded-full whitespace-nowrap border border-purple-100">
+              {area}
+            </span>
+          ))}
         </div>
       </div>
 
-      {/* Milestones */}
-      <div className="px-4 space-y-3">
-        {groupMilestones.map(ms => {
-          const done = achieved.includes(ms.id)
-          return (
-            <div
-              key={ms.id}
-              className={`rounded-2xl p-4 border transition-colors cursor-pointer ${
-                done
-                  ? 'bg-green-50 border-green-200'
-                  : 'bg-white border-gray-100'
-              }`}
-              onClick={() => toggleMilestone(ms.id)}
-            >
-              <div className="flex items-start gap-3">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0 ${
-                  done ? 'bg-green-100' : 'bg-gray-50'
-                }`}>
-                  {done ? '✅' : ms.emoji}
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className={`font-semibold text-sm ${done ? 'text-green-700' : 'text-gray-800'}`}>
-                      {ms.title}
-                    </h3>
-                    <span className="text-[10px] text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full">
-                      {ms.category}
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-500 mt-1 leading-relaxed">{ms.description}</p>
-                </div>
-              </div>
+      {/* Info Banner */}
+      <div className="mx-4 mb-4 bg-blue-50 rounded-xl p-3 border border-blue-100">
+        <p className="text-[11px] text-blue-700 leading-relaxed">
+          📋 Jedes Kind entwickelt sich in seinem eigenen Tempo. Diese Meilensteine dienen als
+          Orientierung — nicht als Checkliste.
+        </p>
+      </div>
+
+      {/* Milestones by Category */}
+      <div className="px-4 space-y-5">
+        {milestonesByCategory.map(({ cat, info, items }) => (
+          <div key={cat}>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-base">{info.emoji}</span>
+              <h3 className="text-sm font-bold text-gray-800">{info.label}</h3>
+              <span className="text-[10px] text-gray-400">
+                {items.filter(m => achieved.includes(m.id)).length}/{items.length}
+              </span>
             </div>
-          )
-        })}
+
+            <div className="space-y-2">
+              {items.map(ms => {
+                const done = achieved.includes(ms.id)
+                const expanded = expandedMilestone === ms.id
+                const linkedRecipes = getLinkedRecipes(ms.linkedRecipes)
+                const linkedActivs = getLinkedActivities(ms.linkedActivities)
+
+                return (
+                  <div key={ms.id} className={`rounded-2xl border transition-all ${
+                    done ? 'bg-green-50 border-green-200' : 'bg-white border-gray-100'
+                  }`}>
+                    {/* Main Row */}
+                    <div className="p-3 flex items-start gap-3" onClick={() => toggleExpand(ms.id)}>
+                      <button
+                        className={`w-9 h-9 rounded-xl flex items-center justify-center text-lg shrink-0 transition-all ${
+                          done ? 'bg-green-200' : 'bg-gray-50'
+                        }`}
+                        onClick={(e) => { e.stopPropagation(); toggleMilestone(ms.id) }}
+                      >
+                        {done ? '✅' : ms.emoji}
+                      </button>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <h4 className={`font-semibold text-sm ${done ? 'text-green-700' : 'text-gray-800'}`}>
+                            {ms.title}
+                          </h4>
+                        </div>
+                        <p className="text-[11px] text-gray-500 mt-0.5 leading-relaxed">{ms.description}</p>
+                      </div>
+                      <svg className={`w-4 h-4 text-gray-400 shrink-0 mt-1 transition-transform ${expanded ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </div>
+
+                    {/* Expanded Detail */}
+                    {expanded && (
+                      <div className="px-3 pb-3 space-y-3 border-t border-gray-100 pt-3">
+                        {/* Expert Tip */}
+                        <div className="bg-amber-50 rounded-xl p-3 border border-amber-100">
+                          <div className="flex items-center gap-2 mb-1.5">
+                            <span className="text-base">💡</span>
+                            <div>
+                              <span className="text-[11px] font-semibold text-amber-800">Experten-Tipp</span>
+                              <span className="text-[10px] text-amber-600 ml-1">— {ms.expertName}</span>
+                            </div>
+                          </div>
+                          <p className="text-[11px] text-amber-800 leading-relaxed">{ms.expertTip}</p>
+                          <p className="text-[10px] text-amber-500 mt-1 italic">{ms.expertTitle}</p>
+                        </div>
+
+                        {/* Linked Content */}
+                        {(linkedRecipes.length > 0 || linkedActivs.length > 0) && (
+                          <div>
+                            <p className="text-[11px] font-semibold text-gray-700 mb-2">📎 Passende Inhalte</p>
+                            <div className="flex gap-2 overflow-x-auto no-scrollbar">
+                              {linkedRecipes.map(r => (
+                                <div
+                                  key={r.id}
+                                  onClick={() => navigate(`/rezept/${r.id}`)}
+                                  className="bg-white rounded-xl p-2 border border-gray-100 cursor-pointer min-w-[140px] shrink-0 active:scale-95 transition-transform"
+                                >
+                                  <div className="w-full h-16 rounded-lg overflow-hidden mb-1.5">
+                                    <img src={r.image} alt={r.title} className="w-full h-full object-cover" loading="lazy" />
+                                  </div>
+                                  <p className="text-[10px] font-medium text-gray-700 truncate">{r.emoji} {r.title}</p>
+                                  <p className="text-[9px] text-gray-400">Rezept · {r.duration} Min.</p>
+                                </div>
+                              ))}
+                              {linkedActivs.map(a => (
+                                <div
+                                  key={a.id}
+                                  onClick={() => navigate(`/aktivitaet/${a.id}`)}
+                                  className="bg-white rounded-xl p-2 border border-gray-100 cursor-pointer min-w-[140px] shrink-0 active:scale-95 transition-transform"
+                                >
+                                  <div className="w-full h-16 rounded-lg overflow-hidden mb-1.5 bg-tuki-mint-bg flex items-center justify-center">
+                                    <span className="text-3xl">{a.emoji}</span>
+                                  </div>
+                                  <p className="text-[10px] font-medium text-gray-700 truncate">{a.emoji} {a.title}</p>
+                                  <p className="text-[9px] text-gray-400">Aktivität · {a.duration} Min.</p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Product Suggestions */}
+                        {ms.suggestedProducts.length > 0 && (
+                          <div className="bg-gradient-to-r from-tuki-mint-bg to-green-50 rounded-xl p-3 border border-green-100">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="text-base">🎁</span>
+                              <span className="text-[11px] font-semibold text-green-800">Passende Tuki-Produkte</span>
+                            </div>
+                            <div className="flex flex-wrap gap-1.5">
+                              {ms.suggestedProducts.map((prod, i) => (
+                                <span key={i} className="bg-white text-green-700 text-[10px] font-medium px-2.5 py-1 rounded-full border border-green-200">
+                                  {prod}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Tuki-Box CTA */}
+      <div className="mx-4 mt-6 mb-4">
+        <div className="bg-gradient-to-br from-tuki-rot via-red-500 to-orange-500 rounded-2xl p-5 text-white relative overflow-hidden">
+          <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-white/10 rounded-full" />
+          <div className="absolute top-2 right-3 text-3xl opacity-20">📦</div>
+          <div className="relative z-10">
+            <span className="bg-white/20 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+              Tuki-Box
+            </span>
+            <h3 className="text-lg font-bold mt-2">{phase.boxName}</h3>
+            <p className="text-white/80 text-xs mt-1 leading-relaxed">{phase.boxDescription}</p>
+            <div className="flex flex-wrap gap-1 mt-3">
+              {phase.boxItems.slice(0, 3).map((item, i) => (
+                <span key={i} className="bg-white/20 text-[10px] px-2 py-0.5 rounded-full">
+                  {item}
+                </span>
+              ))}
+              {phase.boxItems.length > 3 && (
+                <span className="bg-white/20 text-[10px] px-2 py-0.5 rounded-full">
+                  +{phase.boxItems.length - 3} mehr
+                </span>
+              )}
+            </div>
+            <button className="mt-4 bg-white text-red-600 font-semibold text-xs px-5 py-2.5 rounded-xl active:scale-95 transition-transform shadow-lg">
+              Mehr erfahren →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Overall Stats */}
+      <div className="mx-4 mb-4">
+        <div className="bg-white rounded-2xl p-4 border border-gray-100">
+          <h3 className="text-sm font-bold text-gray-800 mb-3">📊 Gesamtüberblick</h3>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="text-center">
+              <p className="text-xl font-bold text-purple-600">{achieved.length}</p>
+              <p className="text-[10px] text-gray-500">Erreicht</p>
+            </div>
+            <div className="text-center">
+              <p className="text-xl font-bold text-amber-500">{milestones.length - achieved.length}</p>
+              <p className="text-[10px] text-gray-500">Offen</p>
+            </div>
+            <div className="text-center">
+              <p className="text-xl font-bold text-green-600">{Math.round((achieved.length / milestones.length) * 100)}%</p>
+              <p className="text-[10px] text-gray-500">Gesamt</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )
