@@ -31,8 +31,8 @@ function getSeasonLabel(season: string): string {
 }
 
 export default function RecipesPage() {
-  const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [ageFilter, setAgeFilter] = useState('all')
   const [diffFilter, setDiffFilter] = useState('all')
   const [seasonFilter, setSeasonFilter] = useState(searchParams.get('season') || 'all')
@@ -54,18 +54,14 @@ export default function RecipesPage() {
   }
 
   const filtered = recipes.filter(r => {
-    // Age filter
     if (ageFilter !== 'all') {
       const [min, max] = ageFilter.split('-').map(Number)
       if (r.ageRange[0] > max || r.ageRange[1] < min) return false
     }
-    // Difficulty
     if (diffFilter !== 'all' && r.difficulty !== diffFilter) return false
-    // Season
     if (seasonFilter !== 'all') {
-      if (!r.season.includes(seasonFilter as any) && !r.season.includes('ganzjaehrig' as any)) return false
+      if (!r.season.includes(seasonFilter as any) && !r.season.includes('ganzjaehrig' as any) && !r.season.includes('ganzjährig' as any)) return false
     }
-    // Search
     if (search) {
       const s = search.toLowerCase()
       return r.title.toLowerCase().includes(s) || r.tags.some(t => t.toLowerCase().includes(s))
@@ -78,21 +74,19 @@ export default function RecipesPage() {
       <Header title="Rezepte" />
 
       {/* Kühlschrank-Check Banner */}
-      <div className="px-4 mb-4">
+      <div className="px-4 mb-3">
         <button
           onClick={() => navigate('/zutaten-check')}
-          className="w-full bg-gradient-to-r from-cyan-50 to-tuki-mint/30 rounded-2xl p-3.5 border border-cyan-200/50 text-left active:scale-[0.98] transition-transform"
+          className="w-full bg-gradient-to-r from-cyan-50 to-tuki-mint/30 rounded-2xl p-3.5 border border-cyan-200/50 text-left flex items-center gap-3"
         >
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">🧊</span>
-            <div className="flex-1">
-              <h3 className="font-semibold text-sm text-gray-800">Kühlschrank-Check</h3>
-              <p className="text-xs text-gray-500">Zutaten eingeben → passende Rezepte finden</p>
-            </div>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5E6578" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
+          <span className="text-2xl">🧱</span>
+          <div className="flex-1">
+            <h3 className="font-semibold text-sm text-gray-800">Kühlschrank-Check</h3>
+            <p className="text-xs text-gray-500">Zutaten eingeben → passende Rezepte finden</p>
           </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
         </button>
       </div>
 
