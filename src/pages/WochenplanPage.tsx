@@ -287,3 +287,78 @@ export default function WochenplanPage() {
           </div>
         )}
       </div>
+
+      {/* Weekly Progress */}
+      <div className="px-4 mb-4">
+        <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-4 border border-yellow-200/50">
+          <h4 className="font-semibold text-sm text-gray-800 mb-2">{'📊'} Wochenfortschritt</h4>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="text-center">
+              <p className="text-lg font-bold text-tuki-rot">
+                {Object.values(generatedPlan).reduce((acc, d) =>
+                  acc + d.recipes.filter(r => completedRecipes.includes(r.id)).length, 0
+                )}
+              </p>
+              <p className="text-[10px] text-gray-500">Rezepte gekocht</p>
+            </div>
+            <div className="text-center">
+              <p className="text-lg font-bold text-purple-600">
+                {Object.values(generatedPlan).reduce((acc, d) =>
+                  acc + (d.activity && completedActivities.includes(d.activity.id) ? 1 : 0), 0
+                )}
+              </p>
+              <p className="text-[10px] text-gray-500">Aktivitäten</p>
+            </div>
+            <div className="text-center">
+              <p className="text-lg font-bold text-green-600">
+                {Math.round(
+                  ((Object.values(generatedPlan).reduce((acc, d) =>
+                    acc + d.recipes.filter(r => completedRecipes.includes(r.id)).length +
+                    (d.activity && completedActivities.includes(d.activity.id) ? 1 : 0), 0
+                  ) / Math.max(1, Object.values(generatedPlan).reduce((acc, d) =>
+                    acc + d.recipes.length + (d.activity ? 1 : 0), 0
+                  ))) * 100)
+                )}%
+              </p>
+              <p className="text-[10px] text-gray-500">Geschafft</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Expert Tip */}
+      <div className="px-4 mb-4">
+        <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-full bg-tuki-mint flex items-center justify-center shrink-0 text-lg">
+              {todayTip.emoji}
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <h4 className="font-semibold text-sm text-gray-800">{todayTip.expert}</h4>
+                <span className="text-[10px] text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded-full">{todayTip.title}</span>
+              </div>
+              <p className="text-xs text-gray-600 leading-relaxed">{todayTip.tip}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="px-4 mb-4">
+        <div className="grid grid-cols-2 gap-3">
+          <button onClick={() => navigate('/rezepte')}
+            className="bg-tuki-mint/30 rounded-2xl p-3 text-center border border-tuki-mint/50 active:scale-95 transition-transform">
+            <span className="text-2xl block mb-1">{'🍳'}</span>
+            <p className="text-xs font-medium text-tuki-rot-dark">Alle Rezepte</p>
+          </button>
+          <button onClick={() => navigate('/aktivitaeten')}
+            className="bg-purple-50 rounded-2xl p-3 text-center border border-purple-100 active:scale-95 transition-transform">
+            <span className="text-2xl block mb-1">{'🎯'}</span>
+            <p className="text-xs font-medium text-purple-700">Alle Aktivitäten</p>
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
