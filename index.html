@@ -4,24 +4,17 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/tuki-app/tuki-icon.svg" />
     <link rel="apple-touch-icon" href="/tuki-app/tuki-icon-180.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#8F5652" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="Tuki" />
-    <meta name="description" content="Tuki Family — Rezepte, Aktivit&#228;ten &amp; Community f&#252;r Lernturm-Familien" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta property="og:title" content="Tuki Family" />
-    <meta property="og:description" content="Rezepte, Aktivit&#228;ten &amp; Community f&#252;r Lernturm-Familien" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://stevenjobins.github.io/tuki-app/tuki-icon-512.png" />
     <link rel="manifest" href="/tuki-app/manifest.json" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&display=swap"
-      rel="stylesheet"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-title" content="Tuki" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#8F5652" />
+    <meta name="description" content="Tuki Family &#8212; Kochen &#38; Entdecken mit Kindern. Rezepte, Aktivit&#228;ten &#38; Montessori-Ideen f&#252;r Familien." />
+    <meta property="og:title" content="Tuki Family" />
+    <meta property="og:description" content="Kochen &#38; Entdecken mit Kindern. Rezepte, Aktivit&#228;ten &#38; Montessori-Ideen." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://stevenjobins.github.io/tuki-app/og-image.png" />
+    <meta property="og:url" content="https://stevenjobins.github.io/tuki-app/" />
     <title>Tuki Family</title>
     <script type="module" crossorigin src="/tuki-app/assets/index-nXq92rSA.js"></script>
     <link rel="stylesheet" crossorigin href="/tuki-app/assets/index-D43XMs6H.css">
@@ -30,11 +23,9 @@
     <div id="root"></div>
     <script>
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/tuki-app/sw.js')
-            .then(function(reg) { console.log('SW registered:', reg.scope); })
-            .catch(function(err) { console.log('SW failed:', err); });
-        });
+        navigator.serviceWorker.register('/tuki-app/sw.js')
+          .then(function(r) { console.log('SW registered:', r.scope) })
+          .catch(function(e) { console.log('SW failed:', e) })
       }
     </script>
   </body>

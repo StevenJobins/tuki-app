@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tuki Family</title>
+  <script>
+    // SPA redirect for GitHub Pages
+    // Converts path-based URLs to hash-based for React Router
+    var path = window.location.pathname;
+    var base = "/tuki-app/";
+    if (path.startsWith(base)) {
+      var route = path.slice(base.length);
+      if (route && route !== "index.html") {
+        window.location.replace(base + "#/" + route + window.location.search);
+      } else {
+        window.location.replace(base);
+      }
+    } else {
+      window.location.replace(base);
+    }
+  </script>
+</head>
+<body>
+  <p>Weiterleitung...</p>
+</body>
+</html>
