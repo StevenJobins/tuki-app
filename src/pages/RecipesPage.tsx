@@ -14,18 +14,18 @@ const difficultyFilter = [
 
 function getCurrentSeason(): string {
   const month = new Date().getMonth()
-  if (month >= 2 && month <= 4) return 'frühling'
-  if (month >= 5 && month <= 7) return 'sommer'
-  if (month >= 8 && month <= 10) return 'herbst'
-  return 'winter'
+  if (month >= 2 && month <= 4) return 'Fruehling'
+  if (month >= 5 && month <= 7) return 'Sommer'
+  if (month >= 8 && month <= 10) return 'Herbst'
+  return 'Winter'
 }
 
 function getSeasonLabel(season: string): string {
   const labels: Record<string, string> = {
-    'frühling': '🌸 Frühling',
-    'sommer': '☀️ Sommer',
-    'herbst': '🍂 Herbst',
-    'winter': '❄️ Winter',
+    'Fruehling': '🌸 Frühling',
+    'Sommer': '☀️ Sommer',
+    'Herbst': '🍂 Herbst',
+    'Winter': '❄️ Winter',
   }
   return labels[season] || season
 }
@@ -62,7 +62,7 @@ export default function RecipesPage() {
     if (diffFilter !== 'all' && r.difficulty !== diffFilter) return false
     // Season
     if (seasonFilter !== 'all') {
-      if (!r.season.includes(seasonFilter as any) && !r.season.includes('ganzjährig')) return false
+      if (!r.season.includes(seasonFilter as any) && !r.season.includes('ganzjaehrig' as any)) return false
     }
     // Search
     if (search) {
@@ -102,7 +102,7 @@ export default function RecipesPage() {
         {[
           { value: 'all', label: 'Alle Saisons' },
           { value: getCurrentSeason(), label: getSeasonLabel(getCurrentSeason()) + ' (jetzt)' },
-          ...['frühling', 'sommer', 'herbst', 'winter']
+          ...['Fruehling', 'Sommer', 'Herbst', 'Winter']
             .filter(s => s !== getCurrentSeason())
             .map(s => ({ value: s, label: getSeasonLabel(s) }))
         ].map(s => (
