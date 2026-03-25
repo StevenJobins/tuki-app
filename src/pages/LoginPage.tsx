@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
 
 export default function LoginPage() {
@@ -41,11 +40,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-tuki-cream flex items-center justify-center px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-sm"
-      >
+      <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="w-16 h-16 rounded-2xl gradient-rot flex items-center justify-center mx-auto mb-4 shadow-lg">
@@ -133,7 +128,7 @@ export default function LoginPage() {
             )}
           </button>
         </div>
-      </motion.div>
+      </div>
     </div>
   )
 }
