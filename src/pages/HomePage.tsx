@@ -88,7 +88,7 @@ export default function HomePage() {
         <div className="grid grid-cols-4 md:grid-cols-4 gap-2 md:gap-3">
           {[
             { emoji: '🍳', label: 'Rezepte', path: '/rezepte' },
-            { emoji: '🥢', label: 'Was haben wir?', path: '/zutaten-check' },
+            { emoji: '🧊', label: 'K\u00FChlschrank', path: '/zutaten-check' },
             { emoji: '🎮', label: 'Aktivitäten', path: '/aktivitaeten' },
             { emoji: '👨‍👩‍👧', label: 'Community', path: '/community' },
           ].map(action => (
