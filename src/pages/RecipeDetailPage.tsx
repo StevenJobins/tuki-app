@@ -36,7 +36,7 @@ export default function RecipeDetailPage() {
           </button>
         </div>
         <div className="absolute top-4 right-4">
-          <FavoriteButton itemId={recipe.id} type="recipe" />
+          <FavoriteButton id={recipe.id} />
         </div>
       </div>
 
@@ -47,7 +47,7 @@ export default function RecipeDetailPage() {
             <span className="text-xl">{recipe.emoji}</span>
             <h1 className="text-lg font-bold text-gray-900">{recipe.title}</h1>
           </div>
-          <p className="text-xs text-gray-500 leading-relaxed">{recipe.description}</p>
+          <p className="text-xs text-gray-500 leading-relaxed">{recipe.subtitle}</p>
         </div>
       </div>
 
@@ -55,7 +55,7 @@ export default function RecipeDetailPage() {
       <div className="flex gap-3 px-4 mt-4">
         <div className="flex-1 bg-gray-50 rounded-xl p-3 text-center">
           <span className="text-lg">⏱️</span>
-          <p className="text-xs font-semibold text-gray-700 mt-0.5">{recipe.time}</p>
+          <p className="text-xs font-semibold text-gray-700 mt-0.5">{recipe.duration + ' Min.'}</p>
           <p className="text-[10px] text-gray-400">Dauer</p>
         </div>
         <div className="flex-1 bg-gray-50 rounded-xl p-3 text-center">
