@@ -28,6 +28,17 @@ export default function RecipeDetailPage() {
 
   return (
     <div className="pb-8">
+      {/* Print Styles */}
+      <style>{`
+        @media print {
+          nav, header, .fixed, [data-noprint] { display: none !important; }
+          .pb-8 { padding-bottom: 0 !important; }
+          .shadow, .shadow-sm, .shadow-lg { box-shadow: none !important; }
+          body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          @page { margin: 1.5cm; }
+        }
+      `}</style>
+
       {/* Hero Image */}
       <div className="relative h-56 bg-gray-100">
         <img src={recipe.image} alt={recipe.title} className="w-full h-full object-cover" />
@@ -49,7 +60,17 @@ export default function RecipeDetailPage() {
             <h1 className="text-lg font-bold text-gray-900">{recipe.title}</h1>
           </div>
           <p className="text-xs text-gray-500 leading-relaxed">{recipe.subtitle}</p>
-              <ShareButton title={recipe.title} text={recipe.subtitle + ' \u2014 Tuki Family Rezept'} className="mt-2" />
+              <div className="flex items-center gap-2 mt-2">
+            <ShareButton title={recipe.title} text={recipe.subtitle + ' \u2014 Tuki Family Rezept'} />
+            <button onClick={() => window.print()} className="flex items-center gap-1 text-xs text-gray-500 hover:text-tuki-rot transition">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 6 2 18 2 18 9" />
+                <path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2" />
+                <rect x="6" y="14" width="12" height="8" />
+              </svg>
+              Drucken
+            </button>
+          </div>
         </div>
       </div>
 
@@ -129,7 +150,7 @@ export default function RecipeDetailPage() {
       <div className="px-4 mt-8">
         <button
           onClick={() => !isCompleted && completeRecipe(recipe.id)}
-          className={`w-full py-4 rounded-2xl font-semibold text-lg shadow-lg transition ${
+          data-noprint className={`w-full py-4 rounded-2xl font-semibold text-lg shadow-lg transition ${
             isCompleted
               ? 'bg-green-100 text-green-700'
               : 'gradient-rot text-white hover:opacity-90'
