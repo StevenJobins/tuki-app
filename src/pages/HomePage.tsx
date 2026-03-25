@@ -25,42 +25,26 @@ function getSeasonEmoji(): string {
 
 function getSeasonName(): string {
   const month = new Date().getMonth()
-  if (month >= 2 && month <= 4) return 'Fr\u00fchling'
+  if (month >= 2 && month <= 4) return 'Frühling'
   if (month >= 5 && month <= 7) return 'Sommer'
   if (month >= 8 && month <= 10) return 'Herbst'
   return 'Winter'
 }
-
 
 function getSeasonKey(): string {
   const month = new Date().getMonth()
-  if (month >= 2 && month <= 4) return 'Fruehling'
-  if (month >= 5 && month <= 7) return 'Sommer'
-  if (month >= 8 && month <= 10) return 'Herbst'
-  return 'Winter'
-}
-
-const tukiTipps = [
-  'Lass dein Kind die Zutaten f\u00fcr das Abendessen aus dem K\u00fchlschrank holen \u2014 im Tuki erreicht es alles auf Augenh\u00f6he. Das st\u00e4rkt die Selbstst\u00e4ndigkeit!',
-  'Beim Kochen z\u00e4hlen: Wie viele Tomaten brauchen wir? Dein Kind lernt spielerisch Mathe im Tuki.',
-  'Lass dein Kind den Teig kneten \u2014 das trainiert die Handmuskeln und macht riesig Spass!',
-  'Gemeinsam den Tisch decken: Dein Kind lernt im Tuki Ordnung und Verantwortung.',
-  'Wasser in verschiedene Gef\u00e4sse giessen \u2014 im Tuki am Sp\u00fclbecken eine perfekte Sensorik-\u00dcbung.',
-  'Obst schneiden mit dem Kindermesser: Im Tuki auf Augenh\u00f6he sicher und selbstst\u00e4ndig.',
-  'Lass dein Kind beim Backen die Eier aufschlagen \u2014 Feinmotorik pur!',
-]
-
-function getTipOfDay(): string {
-  const day = Math.floor(Date.now() / 86400000)
-  return tukiTipps[day % tukiTipps.length]
+  if (month >= 2 && month <= 4) return 'frühling'
+  if (month >= 5 && month <= 7) return 'sommer'
+  if (month >= 8 && month <= 10) return 'herbst'
+  return 'winter'
 }
 
 export default function HomePage() {
   const navigate = useNavigate()
   const { tukiStars, completedActivities, completedRecipes } = useApp()
-  const seasonalRecipes = getSeasonalRecipes().slice(0, 4)
-  const seasonKey = getSeasonKey()
-  const featuredActivities = activities.filter(a => a.season === seasonKey || a.season === 'ganzjaehrig').sort(() => Math.random() - 0.5).slice(0, 4)
+  const allSeasonalRecipes = getSeasonalRecipes()
+  const seasonalRecipes = allSeasonalRecipes.slice(0, 4)
+  const featuredActivities = activities.slice(0, 4)
 
   return (
     <div className="pb-24">
@@ -102,7 +86,7 @@ export default function HomePage() {
         <div className="grid grid-cols-4 md:grid-cols-4 gap-2 md:gap-3">
           {[
             { emoji: '🍳', label: 'Rezepte', path: '/rezepte' },
-            { emoji: '🎮', label: 'Aktivit\u00e4ten', path: '/aktivitaeten' },
+            { emoji: '🎮', label: 'Aktivitäten', path: '/aktivitaeten' },
             { emoji: '📊', label: 'Entwicklung', path: '/entwicklung' },
             { emoji: '👨‍👩‍👧', label: 'Community', path: '/community' },
           ].map(action => (
@@ -121,7 +105,7 @@ export default function HomePage() {
       {/* Seasonal Banner */}
       <div className="px-4 mb-6">
         <button
-          onClick={() => navigate('/rezepte')}
+          onClick={() => navigate(`/rezepte?season=${getSeasonKey()}`)}
           className="w-full bg-tuki-warm rounded-2xl p-4 border border-orange-100 text-left"
         >
           <div className="flex items-center gap-3">
@@ -129,7 +113,7 @@ export default function HomePage() {
             <div>
               <h3 className="font-semibold text-sm text-gray-800">{getSeasonName()}s-Rezepte</h3>
               <p className="text-xs text-gray-500 mt-0.5">
-                {seasonalRecipes.length} saisonale Ideen f{'\u00fc'}r euch entdecken
+                {allSeasonalRecipes.length} saisonale Ideen für euch entdecken
               </p>
             </div>
             <svg className="ml-auto" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8F5652" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -141,7 +125,7 @@ export default function HomePage() {
 
       {/* Featured Recipes */}
       <div>
-        <SectionHeader title="Beliebte Rezepte" emoji="🍳" linkTo="/rezepte" />
+        <SectionHeader title="Beliebte Rezepte" emoji="🍳" linkTo={`/rezepte?season=${getSeasonKey()}`} />
         <div className="flex gap-4 overflow-x-auto px-4 pb-2 no-scrollbar snap-x">
           {seasonalRecipes.map(recipe => (
             <RecipeCard key={recipe.id} recipe={recipe} size="featured" />
@@ -151,7 +135,7 @@ export default function HomePage() {
 
       {/* Activities */}
       <div className="mt-6">
-        <SectionHeader title={'Aktivit\u00e4ten f\u00fcr heute'} emoji="🎯" linkTo="/aktivitaeten" />
+        <SectionHeader title="Aktivitäten für heute" emoji="🎯" linkTo="/aktivitaeten" />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 px-4">
           {featuredActivities.slice(0, 4).map(activity => (
             <ActivityCard key={activity.id} activity={activity} />
@@ -169,7 +153,8 @@ export default function HomePage() {
             <div>
               <h3 className="font-semibold text-sm text-gray-800">Tuki-Tipp des Tages</h3>
               <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-                {getTipOfDay()}
+                Lass dein Kind die Zutaten für das Abendessen aus dem Kühlschrank holen —
+                im Tuki erreicht es alles auf Augenhöhe. Das stärkt die Selbstständigkeit!
               </p>
             </div>
           </div>
@@ -190,7 +175,7 @@ export default function HomePage() {
             />
           </div>
           <p className="text-[10px] text-gray-500 mt-1.5">
-            Noch {Math.max(0, [10, 25, 50, 100][tukiStars.level] || 100 - tukiStars.total)} Sterne bis zum n{'\u00e4'}chsten Level
+            Noch {Math.max(0, [10, 25, 50, 100][tukiStars.level] || 100 - tukiStars.total)} Sterne bis zum nächsten Level
           </p>
         </div>
       </div>
