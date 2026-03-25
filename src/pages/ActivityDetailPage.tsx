@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { getActivityById, categoryInfo } from '../data/activities'
 import FavoriteButton from '../components/FavoriteButton'
+import ShareButton from '../components/ShareButton'
 import { useApp } from '../context/AppContext'
 
 export default function ActivityDetailPage() {
@@ -41,7 +42,10 @@ export default function ActivityDetailPage() {
               <polyline points="15 18 9 12 15 6" />
             </svg>
           </button>
-          <FavoriteButton id={activity.id} />
+          <div className="flex items-center gap-2">
+            <ShareButton title={activity.title} text={activity.subtitle + ' \u2014 Tuki Family'} />
+            <FavoriteButton id={activity.id} />
+          </div>
         </div>
         <div className="absolute bottom-0 left-0 right-0 p-4">
           <span className={`text-[10px] font-semibold px-2 py-1 rounded-full ${cat.color} inline-block mb-2`}>
