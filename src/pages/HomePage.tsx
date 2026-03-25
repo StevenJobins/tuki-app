@@ -31,11 +31,36 @@ function getSeasonName(): string {
   return 'Winter'
 }
 
+
+function getSeasonKey(): string {
+  const month = new Date().getMonth()
+  if (month >= 2 && month <= 4) return 'Fruehling'
+  if (month >= 5 && month <= 7) return 'Sommer'
+  if (month >= 8 && month <= 10) return 'Herbst'
+  return 'Winter'
+}
+
+const tukiTipps = [
+  'Lass dein Kind die Zutaten f\u00fcr das Abendessen aus dem K\u00fchlschrank holen \u2014 im Tuki erreicht es alles auf Augenh\u00f6he. Das st\u00e4rkt die Selbstst\u00e4ndigkeit!',
+  'Beim Kochen z\u00e4hlen: Wie viele Tomaten brauchen wir? Dein Kind lernt spielerisch Mathe im Tuki.',
+  'Lass dein Kind den Teig kneten \u2014 das trainiert die Handmuskeln und macht riesig Spass!',
+  'Gemeinsam den Tisch decken: Dein Kind lernt im Tuki Ordnung und Verantwortung.',
+  'Wasser in verschiedene Gef\u00e4sse giessen \u2014 im Tuki am Sp\u00fclbecken eine perfekte Sensorik-\u00dcbung.',
+  'Obst schneiden mit dem Kindermesser: Im Tuki auf Augenh\u00f6he sicher und selbstst\u00e4ndig.',
+  'Lass dein Kind beim Backen die Eier aufschlagen \u2014 Feinmotorik pur!',
+]
+
+function getTipOfDay(): string {
+  const day = Math.floor(Date.now() / 86400000)
+  return tukiTipps[day % tukiTipps.length]
+}
+
 export default function HomePage() {
   const navigate = useNavigate()
   const { tukiStars, completedActivities, completedRecipes } = useApp()
   const seasonalRecipes = getSeasonalRecipes().slice(0, 4)
-  const featuredActivities = activities.slice(0, 4)
+  const seasonKey = getSeasonKey()
+  const featuredActivities = activities.filter(a => a.season === seasonKey || a.season === 'ganzjaehrig').sort(() => Math.random() - 0.5).slice(0, 4)
 
   return (
     <div className="pb-24">
@@ -144,8 +169,7 @@ export default function HomePage() {
             <div>
               <h3 className="font-semibold text-sm text-gray-800">Tuki-Tipp des Tages</h3>
               <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-                Lass dein Kind die Zutaten f{'\u00fc'}r das Abendessen aus dem K{'\u00fc'}hlschrank holen {'\u2014'}{' '}
-                im Tuki erreicht es alles auf Augenh{'\u00f6'}he. Das st{'\u00e4'}rkt die Selbstst{'\u00e4'}ndigkeit!
+                {getTipOfDay()}
               </p>
             </div>
           </div>
