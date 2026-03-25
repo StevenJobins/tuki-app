@@ -13,7 +13,7 @@ export default function RecipeDetailPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <span className="text-4xl block mb-3">ð¤</span>
+          <span className="text-4xl block mb-3">🤔</span>
           <p className="text-gray-500">Rezept nicht gefunden</p>
           <button onClick={() => navigate('/rezepte')} className="text-tuki-rot text-sm mt-2">
             Zurueck zu Rezepten
@@ -28,56 +28,48 @@ export default function RecipeDetailPage() {
   return (
     <div className="pb-8">
       {/* Hero Image */}
-      <div className="relative h-64">
+      <div className="relative h-56 bg-gray-100">
         <img src={recipe.image} alt={recipe.title} className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
-
-        {/* Top bar */}
-        <div className="absolute top-0 left-0 right-0 flex items-center justify-between p-4">
-          <button
-            onClick={() => navigate(-1)}
-            className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-md"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2D2D2D" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
+        <div className="absolute top-4 left-4">
+          <button onClick={() => navigate('/rezepte')} className="w-10 h-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center shadow">
+            <span className="text-lg">←</span>
           </button>
-          <FavoriteButton id={recipe.id} />
         </div>
-
-        {/* Title overlay */}
-        <div className="absolute bottom-0 left-0 right-0 p-4">
-          <div className="flex items-center gap-2 mb-1">
-            {recipe.tags.map(tag => (
-              <span key={tag} className="bg-white/25 text-white text-[10px] font-medium px-2 py-0.5 rounded-full backdrop-blur-sm">
-                {tag}
-              </span>
-            ))}
-          </div>
-          <h1 className="text-2xl font-bold text-white">{recipe.emoji} {recipe.title}</h1>
-          <p className="text-white/80 text-sm">{recipe.subtitle}</p>
+        <div className="absolute top-4 right-4">
+          <FavoriteButton itemId={recipe.id} type="recipe" />
         </div>
       </div>
 
-      {/* Quick Info */}
-      <div className="flex justify-around py-4 bg-white border-b border-gray-100">
-        <div className="text-center">
-          <span className="text-lg">â±ï¸</span>
-          <p className="text-xs font-semibold text-gray-700 mt-0.5">{recipe.duration} Min.</p>
+      {/* Title */}
+      <div className="px-4 -mt-6 relative">
+        <div className="bg-white rounded-2xl p-4 shadow-sm">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-xl">{recipe.emoji}</span>
+            <h1 className="text-lg font-bold text-gray-900">{recipe.title}</h1>
+          </div>
+          <p className="text-xs text-gray-500 leading-relaxed">{recipe.description}</p>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="flex gap-3 px-4 mt-4">
+        <div className="flex-1 bg-gray-50 rounded-xl p-3 text-center">
+          <span className="text-lg">⏱️</span>
+          <p className="text-xs font-semibold text-gray-700 mt-0.5">{recipe.time}</p>
           <p className="text-[10px] text-gray-400">Dauer</p>
         </div>
-        <div className="text-center">
-          <span className="text-lg">ð¶</span>
-          <p className="text-xs font-semibold text-gray-700 mt-0.5">{recipe.ageRange[0]}-{recipe.ageRange[1]} J.</p>
+        <div className="flex-1 bg-gray-50 rounded-xl p-3 text-center">
+          <span className="text-lg">👶</span>
+          <p className="text-xs font-semibold text-gray-700 mt-0.5">{recipe.ageRange[0]}–{recipe.ageRange[1]} Jahre</p>
           <p className="text-[10px] text-gray-400">Alter</p>
         </div>
-        <div className="text-center">
-          <span className="text-lg">ð</span>
-          <p className="text-xs font-semibold text-gray-700 mt-0.5 capitalize">{recipe.difficulty}</p>
-          <p className="text-[10px] text-gray-400">Level</p>
+        <div className="flex-1 bg-gray-50 rounded-xl p-3 text-center">
+          <span className="text-lg">📊</span>
+          <p className="text-xs font-semibold text-gray-700 mt-0.5">{recipe.difficulty}</p>
+          <p className="text-[10px] text-gray-400">Schwierigkeit</p>
         </div>
-        <div className="text-center">
-          <span className="text-lg">ð½ï¸</span>
+        <div className="flex-1 bg-gray-50 rounded-xl p-3 text-center">
+          <span className="text-lg">🍽️</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5">{recipe.servings}</p>
           <p className="text-[10px] text-gray-400">Portionen</p>
         </div>
@@ -98,18 +90,12 @@ export default function RecipeDetailPage() {
 
       {/* Ingredients */}
       <div className="px-4 mt-6">
-        <h2 className="font-semibold text-base text-gray-800 mb-3">ð Zutaten</h2>
-        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+        <h2 className="font-semibold text-base text-gray-800 mb-3">🛒 Zutaten</h2>
+        <div className="bg-white rounded-2xl border border-gray-100 divide-y divide-gray-50">
           {recipe.ingredients.map((ing, i) => (
-            <div
-              key={i}
-              className={`flex items-center gap-3 px-4 py-3 ${i < recipe.ingredients.length - 1 ? 'border-b border-gray-50' : ''}`}
-            >
-              <div className="w-6 h-6 rounded-full bg-tuki-mint-bg flex items-center justify-center shrink-0">
-                <span className="text-tuki-rot text-[10px] font-bold">{i + 1}</span>
-              </div>
-              <span className="text-sm font-medium text-gray-700 w-16 shrink-0">{ing.amount}</span>
-              <span className="text-sm text-gray-600">{ing.name}</span>
+            <div key={i} className="flex items-center px-4 py-2.5">
+              <span className="text-xs text-tuki-rot font-medium w-24 shrink-0">{ing.amount}</span>
+              <span className="text-sm text-gray-700">{ing.name}</span>
             </div>
           ))}
         </div>
@@ -117,21 +103,18 @@ export default function RecipeDetailPage() {
 
       {/* Steps */}
       <div className="px-4 mt-6">
-        <h2 className="font-semibold text-base text-gray-800 mb-3">ð©âð³ Zubereitung</h2>
-        <div className="space-y-4">
+        <h2 className="font-semibold text-base text-gray-800 mb-3">👩‍🍳 Zubereitung</h2>
+        <div className="space-y-3">
           {recipe.steps.map((step, i) => (
-            <div
-              key={i}
-              className="flex gap-3"
-            >
-              <div className="w-8 h-8 rounded-full gradient-rot flex items-center justify-center shrink-0 mt-0.5">
+            <div key={i} className="flex gap-3">
+              <div className="w-7 h-7 rounded-full gradient-rot flex items-center justify-center shrink-0 mt-0.5">
                 <span className="text-white text-xs font-bold">{i + 1}</span>
               </div>
               <div className="flex-1">
                 <p className="text-sm text-gray-700 leading-relaxed">{step.text}</p>
                 {step.tip && (
-                  <div className="mt-2 bg-yellow-50 rounded-lg p-2.5 border border-yellow-200/50">
-                    <p className="text-xs text-yellow-700">ð¡ {step.tip}</p>
+                  <div className="mt-2 bg-yellow-50 rounded-lg px-3 py-2">
+                    <p className="text-xs text-yellow-700">💡 {step.tip}</p>
                   </div>
                 )}
               </div>
@@ -143,19 +126,17 @@ export default function RecipeDetailPage() {
       {/* Complete Button */}
       <div className="px-4 mt-8">
         <button
-          onClick={() => completeRecipe(recipe.id)}
-          disabled={isCompleted}
-          className={`w-full py-4 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2 transition-colors active:scale-[0.97] transition-transform ${
+          onClick={() => !isCompleted && completeRecipe(recipe.id)}
+          className={`w-full py-4 rounded-2xl font-semibold text-lg shadow-lg transition ${
             isCompleted
-              ? 'bg-green-100 text-green-700 border border-green-200'
-              : 'gradient-rot text-white shadow-lg shadow-tuki-rot/25'
+              ? 'bg-green-100 text-green-700'
+              : 'gradient-rot text-white hover:opacity-90'
           }`}
         >
-          {isCompleted ? (
-            <>â Geschafft! +{recipe.stars} Sterne verdient</>
-          ) : (
-            <>â­ Rezept geschafft â {recipe.stars} Sterne verdienen</>
-          )}
+          {isCompleted
+            ? <>✅ Geschafft! +{recipe.stars} Sterne verdient</>
+            : <>⭐ Rezept geschafft — {recipe.stars} Sterne verdienen</>
+          }
         </button>
       </div>
     </div>
