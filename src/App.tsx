@@ -13,6 +13,7 @@ import CommunityPage from './pages/CommunityPage'
 import ProfilePage from './pages/ProfilePage'
 import LoginPage from './pages/LoginPage'
 import OnboardingPage from './pages/OnboardingPage'
+import ZutatenCheckPage from './pages/ZutatenCheckPage'
 
 function LoadingScreen() {
   return (
@@ -52,6 +53,7 @@ export default function App() {
           <Route path="/community" element={<CommunityPage />} />
           <Route path="/profil" element={<ProfilePage />} />
           <Route path="/onboarding" element={<OnboardingPage />} />
+          <Route path="/zutaten-check" element={<ZutatenCheckPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
 
