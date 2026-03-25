@@ -1,0 +1,39 @@
+{
+  "name": "Tuki Family",
+  "short_name": "Tuki",
+  "description": "Rezepte, Aktivit\u00e4ten & Community f\u00fcr Lernturm-Familien",
+  "start_url": "/tuki-app/",
+  "scope": "/tuki-app/",
+  "display": "standalone",
+  "background_color": "#FAF8F5",
+  "theme_color": "#8F5652",
+  "orientation": "portrait",
+  "categories": ["food", "kids", "lifestyle"],
+  "lang": "de",
+  "icons": [
+    {
+      "src": "/tuki-app/tuki-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/tuki-app/tuki-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/tuki-app/tuki-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/tuki-app/tuki-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
