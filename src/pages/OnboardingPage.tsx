@@ -2,14 +2,14 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
-const AVATAR_OPTIONS = ['👨‍👩‍👧', '👨‍👩‍👦', '👩‍👧', '👨‍👧', '👩‍👦', '👨‍👦', '👩‍👧‍👦', '👨‍👩‍👧‍👦', '🏠', '🌻']
+const AVATAR_OPTIONS = ['ð¨âð©âð§', 'ð¨âð©âð¦', 'ð©âð§', 'ð¨âð§', 'ð©âð¦', 'ð¨âð¦', 'ð©âð§âð¦', 'ð¨âð©âð§âð¦', 'ð ', 'ð»']
 
 const CHILD_AGE_OPTIONS = [
-  { label: '0–1 Jahr', value: '0-1' },
-  { label: '1–2 Jahre', value: '1-2' },
-  { label: '2–3 Jahre', value: '2-3' },
-  { label: '3–5 Jahre', value: '3-5' },
-  { label: '5–8 Jahre', value: '5-8' },
+  { label: '0â1 Jahr', value: '0-1' },
+  { label: '1â2 Jahre', value: '1-2' },
+  { label: '2â3 Jahre', value: '2-3' },
+  { label: '3â5 Jahre', value: '3-5' },
+  { label: '5â8 Jahre', value: '5-8' },
 ]
 
 export default function OnboardingPage() {
@@ -17,7 +17,7 @@ export default function OnboardingPage() {
   const { updateProfile } = useAuth()
   const [step, setStep] = useState(0)
   const [familyName, setFamilyName] = useState('')
-  const [selectedAvatar, setSelectedAvatar] = useState('👨‍👩‍👧')
+  const [selectedAvatar, setSelectedAvatar] = useState('ð¨âð©âð§')
   const [selectedAge, setSelectedAge] = useState('')
   const [isAnimating, setIsAnimating] = useState(false)
 
@@ -30,10 +30,14 @@ export default function OnboardingPage() {
   }
 
   const handleComplete = async () => {
-    await updateProfile({
-      display_name: familyName.trim() || 'Meine Familie',
-      avatar_emoji: selectedAvatar,
-    })
+    try {
+      await updateProfile({
+        display_name: familyName.trim() || 'Meine Familie',
+        avatar_emoji: selectedAvatar,
+      })
+    } catch (e) {
+      console.log('Profile update skipped (no auth)')
+    }
     localStorage.setItem('tuki_child_age', selectedAge)
     localStorage.setItem('tuki_onboarded', 'true')
     navigate('/')
@@ -71,21 +75,21 @@ export default function OnboardingPage() {
 
             <div className="space-y-3 mb-8">
               <div className="flex items-center gap-3 bg-white rounded-xl p-3 border border-gray-100">
-                <span className="text-2xl">🍳</span>
+                <span className="text-2xl">ð³</span>
                 <div className="text-left">
                   <p className="text-sm font-medium text-gray-800">25+ Kinderrezepte</p>
                   <p className="text-[10px] text-gray-400">Einfach, gesund & kindertauglich</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 bg-white rounded-xl p-3 border border-gray-100">
-                <span className="text-2xl">🎯</span>
+                <span className="text-2xl">ð¯</span>
                 <div className="text-left">
                   <p className="text-sm font-medium text-gray-800">25+ Aktivitaeten</p>
                   <p className="text-[10px] text-gray-400">Spielerisch foerdern & Spass haben</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 bg-white rounded-xl p-3 border border-gray-100">
-                <span className="text-2xl">⭐</span>
+                <span className="text-2xl">â­</span>
                 <div className="text-left">
                   <p className="text-sm font-medium text-gray-800">Tuki-Sterne sammeln</p>
                   <p className="text-[10px] text-gray-400">Motivation durch Belohnungssystem</p>
@@ -145,7 +149,7 @@ export default function OnboardingPage() {
 
         {step === 2 && (
           <div className="text-center">
-            <div className="text-5xl mb-4">🎂</div>
+            <div className="text-5xl mb-4">ð</div>
             <h2 className="text-xl font-bold text-gray-800 mb-1">Wie alt ist euer Kind?</h2>
             <p className="text-sm text-gray-500 mb-6">So zeigen wir euch passende Inhalte.</p>
 
@@ -174,7 +178,7 @@ export default function OnboardingPage() {
                   : 'bg-gray-200 text-gray-400 cursor-not-allowed'
               }`}
             >
-              Tuki starten 🚀
+              Tuki starten ð
             </button>
 
             <button
@@ -188,7 +192,7 @@ export default function OnboardingPage() {
       </div>
 
       {/* Footer */}
-      <p className="text-[10px] text-gray-300 mt-8">mimodo AG · Schweiz</p>
+      <p className="text-[10px] text-gray-300 mt-8">mimodo AG Â· Schweiz</p>
     </div>
   )
 }
