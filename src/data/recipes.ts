@@ -389,7 +389,7 @@ export const recipes: Recipe[] = [
     title: 'Bananenbrot',
     subtitle: 'Saftig, suess & aus uebrigen Bananen',
     emoji: '🍌',
-    image: 'https://images.unsplash.com/photo-1584776296944-ab6fb57b0b9e?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1621236378699-8597faf6a176?w=400&h=300&fit=crop',
     duration: 50,
     difficulty: 'mittel',
     ageRange: [2, 8],
@@ -556,7 +556,7 @@ export const recipes: Recipe[] = [
     title: 'Sonntagszopf',
     subtitle: 'Schweizer Klassiker fuer die ganze Familie',
     emoji: '🫳',
-    image: 'https://images.unsplash.com/photo-1586444248879-bc604cbd555a?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1574085733277-851d9d856a3a?w=400&h=300&fit=crop',
     duration: 120,
     difficulty: 'anspruchsvoll',
     ageRange: [3, 8],
@@ -689,6 +689,35 @@ export const recipes: Recipe[] = [
     ],
     tukiTip: 'Fruechte-Pizza sieht aus wie echte Pizza — aber ist ein gesunder Sommer-Snack!',
     stars: 1
+  },
+  {
+    id: 'apfelmus-selbstgemacht',
+    emoji: '🍎',
+    title: 'Selbstgemachtes Apfelmus',
+    description: 'Frisches Apfelmus aus regionalen Aepfeln - einfach, gesund und bei Kindern heissgeliebt.',
+    image: 'https://images.unsplash.com/photo-1576179635662-9d1983e97e1e?w=800&auto=format&fit=crop',
+    duration: 25,
+    difficulty: 'Einfach',
+    time: '25 Min.',
+    ageRange: [1, 8] as [number, number],
+    season: 'Herbst',
+    servings: '4 Portionen',
+    tags: ['Dessert', 'Herbst', 'Gesund', 'Klassiker'],
+    ingredients: [
+      { amount: '6', name: 'Aepfel (saeuerlich, z.B. Boskoop)' },
+      { amount: '100 ml', name: 'Wasser' },
+      { amount: '2 EL', name: 'Zucker (optional)' },
+      { amount: '1 TL', name: 'Zimt' },
+      { amount: '1 Spritzer', name: 'Zitronensaft' }
+    ],
+    steps: [
+      { text: 'Aepfel schaelen, entkernen und in kleine Stuecke schneiden.' },
+      { text: 'Apfelstuecke mit Wasser in einen Topf geben und bei mittlerer Hitze 15 Minuten kochen.', tip: 'Kinder koennen beim Schaelen und Schneiden mit einem Kindermesser helfen!' },
+      { text: 'Mit einer Gabel zerdruecken oder puerieren. Zimt und optional Zucker unterruehren.' },
+      { text: 'Abkuehlen lassen und geniessen - warm oder kalt.' }
+    ],
+    tukiTip: 'Selbstgemachtes Apfelmus schmeckt viel besser als gekauftes und ihr wisst genau was drin ist!',
+    stars: 2
   }
 ]
 
