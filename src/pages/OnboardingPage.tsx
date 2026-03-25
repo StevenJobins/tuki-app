@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 const AVATAR_OPTIONS = ['👨‍👩‍👧', '👨‍👩‍👦', '👩‍👧', '👨‍👧', '👩‍👦', '👨‍👦', '👩‍👧‍👦', '👨‍👩‍👧‍👦', '🏠', '🌻']
@@ -10,7 +9,6 @@ export default function OnboardingPage() {
   const [selectedAvatar, setSelectedAvatar] = useState(AVATAR_OPTIONS[0])
   const [familyName, setFamilyName] = useState('')
   const [selectedAge, setSelectedAge] = useState('')
-  const navigate = useNavigate()
   const { updateProfile } = useAuth()
 
   const handleComplete = async () => {
@@ -24,7 +22,7 @@ export default function OnboardingPage() {
     }
     localStorage.setItem('tuki_child_age', selectedAge)
     localStorage.setItem('tuki_onboarded', 'true')
-    navigate('/')
+    window.location.reload()
   }
 
   return (
