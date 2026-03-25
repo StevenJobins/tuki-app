@@ -48,7 +48,7 @@ function KochModus({ recipe, onClose, onComplete }: { recipe: any; onClose: () =
               <label key={i} className="flex items-center gap-3 bg-gray-50 rounded-xl p-3 cursor-pointer active:bg-gray-100 transition-colors">
                 <input type="checkbox" className="w-5 h-5 rounded accent-red-500" />
                 <span className="text-sm font-medium text-gray-600 w-16 shrink-0">{ing.amount}</span>
-                <span className="text-sm text-gray-800">{ing.item}</span>
+                <span className="text-sm text-gray-800">{ing.name}</span>
               </label>
             ))}
           </div>
@@ -240,7 +240,7 @@ export default function RecipeDetailPage() {
                 <span className="text-tuki-rot text-[10px] font-bold">{i + 1}</span>
               </div>
               <span className="text-sm font-medium text-gray-700 w-16 shrink-0">{ing.amount}</span>
-              <span className="text-sm text-gray-600">{ing.item}</span>
+              <span className="text-sm text-gray-600">{ing.name}</span>
             </div>
           ))}
         </div>
