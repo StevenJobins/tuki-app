@@ -8,6 +8,20 @@ import { activities } from '../data/activities'
 
 const AVATAR_OPTIONS = ['👨‍👩‍👧', '👨‍👩‍👦', '👩‍👧', '👨‍👧', '👩‍👦', '👨‍👦', '👩‍👧‍👦', '👨‍👩‍👧‍👦', '🏠', '🌻']
 
+// Fix double-encoded UTF-8 emojis from Supabase
+function fixEmoji(str: string): string {
+  try {
+    if (/[\u0080-\u00ff]/.test(str)) {
+      const bytes = new Uint8Array(str.length)
+      for (let i = 0; i < str.length; i++) bytes[i] = str.charCodeAt(i)
+      return new TextDecoder('utf-8').decode(bytes)
+    }
+    return str
+  } catch {
+    return str
+  }
+}
+
 export default function ProfilePage() {
   const navigate = useNavigate()
   const { tukiStars, completedActivities, completedRecipes, favorites } = useApp()
@@ -44,6 +58,8 @@ export default function ProfilePage() {
     await signOut()
   }
 
+  const avatarDisplay = fixEmoji(profile?.avatar_emoji || '👨‍👩‍👧')
+
   return (
     <div className="pb-24">
       <Header title="Profil" />
@@ -56,7 +72,7 @@ export default function ProfilePage() {
             onClick={() => setShowAvatars(!showAvatars)}
             className="w-20 h-20 rounded-full gradient-mint flex items-center justify-center text-3xl mx-auto mb-3 active:scale-95 transition-transform"
           >
-            {profile?.avatar_emoji || '👨‍👩‍👧'}
+            {avatarDisplay}
           </button>
 
           {/* Avatar picker */}
@@ -67,7 +83,7 @@ export default function ProfilePage() {
                   key={emoji}
                   onClick={() => handleAvatarSelect(emoji)}
                   className={`w-10 h-10 rounded-full flex items-center justify-center text-xl border-2 ${
-                    profile?.avatar_emoji === emoji ? 'border-tuki-rot bg-red-50' : 'border-gray-100 bg-white'
+                    avatarDisplay === emoji ? 'border-tuki-rot bg-red-50' : 'border-gray-100 bg-white'
                   }`}
                 >
                   {emoji}
