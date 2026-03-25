@@ -16,7 +16,7 @@ export default function RecipeDetailPage() {
           <span className="text-4xl block mb-3">ð¤</span>
           <p className="text-gray-500">Rezept nicht gefunden</p>
           <button onClick={() => navigate('/rezepte')} className="text-tuki-rot text-sm mt-2">
-            ZurÃ¼ck zu Rezepten
+            Zurueck zu Rezepten
           </button>
         </div>
       </div>
