@@ -33,10 +33,10 @@ function getSeasonName(): string {
 
 function getSeasonKey(): string {
   const month = new Date().getMonth()
-  if (month >= 2 && month <= 4) return 'frühling'
-  if (month >= 5 && month <= 7) return 'sommer'
-  if (month >= 8 && month <= 10) return 'herbst'
-  return 'winter'
+  if (month >= 2 && month <= 4) return 'Fruehling'
+  if (month >= 5 && month <= 7) return 'Sommer'
+  if (month >= 8 && month <= 10) return 'Herbst'
+  return 'Winter'
 }
 
 export default function HomePage() {
