@@ -2,32 +2,16 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
-const AVATAR_OPTIONS = ['ð¨âð©âð§', 'ð¨âð©âð¦', 'ð©âð§', 'ð¨âð§', 'ð©âð¦', 'ð¨âð¦', 'ð©âð§âð¦', 'ð¨âð©âð§âð¦', 'ð ', 'ð»']
-
-const CHILD_AGE_OPTIONS = [
-  { label: '0â1 Jahr', value: '0-1' },
-  { label: '1â2 Jahre', value: '1-2' },
-  { label: '2â3 Jahre', value: '2-3' },
-  { label: '3â5 Jahre', value: '3-5' },
-  { label: '5â8 Jahre', value: '5-8' },
-]
+const AVATAR_OPTIONS = ['👨‍👩‍👧', '👨‍👩‍👦', '👩‍👧', '👨‍👧', '👩‍👦', '👨‍👦', '👩‍👧‍👦', '👨‍👩‍👧‍👦', '🏠', '🌻']
+const AGE_OPTIONS = ['0–1 Jahr', '1–2 Jahre', '2–3 Jahre', '3–5 Jahre', '5–8 Jahre']
 
 export default function OnboardingPage() {
+  const [step, setStep] = useState(0)
+  const [selectedAvatar, setSelectedAvatar] = useState(AVATAR_OPTIONS[0])
+  const [familyName, setFamilyName] = useState('')
+  const [selectedAge, setSelectedAge] = useState('')
   const navigate = useNavigate()
   const { updateProfile } = useAuth()
-  const [step, setStep] = useState(0)
-  const [familyName, setFamilyName] = useState('')
-  const [selectedAvatar, setSelectedAvatar] = useState('ð¨âð©âð§')
-  const [selectedAge, setSelectedAge] = useState('')
-  const [isAnimating, setIsAnimating] = useState(false)
-
-  const nextStep = () => {
-    setIsAnimating(true)
-    setTimeout(() => {
-      setStep(s => s + 1)
-      setIsAnimating(false)
-    }, 300)
-  }
 
   const handleComplete = async () => {
     try {
@@ -44,155 +28,125 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-red-50 via-white to-green-50 flex flex-col items-center justify-center px-6">
-      {/* Progress Dots */}
+    <div className="min-h-screen bg-gradient-to-b from-red-50 via-white to-green-50 flex flex-col items-center justify-center p-6">
+      {/* Progress dots */}
       <div className="flex gap-2 mb-8">
         {[0, 1, 2].map(i => (
-          <div
-            key={i}
-            className={`h-2 rounded-full transition-all duration-500 ${
-              i === step ? 'w-8 bg-tuki-rot' : i < step ? 'w-2 bg-tuki-rot opacity-50' : 'w-2 bg-gray-200'
-            }`}
-          />
+          <div key={i} className={`h-2 rounded-full transition-all ${i === step ? 'w-8 bg-tuki-rot' : 'w-2 bg-gray-300'}`} />
         ))}
       </div>
 
-      {/* Step Content */}
-      <div
-        className={`w-full max-w-sm transition-all duration-300 ${
-          isAnimating ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
-        }`}
-      >
-        {step === 0 && (
-          <div className="text-center">
-            {/* Logo */}
-            <div className="w-20 h-20 rounded-2xl gradient-rot flex items-center justify-center mx-auto mb-6 shadow-lg">
-              <span className="text-white font-bold text-3xl">T</span>
-            </div>
-            <h1 className="text-2xl font-bold text-gray-800 mb-2">Willkommen bei Tuki</h1>
-            <p className="text-gray-500 mb-2">Die Familien-App, die Kochen, Spielen und Lernen verbindet.</p>
-            <p className="text-sm text-gray-400 mb-8">Entdecke altersgerechte Rezepte und Aktivitaeten fuer euren Familienalltag.</p>
+      {step === 0 && (
+        <div className="text-center max-w-sm animate-fadeIn">
+          <div className="w-20 h-20 rounded-2xl gradient-rot flex items-center justify-center mx-auto mb-6">
+            <span className="text-3xl text-white font-bold">T</span>
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-3">Willkommen bei Tuki</h1>
+          <p className="text-gray-500 mb-2">Die Familien-App, die Kochen, Spielen und Lernen verbindet.</p>
+          <p className="text-gray-400 text-sm mb-8">Entdecke altersgerechte Rezepte und Aktivitaeten fuer euren Familienalltag.</p>
 
-            <div className="space-y-3 mb-8">
-              <div className="flex items-center gap-3 bg-white rounded-xl p-3 border border-gray-100">
-                <span className="text-2xl">ð³</span>
-                <div className="text-left">
-                  <p className="text-sm font-medium text-gray-800">25+ Kinderrezepte</p>
-                  <p className="text-[10px] text-gray-400">Einfach, gesund & kindertauglich</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 bg-white rounded-xl p-3 border border-gray-100">
-                <span className="text-2xl">ð¯</span>
-                <div className="text-left">
-                  <p className="text-sm font-medium text-gray-800">25+ Aktivitaeten</p>
-                  <p className="text-[10px] text-gray-400">Spielerisch foerdern & Spass haben</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 bg-white rounded-xl p-3 border border-gray-100">
-                <span className="text-2xl">â­</span>
-                <div className="text-left">
-                  <p className="text-sm font-medium text-gray-800">Tuki-Sterne sammeln</p>
-                  <p className="text-[10px] text-gray-400">Motivation durch Belohnungssystem</p>
-                </div>
+          <div className="space-y-3 mb-8">
+            <div className="bg-white rounded-xl p-4 flex items-center gap-3 shadow-sm">
+              <span className="text-2xl">🍳</span>
+              <div className="text-left">
+                <p className="font-semibold text-gray-800">25+ Kinderrezepte</p>
+                <p className="text-xs text-gray-500">Einfach, gesund & kindertauglich</p>
               </div>
             </div>
-
-            <button
-              onClick={nextStep}
-              className="w-full py-4 gradient-rot text-white font-semibold rounded-2xl text-base shadow-lg active:scale-[0.98] transition-transform"
-            >
-              Los geht's
-            </button>
-          </div>
-        )}
-
-        {step === 1 && (
-          <div className="text-center">
-            <div className="text-5xl mb-4">{selectedAvatar}</div>
-            <h2 className="text-xl font-bold text-gray-800 mb-1">Wer seid ihr?</h2>
-            <p className="text-sm text-gray-500 mb-6">Waehlt euer Familien-Emoji und gebt euch einen Namen.</p>
-
-            {/* Avatar Grid */}
-            <div className="flex flex-wrap justify-center gap-2 mb-6">
-              {AVATAR_OPTIONS.map(emoji => (
-                <button
-                  key={emoji}
-                  onClick={() => setSelectedAvatar(emoji)}
-                  className={`w-12 h-12 rounded-full flex items-center justify-center text-xl border-2 transition-all duration-200 ${
-                    selectedAvatar === emoji
-                      ? 'border-tuki-rot bg-red-50 scale-110'
-                      : 'border-gray-100 bg-white'
-                  }`}
-                >
-                  {emoji}
-                </button>
-              ))}
+            <div className="bg-white rounded-xl p-4 flex items-center gap-3 shadow-sm">
+              <span className="text-2xl">🎨</span>
+              <div className="text-left">
+                <p className="font-semibold text-gray-800">25+ Aktivitaeten</p>
+                <p className="text-xs text-gray-500">Spielerisch foerdern & Spass haben</p>
+              </div>
             </div>
-
-            {/* Family Name */}
-            <input
-              type="text"
-              placeholder="z.B. Familie Mueller"
-              value={familyName}
-              onChange={e => setFamilyName(e.target.value)}
-              className="w-full text-center font-medium text-gray-800 bg-gray-50 rounded-xl px-4 py-3 border border-gray-200 focus:outline-none focus:border-tuki-mint mb-6"
-            />
-
-            <button
-              onClick={nextStep}
-              className="w-full py-4 gradient-rot text-white font-semibold rounded-2xl text-base shadow-lg active:scale-[0.98] transition-transform"
-            >
-              Weiter
-            </button>
-          </div>
-        )}
-
-        {step === 2 && (
-          <div className="text-center">
-            <div className="text-5xl mb-4">ð</div>
-            <h2 className="text-xl font-bold text-gray-800 mb-1">Wie alt ist euer Kind?</h2>
-            <p className="text-sm text-gray-500 mb-6">So zeigen wir euch passende Inhalte.</p>
-
-            <div className="space-y-2 mb-8">
-              {CHILD_AGE_OPTIONS.map(opt => (
-                <button
-                  key={opt.value}
-                  onClick={() => setSelectedAge(opt.value)}
-                  className={`w-full py-3 px-4 rounded-xl text-sm font-medium border-2 transition-all duration-200 ${
-                    selectedAge === opt.value
-                      ? 'border-tuki-rot bg-red-50 text-tuki-rot'
-                      : 'border-gray-100 bg-white text-gray-600'
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              ))}
+            <div className="bg-white rounded-xl p-4 flex items-center gap-3 shadow-sm">
+              <span className="text-2xl">⭐</span>
+              <div className="text-left">
+                <p className="font-semibold text-gray-800">Tuki-Sterne sammeln</p>
+                <p className="text-xs text-gray-500">Motivation durch Belohnungssystem</p>
+              </div>
             </div>
-
-            <button
-              onClick={handleComplete}
-              disabled={!selectedAge}
-              className={`w-full py-4 font-semibold rounded-2xl text-base shadow-lg active:scale-[0.98] transition-all duration-200 ${
-                selectedAge
-                  ? 'gradient-rot text-white'
-                  : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-              }`}
-            >
-              Tuki starten ð
-            </button>
-
-            <button
-              onClick={handleComplete}
-              className="mt-3 text-sm text-gray-400 underline"
-            >
-              Ueberspringen
-            </button>
           </div>
-        )}
-      </div>
 
-      {/* Footer */}
-      <p className="text-[10px] text-gray-300 mt-8">mimodo AG Â· Schweiz</p>
+          <button
+            onClick={() => setStep(1)}
+            className="w-full py-4 rounded-2xl gradient-rot text-white font-semibold text-lg shadow-lg hover:opacity-90 transition"
+          >
+            Los geht's
+          </button>
+          <p className="text-gray-300 text-xs mt-4">mimodo AG · Schweiz</p>
+        </div>
+      )}
+
+      {step === 1 && (
+        <div className="text-center max-w-sm animate-fadeIn">
+          <div className="text-6xl mb-4">{selectedAvatar}</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Wer seid ihr?</h2>
+          <p className="text-gray-500 text-sm mb-6">Waehlt euer Familien-Emoji und gebt euch einen Namen.</p>
+
+          <div className="grid grid-cols-5 gap-3 mb-6">
+            {AVATAR_OPTIONS.map(avatar => (
+              <button
+                key={avatar}
+                onClick={() => setSelectedAvatar(avatar)}
+                className={`text-2xl p-2 rounded-xl transition ${selectedAvatar === avatar ? 'bg-red-100 ring-2 ring-tuki-rot' : 'bg-gray-50 hover:bg-gray-100'}`}
+              >
+                {avatar}
+              </button>
+            ))}
+          </div>
+
+          <input
+            type="text"
+            value={familyName}
+            onChange={e => setFamilyName(e.target.value)}
+            placeholder="z.B. Familie Mueller"
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 mb-6 focus:outline-none focus:ring-2 focus:ring-tuki-rot"
+          />
+
+          <button
+            onClick={() => setStep(2)}
+            className="w-full py-4 rounded-2xl gradient-rot text-white font-semibold text-lg shadow-lg hover:opacity-90 transition"
+          >
+            Weiter
+          </button>
+          <p className="text-gray-300 text-xs mt-4">mimodo AG · Schweiz</p>
+        </div>
+      )}
+
+      {step === 2 && (
+        <div className="text-center max-w-sm animate-fadeIn">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Wie alt ist euer Kind?</h2>
+          <p className="text-gray-500 text-sm mb-6">So zeigen wir euch passende Inhalte.</p>
+
+          <div className="space-y-3 mb-8">
+            {AGE_OPTIONS.map(age => (
+              <button
+                key={age}
+                onClick={() => setSelectedAge(age)}
+                className={`w-full py-3 px-4 rounded-xl text-left font-medium transition ${selectedAge === age ? 'bg-red-100 text-tuki-rot ring-2 ring-tuki-rot' : 'bg-gray-50 text-gray-700 hover:bg-gray-100'}`}
+              >
+                {age}
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={handleComplete}
+            className="w-full py-4 rounded-2xl gradient-rot text-white font-semibold text-lg shadow-lg hover:opacity-90 transition"
+          >
+            Tuki starten 🚀
+          </button>
+          <button
+            onClick={handleComplete}
+            className="w-full py-3 text-gray-400 text-sm mt-2 hover:text-gray-600 transition"
+          >
+            Ueberspringen
+          </button>
+          <p className="text-gray-300 text-xs mt-4">mimodo AG · Schweiz</p>
+        </div>
+      )}
     </div>
   )
 }
