@@ -1,5 +1,3 @@
-import { motion } from 'framer-motion'
-
 interface AgeFilterProps {
   selected: string
   onChange: (age: string) => void
@@ -23,10 +21,8 @@ export default function AgeFilter({ selected, onChange }: AgeFilterProps) {
           className="relative px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors"
         >
           {selected === age.value && (
-            <motion.div
-              layoutId="ageFilter"
-              className="absolute inset-0 bg-tuki-rot rounded-full"
-              transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+            <div
+              className="absolute inset-0 bg-tuki-rot rounded-full transition-all duration-200"
             />
           )}
           <span className={`relative z-10 ${selected === age.value ? 'text-white' : 'text-gray-500'}`}>
