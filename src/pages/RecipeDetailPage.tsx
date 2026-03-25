@@ -13,10 +13,10 @@ export default function RecipeDetailPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <span className="text-4xl block mb-3">🤔</span>
+          <span className="text-4xl block mb-3">ð¤</span>
           <p className="text-gray-500">Rezept nicht gefunden</p>
           <button onClick={() => navigate('/rezepte')} className="text-tuki-rot text-sm mt-2">
-            Zurück zu Rezepten
+            ZurÃ¼ck zu Rezepten
           </button>
         </div>
       </div>
@@ -62,22 +62,22 @@ export default function RecipeDetailPage() {
       {/* Quick Info */}
       <div className="flex justify-around py-4 bg-white border-b border-gray-100">
         <div className="text-center">
-          <span className="text-lg">⏱️</span>
+          <span className="text-lg">â±ï¸</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5">{recipe.duration} Min.</p>
           <p className="text-[10px] text-gray-400">Dauer</p>
         </div>
         <div className="text-center">
-          <span className="text-lg">👶</span>
+          <span className="text-lg">ð¶</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5">{recipe.ageRange[0]}-{recipe.ageRange[1]} J.</p>
           <p className="text-[10px] text-gray-400">Alter</p>
         </div>
         <div className="text-center">
-          <span className="text-lg">📊</span>
+          <span className="text-lg">ð</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5 capitalize">{recipe.difficulty}</p>
           <p className="text-[10px] text-gray-400">Level</p>
         </div>
         <div className="text-center">
-          <span className="text-lg">🍽️</span>
+          <span className="text-lg">ð½ï¸</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5">{recipe.servings}</p>
           <p className="text-[10px] text-gray-400">Portionen</p>
         </div>
@@ -98,7 +98,7 @@ export default function RecipeDetailPage() {
 
       {/* Ingredients */}
       <div className="px-4 mt-6">
-        <h2 className="font-semibold text-base text-gray-800 mb-3">🛒 Zutaten</h2>
+        <h2 className="font-semibold text-base text-gray-800 mb-3">ð Zutaten</h2>
         <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
           {recipe.ingredients.map((ing, i) => (
             <div
@@ -109,7 +109,7 @@ export default function RecipeDetailPage() {
                 <span className="text-tuki-rot text-[10px] font-bold">{i + 1}</span>
               </div>
               <span className="text-sm font-medium text-gray-700 w-16 shrink-0">{ing.amount}</span>
-              <span className="text-sm text-gray-600">{ing.item}</span>
+              <span className="text-sm text-gray-600">{ing.name}</span>
             </div>
           ))}
         </div>
@@ -117,7 +117,7 @@ export default function RecipeDetailPage() {
 
       {/* Steps */}
       <div className="px-4 mt-6">
-        <h2 className="font-semibold text-base text-gray-800 mb-3">👩‍🍳 Zubereitung</h2>
+        <h2 className="font-semibold text-base text-gray-800 mb-3">ð©âð³ Zubereitung</h2>
         <div className="space-y-4">
           {recipe.steps.map((step, i) => (
             <div
@@ -131,7 +131,7 @@ export default function RecipeDetailPage() {
                 <p className="text-sm text-gray-700 leading-relaxed">{step.text}</p>
                 {step.tip && (
                   <div className="mt-2 bg-yellow-50 rounded-lg p-2.5 border border-yellow-200/50">
-                    <p className="text-xs text-yellow-700">💡 {step.tip}</p>
+                    <p className="text-xs text-yellow-700">ð¡ {step.tip}</p>
                   </div>
                 )}
               </div>
@@ -152,9 +152,9 @@ export default function RecipeDetailPage() {
           }`}
         >
           {isCompleted ? (
-            <>✅ Geschafft! +{recipe.stars} Sterne verdient</>
+            <>â Geschafft! +{recipe.stars} Sterne verdient</>
           ) : (
-            <>⭐ Rezept geschafft — {recipe.stars} Sterne verdienen</>
+            <>â­ Rezept geschafft â {recipe.stars} Sterne verdienen</>
           )}
         </button>
       </div>
