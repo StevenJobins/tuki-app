@@ -34,6 +34,21 @@ function timeAgo(dateStr: string): string {
   return `vor ${days} Tag${days > 1 ? 'en' : ''}`
 }
 
+
+// Fix double-encoded UTF-8 emojis from Supabase
+function fixEmoji(str: string): string {
+  try {
+    if (/[\u0080-\u00ff]/.test(str)) {
+      const bytes = new Uint8Array(str.length)
+      for (let i = 0; i < str.length; i++) bytes[i] = str.charCodeAt(i)
+      return new TextDecoder('utf-8').decode(bytes)
+    }
+    return str
+  } catch {
+    return str
+  }
+}
+
 export default function CommunityPage() {
   const { user, profile } = useAuth()
   const [activeTab, setActiveTab] = useState<'feed' | 'write'>('feed')
@@ -160,7 +175,7 @@ export default function CommunityPage() {
                 >
                   <div className="flex items-center gap-3 p-4 pb-2">
                     <div className="w-10 h-10 rounded-full bg-tuki-mint-bg flex items-center justify-center text-lg">
-                      {post.profiles?.avatar_emoji || '👤'}
+                      {fixEmoji(post.profiles?.avatar_emoji || '👤')}
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
@@ -200,7 +215,7 @@ export default function CommunityPage() {
           <div className="bg-white rounded-2xl border border-gray-100 p-4">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-full bg-tuki-mint-bg flex items-center justify-center text-lg">
-                {profile?.avatar_emoji || '👤'}
+                {fixEmoji(profile?.avatar_emoji || '👤')}
               </div>
               <span className="font-semibold text-sm text-gray-800">{profile?.display_name || 'Du'}</span>
             </div>
