@@ -39,15 +39,29 @@ function getSeasonKey(): string {
   return 'Winter'
 }
 
+function getSeasonKeyLower(): string {
+  const month = new Date().getMonth()
+  if (month >= 2 && month <= 4) return 'frühling'
+  if (month >= 5 && month <= 7) return 'sommer'
+  if (month >= 8 && month <= 10) return 'herbst'
+  return 'winter'
+}
+
 export default function HomePage() {
   const navigate = useNavigate()
-  const { tukiStars, completedActivities, completedRecipes } = useApp()
+  const { tukiStars, completedActivities, completedRecipes, children } = useApp()
+
   const seasonKey = getSeasonKey()
+  const seasonKeyLower = getSeasonKeyLower()
   const allSeasonalRecipes = recipes.filter(r =>
-    r.season.includes(seasonKey as any) || r.season.includes('ganzjaehrig' as any)
+    r.season.includes(seasonKey as any) || r.season.includes(seasonKeyLower as any) ||
+    r.season.includes('ganzjaehrig' as any) || r.season.includes('ganzjährig' as any)
   )
   const seasonalRecipes = allSeasonalRecipes.slice(0, 4)
   const featuredActivities = activities.slice(0, 4)
+
+  const familyName = children.length > 0 ? children[0].name + 's Familie' : ''
+  const greeting = getGreeting()
 
   return (
     <div className="pb-24">
@@ -57,7 +71,9 @@ export default function HomePage() {
       <div className="px-4 mt-2 mb-6">
         <div className="relative rounded-3xl overflow-hidden gradient-mint p-5">
           <div className="relative z-10">
-            <p className="text-tuki-rot-dark text-sm font-medium">{getGreeting()} 👋</p>
+            <p className="text-tuki-rot-dark text-sm font-medium">
+              {greeting} {children.length > 0 ? familyName : ''} 👋
+            </p>
             <h1 className="text-2xl font-bold text-gray-800 mt-1 leading-tight">
               Was entdecken wir<br />heute zusammen?
             </h1>
@@ -88,9 +104,9 @@ export default function HomePage() {
         <div className="grid grid-cols-4 md:grid-cols-4 gap-2 md:gap-3">
           {[
             { emoji: '🍳', label: 'Rezepte', path: '/rezepte' },
-            { emoji: '🧊', label: 'K\u00FChlschrank', path: '/zutaten-check' },
-            { emoji: '🎮', label: 'Aktivitäten', path: '/aktivitaeten' },
-            { emoji: '👨‍👩‍👧', label: 'Community', path: '/community' },
+            { emoji: '🎯', label: 'Aktivitäten', path: '/aktivitaeten' },
+            { emoji: '🧱', label: 'Kühlschrank', path: '/zutaten-check' },
+            { emoji: '📅', label: 'Wochenplan', path: '/wochenplan' },
           ].map(action => (
             <button
               key={action.path}
@@ -104,10 +120,36 @@ export default function HomePage() {
         </div>
       </div>
 
+      {/* Wochenplan Widget */}
+      <div className="px-4 mb-6">
+        <button
+          onClick={() => navigate('/wochenplan')}
+          className="w-full bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-4 border border-purple-100/50 text-left"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-white/80 flex items-center justify-center">
+              <span className="text-2xl">📅</span>
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-sm text-gray-800">Dein Wochenplan</h3>
+              <p className="text-xs text-gray-500 mt-0.5">
+                {children.length > 0
+                  ? `Personalisierte Rezepte & Aktivitäten für ${children.map(c => c.name).join(' & ')}`
+                  : 'Rezepte & Aktivitäten für jede Woche'
+                }
+              </p>
+            </div>
+            <svg className="shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8F5652" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
+        </button>
+      </div>
+
       {/* Seasonal Banner */}
       <div className="px-4 mb-6">
         <button
-          onClick={() => navigate(`/rezepte?season=${seasonKey}`)}
+          onClick={() => navigate(`/rezepte?season=${getSeasonKey()}`)}
           className="w-full bg-tuki-warm rounded-2xl p-4 border border-orange-100 text-left"
         >
           <div className="flex items-center gap-3">
@@ -127,7 +169,7 @@ export default function HomePage() {
 
       {/* Featured Recipes */}
       <div>
-        <SectionHeader title="Beliebte Rezepte" emoji="🍳" linkTo={`/rezepte?season=${seasonKey}`} />
+        <SectionHeader title="Beliebte Rezepte" emoji="🍳" linkTo={`/rezepte?season=${getSeasonKey()}`} />
         <div className="flex gap-4 overflow-x-auto px-4 pb-2 no-scrollbar snap-x">
           {seasonalRecipes.map(recipe => (
             <RecipeCard key={recipe.id} recipe={recipe} size="featured" />
