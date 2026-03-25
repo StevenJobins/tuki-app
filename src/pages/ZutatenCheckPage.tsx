@@ -85,7 +85,7 @@ export default function ZutatenCheckPage() {
 
   return (
     <div className="pb-24">
-      <Header title="Was haben wir da?" />
+      <Header title="Kühlschrank-Check" />
 
       {/* Intro */}
       <div className="px-4 mb-4">
