@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
+import { useApp } from './context/AppContext'
 import BottomNav from './components/BottomNav'
 import SideNav from './components/SideNav'
 import HomePage from './pages/HomePage'
@@ -11,8 +12,7 @@ import DevelopmentPage from './pages/DevelopmentPage'
 import CommunityPage from './pages/CommunityPage'
 import ProfilePage from './pages/ProfilePage'
 import LoginPage from './pages/LoginPage'
-import ZutatenCheckPage from './pages/ZutatenCheckPage'
-import WochenplanPage from './pages/WochenplanPage'
+import OnboardingPage from './pages/OnboardingPage'
 
 function LoadingScreen() {
   return (
@@ -33,6 +33,14 @@ export default function App() {
   if (loading) return <LoadingScreen />
   if (!user) return <LoginPage />
 
+  return <AppContent />
+}
+
+function AppContent() {
+  const { isOnboarded } = useApp()
+
+  if (!isOnboarded) return <OnboardingPage />
+
   return (
     <div className="min-h-screen bg-tuki-cream flex">
       {/* Sidebar — visible on desktop (md+) */}
@@ -49,8 +57,6 @@ export default function App() {
           <Route path="/entwicklung" element={<DevelopmentPage />} />
           <Route path="/community" element={<CommunityPage />} />
           <Route path="/profil" element={<ProfilePage />} />
-          <Route path="/zutaten-check" element={<ZutatenCheckPage />} />
-          <Route path="/wochenplan" element={<WochenplanPage />} />
         </Routes>
         {/* Bottom nav — mobile only */}
         <BottomNav />
