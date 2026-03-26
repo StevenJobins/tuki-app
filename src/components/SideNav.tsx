@@ -5,6 +5,7 @@ const navItems = [
   { path: '/', label: 'Home', emoji: '🏠' },
   { path: '/rezepte', label: 'Rezepte', emoji: '🍳' },
   { path: '/aktivitaeten', label: 'Aktivitäten', emoji: '🎮' },
+  { path: '/favoriten', label: 'Favoriten', emoji: '❤️' },
   { path: '/wochenplan', label: 'Wochenplan', emoji: '📅' },
   { path: '/zutaten-check', label: 'Kühlschrank', emoji: '🧱' },
   { path: '/entwicklung', label: 'Entwicklung', emoji: '📊' },
