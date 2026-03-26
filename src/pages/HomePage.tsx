@@ -2,8 +2,8 @@ import Header from '../components/Header'
 import SectionHeader from '../components/SectionHeader'
 import RecipeCard from '../components/RecipeCard'
 import ActivityCard from '../components/ActivityCard'
-import { recipes } from '../data/recipes'
-import { activities } from '../data/activities'
+import { recipes, getRecipesByAge, getSeasonalRecipes } from '../data/recipes'
+import { activities, getActivitiesByAge } from '../data/activities'
 import { useApp } from '../context/AppContext'
 import { useNavigate } from 'react-router-dom'
 
@@ -33,51 +33,110 @@ function getSeasonName(): string {
 
 function getSeasonKey(): string {
   const month = new Date().getMonth()
-  if (month >= 2 && month <= 4) return 'Fruehling'
-  if (month >= 5 && month <= 7) return 'Sommer'
-  if (month >= 8 && month <= 10) return 'Herbst'
-  return 'Winter'
-}
-
-function getSeasonKeyLower(): string {
-  const month = new Date().getMonth()
   if (month >= 2 && month <= 4) return 'frühling'
   if (month >= 5 && month <= 7) return 'sommer'
   if (month >= 8 && month <= 10) return 'herbst'
   return 'winter'
 }
 
+function getChildAge(birthDate: string): number {
+  const birth = new Date(birthDate)
+  const now = new Date()
+  const months = (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth())
+  return Math.round(months / 12 * 10) / 10 // age in years with 1 decimal
+}
+
+function getAgeLabel(birthDate: string): string {
+  const birth = new Date(birthDate)
+  const now = new Date()
+  const months = (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth())
+  if (months < 12) return `${months} Monate`
+  const years = Math.floor(months / 12)
+  const rem = months % 12
+  return rem > 0 ? `${years} J. ${rem} M.` : `${years} Jahre`
+}
+
+function getPhaseLabel(age: number): string {
+  if (age < 1.5) return 'Baby'
+  if (age < 2) return 'Kleinkind (früh)'
+  if (age < 3) return 'Kleinkind'
+  if (age < 5) return 'Vorschulkind'
+  return 'Schulkind'
+}
+
+const DAILY_TIPS = [
+  { tip: 'Lass dein Kind die Zutaten für das Abendessen aus dem Kühlschrank holen — das stärkt die Selbstständigkeit!', emoji: '🥕' },
+  { tip: 'Gemeinsames Kochen fördert die Feinmotorik. Schon Zweijährige können Bananen schneiden!', emoji: '🍌' },
+  { tip: 'Benenne die Farben beim Gemüse-Waschen — so lernt dein Kind spielerisch Farben und Wörter.', emoji: '🌈' },
+  { tip: 'Kinder die regelmässig mitkochen, probieren neue Lebensmittel viel lieber!', emoji: '👨‍🍳' },
+  { tip: '15 Minuten Naturbeobachtung am Tag fördert die Konzentration und Kreativität deines Kindes.', emoji: '🌿' },
+  { tip: 'Baue kleine Wahlmöglichkeiten in den Alltag ein: "Möchtest du den roten oder den grünen Apfel?"', emoji: '🍎' },
+  { tip: 'Vorlesen vor dem Schlafen stärkt die Bindung und fördert die Sprachentwicklung.', emoji: '📖' },
+]
+
+function getDailyTip() {
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000)
+  return DAILY_TIPS[dayOfYear % DAILY_TIPS.length]
+}
+
+// Shuffle array deterministically by day
+function shuffleByDay<T>(arr: T[]): T[] {
+  const day = new Date().getDate()
+  const shuffled = [...arr]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = (i * day + day) % (i + 1)
+    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
+}
+
 export default function HomePage() {
   const navigate = useNavigate()
-  const { tukiStars, completedActivities, completedRecipes, children } = useApp()
+  const { children, tukiStars, completedActivities, completedRecipes } = useApp()
 
-  const seasonKey = getSeasonKey()
-  const seasonKeyLower = getSeasonKeyLower()
-  const allSeasonalRecipes = recipes.filter(r =>
-    r.season.includes(seasonKey as any) || r.season.includes(seasonKeyLower as any) ||
-    r.season.includes('ganzjaehrig' as any) || r.season.includes('ganzjährig' as any)
-  )
-  const seasonalRecipes = allSeasonalRecipes.slice(0, 4)
-  const featuredActivities = activities.slice(0, 4)
+  const child = children[0]
+  const childAge = child ? getChildAge(child.birthDate) : null
+  const childName = child?.name || ''
+  const ageLabel = child ? getAgeLabel(child.birthDate) : ''
+  const phaseLabel = childAge !== null ? getPhaseLabel(childAge) : ''
 
-  const familyName = children.length > 0 ? children[0].name + 's Familie' : ''
-  const greeting = getGreeting()
+  // Personalized content: filter by age, exclude completed, shuffle daily
+  const personalRecipes = childAge !== null
+    ? shuffleByDay(getRecipesByAge(childAge).filter(r => !completedRecipes.includes(r.id)))
+    : shuffleByDay(getSeasonalRecipes())
+  const personalActivities = childAge !== null
+    ? shuffleByDay(getActivitiesByAge(childAge).filter(a => !completedActivities.includes(a.id)))
+    : shuffleByDay(activities)
+
+  const featuredRecipes = personalRecipes.slice(0, 4)
+  const featuredActivities = personalActivities.slice(0, 4)
+
+  // Seasonal extras
+  const allSeasonalRecipes = getSeasonalRecipes()
+  const dailyTip = getDailyTip()
 
   return (
     <div className="pb-24">
       <Header />
 
-      {/* Hero Section */}
+      {/* Hero Section — personalized */}
       <div className="px-4 mt-2 mb-6">
         <div className="relative rounded-3xl overflow-hidden gradient-mint p-5">
           <div className="relative z-10">
-            <p className="text-tuki-rot-dark text-sm font-medium">
-              {greeting} {children.length > 0 ? familyName : ''} 👋
-            </p>
+            <p className="text-tuki-rot-dark text-sm font-medium">{getGreeting()} 👋</p>
             <h1 className="text-2xl font-bold text-gray-800 mt-1 leading-tight">
-              Was entdecken wir<br />heute zusammen?
+              {childName
+                ? <>Was entdecken wir<br />heute mit {childName}?</>
+                : <>Was entdecken wir<br />heute zusammen?</>
+              }
             </h1>
-            <div className="flex items-center gap-3 mt-4">
+            {child && (
+              <div className="flex items-center gap-2 mt-2">
+                <span className="text-lg">{child.avatarEmoji}</span>
+                <span className="text-xs text-gray-600 font-medium">{childName} · {ageLabel} · {phaseLabel}</span>
+              </div>
+            )}
+            <div className="flex items-center gap-3 mt-3">
               <div className="bg-white/70 rounded-xl px-3 py-2 flex items-center gap-2">
                 <span>⭐</span>
                 <div>
@@ -94,6 +153,7 @@ export default function HomePage() {
               </div>
             </div>
           </div>
+          {/* Decorative circles */}
           <div className="absolute -right-6 -top-6 w-32 h-32 rounded-full bg-white/20" />
           <div className="absolute -right-2 bottom-0 w-20 h-20 rounded-full bg-white/15" />
         </div>
@@ -104,9 +164,9 @@ export default function HomePage() {
         <div className="grid grid-cols-4 md:grid-cols-4 gap-2 md:gap-3">
           {[
             { emoji: '🍳', label: 'Rezepte', path: '/rezepte' },
-            { emoji: '🎯', label: 'Aktivitäten', path: '/aktivitaeten' },
-            { emoji: '🧱', label: 'Kühlschrank', path: '/zutaten-check' },
-            { emoji: '📅', label: 'Wochenplan', path: '/wochenplan' },
+            { emoji: '🎮', label: 'Aktivitäten', path: '/aktivitaeten' },
+            { emoji: '📊', label: 'Entwicklung', path: '/entwicklung' },
+            { emoji: '👨‍👩‍👧', label: 'Community', path: '/community' },
           ].map(action => (
             <button
               key={action.path}
@@ -120,31 +180,22 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Wochenplan Widget */}
-      <div className="px-4 mb-6">
-        <button
-          onClick={() => navigate('/wochenplan')}
-          className="w-full bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-4 border border-purple-100/50 text-left"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-white/80 flex items-center justify-center">
-              <span className="text-2xl">📅</span>
+      {/* Personalized Recommendations Banner */}
+      {childName && (
+        <div className="px-4 mb-6">
+          <div className="bg-gradient-to-r from-tuki-rot/5 to-orange-50 rounded-2xl p-4 border border-tuki-rot/10">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">{child?.avatarEmoji}</span>
+              <div className="flex-1">
+                <h3 className="font-semibold text-sm text-gray-800">Empfohlen für {childName}</h3>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  {personalRecipes.length} Rezepte & {personalActivities.length} Aktivitäten passend für {ageLabel}
+                </p>
+              </div>
             </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-sm text-gray-800">Dein Wochenplan</h3>
-              <p className="text-xs text-gray-500 mt-0.5">
-                {children.length > 0
-                  ? `Personalisierte Rezepte & Aktivitäten für ${children.map(c => c.name).join(' & ')}`
-                  : 'Rezepte & Aktivitäten für jede Woche'
-                }
-              </p>
-            </div>
-            <svg className="shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8F5652" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
           </div>
-        </button>
-      </div>
+        </div>
+      )}
 
       {/* Seasonal Banner */}
       <div className="px-4 mb-6">
@@ -167,19 +218,27 @@ export default function HomePage() {
         </button>
       </div>
 
-      {/* Featured Recipes */}
+      {/* Featured Recipes — personalized by age */}
       <div>
-        <SectionHeader title="Beliebte Rezepte" emoji="🍳" linkTo={`/rezepte?season=${getSeasonKey()}`} />
+        <SectionHeader
+          title={childName ? `Rezepte für ${childName}` : 'Beliebte Rezepte'}
+          emoji="🍳"
+          linkTo={`/rezepte?season=${getSeasonKey()}`}
+        />
         <div className="flex gap-4 overflow-x-auto px-4 pb-2 no-scrollbar snap-x">
-          {seasonalRecipes.map(recipe => (
+          {featuredRecipes.map(recipe => (
             <RecipeCard key={recipe.id} recipe={recipe} size="featured" />
           ))}
         </div>
       </div>
 
-      {/* Activities */}
+      {/* Activities — personalized by age */}
       <div className="mt-6">
-        <SectionHeader title="Aktivitäten für heute" emoji="🎯" linkTo="/aktivitaeten" />
+        <SectionHeader
+          title={childName ? `Aktivitäten für ${childName}` : 'Aktivitäten für heute'}
+          emoji="🎯"
+          linkTo="/aktivitaeten"
+        />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 px-4">
           {featuredActivities.slice(0, 4).map(activity => (
             <ActivityCard key={activity.id} activity={activity} />
@@ -192,13 +251,12 @@ export default function HomePage() {
         <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
           <div className="flex items-start gap-3">
             <div className="w-10 h-10 rounded-xl gradient-rot flex items-center justify-center shrink-0">
-              <span className="text-white text-lg">💡</span>
+              <span className="text-white text-lg">{dailyTip.emoji}</span>
             </div>
             <div>
               <h3 className="font-semibold text-sm text-gray-800">Tuki-Tipp des Tages</h3>
               <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-                Lass dein Kind die Zutaten für das Abendessen aus dem Kühlschrank holen —
-                im Tuki erreicht es alles auf Augenhöhe. Das stärkt die Selbstständigkeit!
+                {dailyTip.tip}
               </p>
             </div>
           </div>
