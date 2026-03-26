@@ -1153,7 +1153,7 @@ export const recipes: Recipe[] = [
     stars: 1,
   },
 
-]]
+]
 
 export function getRecipeById(id: string): Recipe | undefined {
   return recipes.find(r => r.id === id)
