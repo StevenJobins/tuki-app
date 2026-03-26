@@ -13,6 +13,8 @@ import CommunityPage from './pages/CommunityPage'
 import ProfilePage from './pages/ProfilePage'
 import LoginPage from './pages/LoginPage'
 import OnboardingPage from './pages/OnboardingPage'
+import WochenplanPage from './pages/WochenplanPage'
+import ZutatenCheckPage from './pages/ZutatenCheckPage'
 
 function LoadingScreen() {
   return (
@@ -43,7 +45,7 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-tuki-cream flex">
-      {/* Sidebar — visible on desktop (md+) */}
+      {/* Sidebar â visible on desktop (md+) */}
       <SideNav />
 
       {/* Main content area */}
@@ -57,8 +59,10 @@ function AppContent() {
           <Route path="/entwicklung" element={<DevelopmentPage />} />
           <Route path="/community" element={<CommunityPage />} />
           <Route path="/profil" element={<ProfilePage />} />
-        </Routes>
-        {/* Bottom nav — mobile only */}
+                      <Route path="/wochenplan" element={<WochenplanPage />} />
+              <Route path="/zutaten-check" element={<ZutatenCheckPage />} />
+              </Routes>
+        {/* Bottom nav â mobile only */}
         <BottomNav />
       </div>
     </div>
