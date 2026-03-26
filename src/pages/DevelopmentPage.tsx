@@ -251,22 +251,6 @@ export default function DevelopmentPage() {
                           </div>
                         )}
 
-                        {/* Product Suggestions */}
-                        {ms.suggestedProducts.length > 0 && (
-                          <div className="bg-gradient-to-r from-tuki-mint-bg to-green-50 rounded-xl p-3 border border-green-100">
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className="text-base">🎁</span>
-                              <span className="text-[11px] font-semibold text-green-800">Passende Tuki-Produkte</span>
-                            </div>
-                            <div className="flex flex-wrap gap-1.5">
-                              {ms.suggestedProducts.map((prod, i) => (
-                                <span key={i} className="bg-white text-green-700 text-[10px] font-medium px-2.5 py-1 rounded-full border border-green-200">
-                                  {prod}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        )}
                       </div>
                     )}
                   </div>
@@ -277,35 +261,6 @@ export default function DevelopmentPage() {
         ))}
       </div>
 
-      {/* Tuki-Box CTA */}
-      <div className="mx-4 mt-6 mb-4">
-        <div className="bg-gradient-to-br from-tuki-rot via-red-500 to-orange-500 rounded-2xl p-5 text-white relative overflow-hidden">
-          <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-white/10 rounded-full" />
-          <div className="absolute top-2 right-3 text-3xl opacity-20">📦</div>
-          <div className="relative z-10">
-            <span className="bg-white/20 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-              Tuki-Box
-            </span>
-            <h3 className="text-lg font-bold mt-2">{phase.boxName}</h3>
-            <p className="text-white/80 text-xs mt-1 leading-relaxed">{phase.boxDescription}</p>
-            <div className="flex flex-wrap gap-1 mt-3">
-              {phase.boxItems.slice(0, 3).map((item, i) => (
-                <span key={i} className="bg-white/20 text-[10px] px-2 py-0.5 rounded-full">
-                  {item}
-                </span>
-              ))}
-              {phase.boxItems.length > 3 && (
-                <span className="bg-white/20 text-[10px] px-2 py-0.5 rounded-full">
-                  +{phase.boxItems.length - 3} mehr
-                </span>
-              )}
-            </div>
-            <button className="mt-4 bg-white text-red-600 font-semibold text-xs px-5 py-2.5 rounded-xl active:scale-95 transition-transform shadow-lg">
-              Mehr erfahren →
-            </button>
-          </div>
-        </div>
-      </div>
 
       {/* Overall Stats */}
       <div className="mx-4 mb-4">
