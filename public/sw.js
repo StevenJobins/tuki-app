@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tuki-family-v20'
+const CACHE_NAME = 'tuki-family-v21'
 const urlsToCache = ['/tuki-app/', '/tuki-app/index.html']
 
 self.addEventListener('install', (event) => {
@@ -9,14 +9,9 @@ self.addEventListener('install', (event) => {
 })
 
 self.addEventListener('fetch', (event) => {
-  // Never cache API calls (Supabase, etc.)
-  if (event.request.url.includes('supabase.co') || event.request.url.includes('/auth/') || event.request.url.includes('/rest/')) {
-    return
-  }
   event.respondWith(
-    fetch(event.request).catch(() => {
-      return caches.match(event.request).then((response) => {
-        if (response) return response
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request).catch(() => {
         if (event.request.destination === 'document') {
           return caches.match('/tuki-app/index.html')
         }
