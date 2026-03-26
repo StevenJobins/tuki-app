@@ -43,12 +43,12 @@ function AuthenticatedApp() {
   if (!isOnboarded) return <OnboardingPage />
 
   return (
-    <div className="min-h-screen bg-tuki-cream flex">
+    <div className="min-h-screen bg-tuki-cream flex overflow-hidden">
       {/* Sidebar \u2013 visible on desktop (md+) */}
       <SideNav />
 
       {/* Main content area */}
-      <div className="flex-1 min-h-screen max-w-lg mx-auto md:max-w-none md:mx-0 relative">
+      <div className="flex-1 min-h-screen min-w-0 overflow-x-hidden max-w-lg mx-auto md:max-w-none md:mx-0 relative">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/rezepte" element={<RecipesPage />} />
