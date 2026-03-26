@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tuki-family-v17'
+const CACHE_NAME = 'tuki-family-v18'
 const urlsToCache = ['/tuki-app/', '/tuki-app/index.html']
 
 self.addEventListener('install', (event) => {
