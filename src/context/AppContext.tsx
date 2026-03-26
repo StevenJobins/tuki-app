@@ -105,6 +105,10 @@ function loadState(): AppState {
         parsed.childData = {}
         parsed.activeChildId = parsed.activeChildId || null
       }
+      // Auto-set active child if children exist but none is active
+      if (parsed.children?.length > 0 && !parsed.activeChildId) {
+        parsed.activeChildId = parsed.children[0].id
+      }
       return { ...defaultState, ...parsed }
     }
   } catch {}
