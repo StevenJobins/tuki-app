@@ -4,82 +4,10 @@ import RecipeCard from '../components/RecipeCard'
 import ActivityCard from '../components/ActivityCard'
 import { recipes, getRecipesByAge, getSeasonalRecipes } from '../data/recipes'
 import { activities, getActivitiesByAge } from '../data/activities'
+import { getMilestonesForAge, getPhaseForAge } from '../data/milestones'
 import { useApp } from '../context/AppContext'
 import { useNavigate } from 'react-router-dom'
-
-function getGreeting(): string {
-  const hour = new Date().getHours()
-  if (hour < 11) return 'Guten Morgen'
-  if (hour < 14) return 'Mahlzeit'
-  if (hour < 18) return 'Guten Nachmittag'
-  return 'Guten Abend'
-}
-
-function getSeasonEmoji(): string {
-  const month = new Date().getMonth()
-  if (month >= 2 && month <= 4) return '🌸'
-  if (month >= 5 && month <= 7) return '☀️'
-  if (month >= 8 && month <= 10) return '🍂'
-  return '❄️'
-}
-
-function getSeasonName(): string {
-  const month = new Date().getMonth()
-  if (month >= 2 && month <= 4) return 'Frühling'
-  if (month >= 5 && month <= 7) return 'Sommer'
-  if (month >= 8 && month <= 10) return 'Herbst'
-  return 'Winter'
-}
-
-function getSeasonKey(): string {
-  const month = new Date().getMonth()
-  if (month >= 2 && month <= 4) return 'frühling'
-  if (month >= 5 && month <= 7) return 'sommer'
-  if (month >= 8 && month <= 10) return 'herbst'
-  return 'winter'
-}
-
-function getChildAge(birthDate: string): number {
-  const birth = new Date(birthDate)
-  const now = new Date()
-  const months = (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth())
-  return Math.round(months / 12 * 10) / 10 // age in years with 1 decimal
-}
-
-function getAgeLabel(birthDate: string): string {
-  const birth = new Date(birthDate)
-  const now = new Date()
-  const months = (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth())
-  if (months < 12) return `${months} Monate`
-  const years = Math.floor(months / 12)
-  const rem = months % 12
-  return rem > 0 ? `${years} J. ${rem} M.` : `${years} Jahre`
-}
-
-function getPhaseLabel(age: number): string {
-  if (age < 1.5) return 'Baby'
-  if (age < 2) return 'Kleinkind (früh)'
-  if (age < 3) return 'Kleinkind'
-  if (age < 5) return 'Vorschulkind'
-  return 'Schulkind'
-}
-
-const DAILY_TIPS = [
-  { tip: 'Lass dein Kind die Zutaten für das Abendessen aus dem Kühlschrank holen — das stärkt die Selbstständigkeit!', emoji: '🥕' },
-  { tip: 'Gemeinsames Kochen fördert die Feinmotorik. Schon Zweijährige können Bananen schneiden!', emoji: '🍌' },
-  { tip: 'Benenne die Farben beim Gemüse-Waschen — so lernt dein Kind spielerisch Farben und Wörter.', emoji: '🌈' },
-  { tip: 'Kinder die regelmässig mitkochen, probieren neue Lebensmittel viel lieber!', emoji: '👨‍🍳' },
-  { tip: '15 Minuten Naturbeobachtung am Tag fördert die Konzentration und Kreativität deines Kindes.', emoji: '🌿' },
-  { tip: 'Baue kleine Wahlmöglichkeiten in den Alltag ein: "Möchtest du den roten oder den grünen Apfel?"', emoji: '🍎' },
-  { tip: 'Vorlesen vor dem Schlafen stärkt die Bindung und fördert die Sprachentwicklung.', emoji: '📖' },
-]
-
-function getDailyTip() {
-  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000)
-  return DAILY_TIPS[dayOfYear % DAILY_TIPS.length]
-}
-
-// Shuffle array deterministically by day
+rray deterministically by day
 function shuffleByDay<T>(arr: T[]): T[] {
   const day = new Date().getDate()
   const shuffled = [...arr]
@@ -88,66 +16,7 @@ function shuffleByDay<T>(arr: T[]): T[] {
     ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
   }
   return shuffled
-}
-
-export default function HomePage() {
-  const navigate = useNavigate()
-  const { children, tukiStars, completedActivities, completedRecipes } = useApp()
-
-  const child = children[0]
-  const childAge = child ? getChildAge(child.birthDate) : null
-  const childName = child?.name || ''
-  const ageLabel = child ? getAgeLabel(child.birthDate) : ''
-  const phaseLabel = childAge !== null ? getPhaseLabel(childAge) : ''
-
-  // Personalized content: filter by age, exclude completed, shuffle daily
-  const personalRecipes = childAge !== null
-    ? shuffleByDay(getRecipesByAge(childAge).filter(r => !completedRecipes.includes(r.id)))
-    : shuffleByDay(getSeasonalRecipes())
-  const personalActivities = childAge !== null
-    ? shuffleByDay(getActivitiesByAge(childAge).filter(a => !completedActivities.includes(a.id)))
-    : shuffleByDay(activities)
-
-  const featuredRecipes = personalRecipes.slice(0, 4)
-  const featuredActivities = personalActivities.slice(0, 4)
-
-  // Seasonal extras
-  const allSeasonalRecipes = getSeasonalRecipes()
-  const dailyTip = getDailyTip()
-
-  return (
-    <div className="pb-24">
-      <Header />
-
-      {/* Hero Section — personalized */}
-      <div className="px-4 mt-2 mb-6">
-        <div className="relative rounded-3xl overflow-hidden gradient-mint p-5">
-          <div className="relative z-10">
-            <p className="text-tuki-rot-dark text-sm font-medium">{getGreeting()} 👋</p>
-            <h1 className="text-2xl font-bold text-gray-800 mt-1 leading-tight">
-              {childName
-                ? <>Was entdecken wir<br />heute mit {childName}?</>
-                : <>Was entdecken wir<br />heute zusammen?</>
-              }
-            </h1>
-            {child && (
-              <div className="flex items-center gap-2 mt-2">
-                <span className="text-lg">{child.avatarEmoji}</span>
-                <span className="text-xs text-gray-600 font-medium">{childName} · {ageLabel} · {phaseLabel}</span>
-              </div>
-            )}
-            <div className="flex items-center gap-3 mt-3">
-              <div className="bg-white/70 rounded-xl px-3 py-2 flex items-center gap-2">
-                <span>⭐</span>
-                <div>
-                  <p className="text-xs font-semibold text-gray-700">{tukiStars.total} Sterne</p>
-                  <p className="text-[10px] text-gray-500">{tukiStars.levelName}</p>
-                </div>
-              </div>
-              <div className="bg-white/70 rounded-xl px-3 py-2 flex items-center gap-2">
-                <span>✅</span>
-                <div>
-                  <p className="text-xs font-semibold text-gray-700">{completedActivities.length + completedRecipes.length}</p>
+}nt-semibold text-gray-700">{completedActivities.length + completedRecipes.length}</p>
                   <p className="text-[10px] text-gray-500">Abgeschlossen</p>
                 </div>
               </div>
@@ -180,18 +49,41 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Personalized Recommendations Banner */}
-      {childName && (
+      {/* Tagesimpuls Card */}
+      {childName && (dailyRecipe || dailyActivity) && (
         <div className="px-4 mb-6">
-          <div className="bg-gradient-to-r from-tuki-rot/5 to-orange-50 rounded-2xl p-4 border border-tuki-rot/10">
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">{child?.avatarEmoji}</span>
-              <div className="flex-1">
-                <h3 className="font-semibold text-sm text-gray-800">Empfohlen für {childName}</h3>
-                <p className="text-xs text-gray-500 mt-0.5">
-                  {personalRecipes.length} Rezepte & {personalActivities.length} Aktivitäten passend für {ageLabel}
-                </p>
-              </div>
+          <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl p-5 border border-amber-100/50">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-lg">✨</span>
+              <h3 className="font-semibold text-sm text-gray-800">Tagesimpuls</h3>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              {dailyRecipe && (
+                <button
+                  onClick={() => navigate(`/rezept/${dailyRecipe.id}`)}
+                  className="bg-white rounded-xl p-3 text-left shadow-sm active:scale-95 transition-transform"
+                >
+                  <div className="text-2xl mb-2">{dailyRecipe.emoji}</div>
+                  <h4 className="font-semibold text-xs text-gray-800 line-clamp-2">{dailyRecipe.title}</h4>
+                  {dailyRecipe.duration && (
+                    <p className="text-[10px] text-gray-500 mt-1">⏱️ {dailyRecipe.duration}</p>
+                  )}
+                  <p className="text-[10px] text-amber-600 font-medium mt-2">Heute kochen →</p>
+                </button>
+              )}
+              {dailyActivity && (
+                <button
+                  onClick={() => navigate(`/aktivitaet/${dailyActivity.id}`)}
+                  className="bg-white rounded-xl p-3 text-left shadow-sm active:scale-95 transition-transform"
+                >
+                  <div className="text-2xl mb-2">{dailyActivity.emoji}</div>
+                  <h4 className="font-semibold text-xs text-gray-800 line-clamp-2">{dailyActivity.title}</h4>
+                  {dailyActivity.duration && (
+                    <p className="text-[10px] text-gray-500 mt-1">⏱️ {dailyActivity.duration}</p>
+                  )}
+                  <p className="text-[10px] text-amber-600 font-medium mt-2">Heute entdecken →</p>
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -246,22 +138,24 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Tuki Tip of the Day */}
-      <div className="mt-6 px-4">
-        <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-xl gradient-rot flex items-center justify-center shrink-0">
-              <span className="text-white text-lg">{dailyTip.emoji}</span>
-            </div>
-            <div>
-              <h3 className="font-semibold text-sm text-gray-800">Tuki-Tipp des Tages</h3>
-              <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-                {dailyTip.tip}
-              </p>
+      {/* Phase Insight */}
+      {child && phase && (
+        <div className="mt-6 px-4">
+          <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-4 shadow-sm border border-emerald-100/50">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
+                <span className="text-emerald-700 text-lg">🌱</span>
+              </div>
+              <div>
+                <h3 className="font-semibold text-sm text-gray-800">{childName} ist gerade in der Phase: {phase.title}</h3>
+                <p className="text-xs text-gray-600 mt-2 leading-relaxed">
+                  {phaseInsight}
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Level Progress */}
       <div className="mt-6 px-4 mb-4">
