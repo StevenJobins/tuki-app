@@ -121,6 +121,8 @@ export default function HomePage() {
 
   // Seasonal extras
   const allSeasonalRecipes = getSeasonalRecipes()
+  const seasonKey = getSeasonKey()
+  const seasonalActivities = activities.filter(a => a.season.includes(seasonKey as any))
 
   // Tagesimpuls: pick ONE recipe and ONE activity for today
   const dailyRecipe = personalRecipes.length > 0 ? personalRecipes[0] : null
@@ -256,6 +258,48 @@ export default function HomePage() {
           </div>
         </button>
       </div>
+
+      
+      {/* Frühlings-Highlights — Seasonal Content */}
+      {seasonKey === 'frühling' && (allSeasonalRecipes.length > 0 || seasonalActivities.length > 0) && (
+        <div className="mb-6">
+          <div className="px-4 mb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">🐣</span>
+              <h2 className="font-bold text-lg text-gray-800">Frühling & Ostern</h2>
+            </div>
+            <p className="text-xs text-gray-500 mt-1">Saisonale Rezepte & Aktivitäten für die schönste Jahreszeit</p>
+          </div>
+          
+          {/* Spring Recipes Row */}
+          {allSeasonalRecipes.length > 0 && (
+            <div>
+              <div className="px-4 mb-2">
+                <span className="text-xs font-semibold text-tuki-rot-dark">🌷 Frühlings-Rezepte</span>
+              </div>
+              <div className="flex gap-3 overflow-x-auto px-4 pb-2 no-scrollbar snap-x">
+                {shuffleByDay(allSeasonalRecipes).slice(0, 6).map(recipe => (
+                  <RecipeCard key={recipe.id} recipe={recipe} size="featured" />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Spring Activities Row */}
+          {seasonalActivities.length > 0 && (
+            <div className="mt-4">
+              <div className="px-4 mb-2">
+                <span className="text-xs font-semibold text-tuki-rot-dark">🦋 Frühlings-Aktivitäten</span>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 px-4">
+                {shuffleByDay(seasonalActivities).slice(0, 4).map(activity => (
+                  <ActivityCard key={activity.id} activity={activity} />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Featured Recipes — personalized by age */}
       <div>
