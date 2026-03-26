@@ -105,7 +105,7 @@ export default function HomePage() {
   const dailyTip = DAILY_TIPS[dayOfYear % DAILY_TIPS.length]
 
   return (
-    <motion.div variants={container} initial="hidden" animate="show" className="pb-24">
+    <motion.div variants={container} initial="hidden" animate="show" className="pb-24 overflow-x-hidden">
       <Header />
 
       {/* Child Switcher */}
@@ -237,7 +237,7 @@ export default function HomePage() {
           emoji="🍳"
           linkTo="/rezepte"
         />
-        <div className="flex gap-4 overflow-x-auto px-4 pb-2 no-scrollbar snap-x">
+        <div className="flex gap-4 overflow-x-auto px-4 pb-2 no-scrollbar snap-x max-w-full">
           {displayRecipes.map(recipe => (
             <RecipeCard key={recipe.id} recipe={recipe} size="featured" />
           ))}
