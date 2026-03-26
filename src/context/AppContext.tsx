@@ -1,8 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
-import { supabase } from '../lib/supabase'
-import { useAuth } from './AuthContext'
 
-interface ChildProfile {
+export interface ChildProfile {
   id: string
   name: string
   birthDate: string
@@ -15,17 +13,28 @@ interface TukiStars {
   levelName: string
 }
 
-interface AppState {
+interface PerChildData {
   favorites: string[]
   completedActivities: string[]
   completedRecipes: string[]
   weekPlan: Record<string, string[]>
-  children: ChildProfile[]
   tukiStars: TukiStars
+}
+
+interface AppState {
+  // Active child's data (flat for backward compat)
+  favorites: string[]
+  completedActivities: string[]
+  completedRecipes: string[]
+  weekPlan: Record<string, string[]>
+  tukiStars: TukiStars
+  // Multi-child
+  children: ChildProfile[]
+  activeChildId: string | null
+  childData: Record<string, PerChildData>
+  // App
   language: 'de' | 'en' | 'fr'
   isOnboarded: boolean
-  error: string | null
-  dataLoading: boolean
 }
 
 interface AppContextType extends AppState {
@@ -36,17 +45,20 @@ interface AppContextType extends AppState {
   addToWeekPlan: (day: string, id: string) => void
   removeFromWeekPlan: (day: string, id: string) => void
   addChild: (child: ChildProfile) => void
-  removeChild: (id: string) => void
+  updateChild: (child: ChildProfile) => void
+  removeChild: (childId: string) => void
+  setActiveChild: (childId: string) => void
   setOnboarded: () => void
-  clearError: () => void
+  getActiveChild: () => ChildProfile | null
+  getChildAge: (childId?: string) => number | null
 }
 
 const LEVELS = [
   { min: 0, name: 'Kleiner Entdecker' },
-  { min: 10, name: 'Kuechenhelfer' },
+  { min: 10, name: 'Küchenhelfer' },
   { min: 25, name: 'Nachwuchskoch' },
   { min: 50, name: 'Familien-Star' },
-  { min: 100, name: 'Kuechenchef' },
+  { min: 100, name: 'Küchenchef' },
 ]
 
 function calculateStars(completed: number): TukiStars {
@@ -62,186 +74,260 @@ function calculateStars(completed: number): TukiStars {
   return { total: completed, level, levelName }
 }
 
+const defaultPerChild: PerChildData = {
+  favorites: [],
+  completedActivities: [],
+  completedRecipes: [],
+  weekPlan: {},
+  tukiStars: { total: 0, level: 0, levelName: 'Kleiner Entdecker' },
+}
+
 const defaultState: AppState = {
   favorites: [],
   completedActivities: [],
   completedRecipes: [],
   weekPlan: {},
-  children: [],
   tukiStars: { total: 0, level: 0, levelName: 'Kleiner Entdecker' },
+  children: [],
+  activeChildId: null,
+  childData: {},
   language: 'de',
   isOnboarded: false,
-  error: null,
-  dataLoading: true,
+}
+
+function loadState(): AppState {
+  try {
+    const saved = localStorage.getItem('tuki-family-state')
+    if (saved) {
+      const parsed = JSON.parse(saved)
+      // Migration: old format had favorites as array with no childData
+      if (parsed && !parsed.childData) {
+        parsed.childData = {}
+        parsed.activeChildId = parsed.activeChildId || null
+      }
+      return { ...defaultState, ...parsed }
+    }
+  } catch {}
+  return defaultState
 }
 
 const AppContext = createContext<AppContextType | null>(null)
 
 export function AppProvider({ children: childNodes }: { children: ReactNode }) {
-  const { user } = useAuth()
-  const [state, setState] = useState<AppState>(defaultState)
+  const [state, setState] = useState<AppState>(loadState)
 
-  const loadFromSupabase = useCallback(async (userId: string) => {
-    try {
-      const [completedRes, favRes, childrenRes] = await Promise.all([
-        supabase.from('completed_items').select('item_id, item_type').eq('profile_id', userId),
-        supabase.from('favorites').select('item_id').eq('profile_id', userId),
-        supabase.from('children').select('*').eq('profile_id', userId),
-      ])
+  useEffect(() => {
+    localStorage.setItem('tuki-family-state', JSON.stringify(state))
+  }, [state])
 
-      if (completedRes.error) throw completedRes.error
-      if (favRes.error) throw favRes.error
-      if (childrenRes.error) throw childrenRes.error
-
-      const completedActivities = (completedRes.data || [])
-        .filter(i => i.item_type === 'activity').map(i => i.item_id)
-      const completedRecipes = (completedRes.data || [])
-        .filter(i => i.item_type === 'recipe').map(i => i.item_id)
-      const favorites = (favRes.data || []).map(f => f.item_id)
-      const children: ChildProfile[] = (childrenRes.data || []).map(c => ({
-        id: c.id, name: c.name, birthDate: c.birth_date || '', avatarEmoji: c.avatar_emoji || '\uD83D\uDC76',
-      }))
-
-      const total = completedActivities.length + completedRecipes.length
-
-      setState(s => ({
-        ...s, completedActivities, completedRecipes, favorites, children,
-        tukiStars: calculateStars(total), isOnboarded: true, dataLoading: false, error: null,
-      }))
-    } catch (err) {
-      console.warn('Failed to load data from Supabase:', err)
-      setState(s => ({ ...s, dataLoading: false, error: 'Daten konnten nicht geladen werden.' }))
+  // Save current child's data into childData before switching
+  const saveCurrentChildData = useCallback((s: AppState): AppState => {
+    if (!s.activeChildId) return s
+    return {
+      ...s,
+      childData: {
+        ...s.childData,
+        [s.activeChildId]: {
+          favorites: s.favorites,
+          completedActivities: s.completedActivities,
+          completedRecipes: s.completedRecipes,
+          weekPlan: s.weekPlan,
+          tukiStars: s.tukiStars,
+        },
+      },
     }
   }, [])
 
-  useEffect(() => {
-    if (user) {
-      setState(s => ({ ...s, dataLoading: true }))
-      loadFromSupabase(user.id)
-    } else {
-      setState({ ...defaultState, dataLoading: false })
-    }
-  }, [user, loadFromSupabase])
-
-  // Load week plan from localStorage
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem('tuki_weekplan')
-      if (stored) setState(s => ({ ...s, weekPlan: JSON.parse(stored) }))
-    } catch { /* ignore */ }
-  }, [])
-
-  const toggleFavorite = async (id: string) => {
-    const isFav = state.favorites.includes(id)
+  const toggleFavorite = (id: string) => {
     setState(s => ({
-      ...s, favorites: isFav ? s.favorites.filter(f => f !== id) : [...s.favorites, id],
+      ...s,
+      favorites: s.favorites.includes(id)
+        ? s.favorites.filter(f => f !== id)
+        : [...s.favorites, id],
     }))
-    if (user) {
-      try {
-        if (isFav) {
-          await supabase.from('favorites').delete().eq('profile_id', user.id).eq('item_id', id)
-        } else {
-          await supabase.from('favorites').insert({ profile_id: user.id, item_id: id })
-        }
-      } catch (err) {
-        console.warn('Favorite sync failed:', err)
-        setState(s => ({
-          ...s, favorites: isFav ? [...s.favorites, id] : s.favorites.filter(f => f !== id),
-        }))
-      }
-    }
   }
 
   const isFavorite = (id: string) => state.favorites.includes(id)
 
-  const completeActivity = async (id: string) => {
-    if (state.completedActivities.includes(id)) return
+  const completeActivity = (id: string) => {
     setState(s => {
+      if (s.completedActivities.includes(id)) return s
       const completed = [...s.completedActivities, id]
       const total = completed.length + s.completedRecipes.length
       return { ...s, completedActivities: completed, tukiStars: calculateStars(total) }
     })
-    if (user) {
-      try {
-        await supabase.from('completed_items').insert({
-          profile_id: user.id, item_id: id, item_type: 'activity',
-        })
-      } catch (err) {
-        console.warn('Complete activity sync failed:', err)
-      }
-    }
   }
 
-  const completeRecipe = async (id: string) => {
-    if (state.completedRecipes.includes(id)) return
+  const completeRecipe = (id: string) => {
     setState(s => {
+      if (s.completedRecipes.includes(id)) return s
       const completed = [...s.completedRecipes, id]
       const total = s.completedActivities.length + completed.length
       return { ...s, completedRecipes: completed, tukiStars: calculateStars(total) }
     })
-    if (user) {
-      try {
-        await supabase.from('completed_items').insert({
-          profile_id: user.id, item_id: id, item_type: 'recipe',
-        })
-      } catch (err) {
-        console.warn('Complete recipe sync failed:', err)
-      }
-    }
   }
 
   const addToWeekPlan = (day: string, id: string) => {
-    setState(s => {
-      const newPlan = { ...s.weekPlan, [day]: [...(s.weekPlan[day] || []), id] }
-      try { localStorage.setItem('tuki_weekplan', JSON.stringify(newPlan)) } catch { /* */ }
-      return { ...s, weekPlan: newPlan }
-    })
+    setState(s => ({
+      ...s,
+      weekPlan: {
+        ...s.weekPlan,
+        [day]: [...(s.weekPlan[day] || []), id],
+      },
+    }))
   }
 
   const removeFromWeekPlan = (day: string, id: string) => {
+    setState(s => ({
+      ...s,
+      weekPlan: {
+        ...s.weekPlan,
+        [day]: (s.weekPlan[day] || []).filter(i => i !== id),
+      },
+    }))
+  }
+
+  const addChild = (child: ChildProfile) => {
     setState(s => {
-      const newPlan = { ...s.weekPlan, [day]: (s.weekPlan[day] || []).filter(i => i !== id) }
-      try { localStorage.setItem('tuki_weekplan', JSON.stringify(newPlan)) } catch { /* */ }
-      return { ...s, weekPlan: newPlan }
+      const isFirst = s.children.length === 0
+      let newState = { ...s, children: [...s.children, child] }
+
+      if (isFirst) {
+        // Migrate existing data to first child
+        newState.childData = {
+          ...newState.childData,
+          [child.id]: {
+            favorites: s.favorites,
+            completedActivities: s.completedActivities,
+            completedRecipes: s.completedRecipes,
+            weekPlan: s.weekPlan,
+            tukiStars: s.tukiStars,
+          },
+        }
+        newState.activeChildId = child.id
+      } else {
+        // Save current child data, then init new child with defaults
+        newState = saveCurrentChildData(newState)
+        newState.childData = {
+          ...newState.childData,
+          [child.id]: { ...defaultPerChild },
+        }
+      }
+      return newState
     })
   }
 
-  const addChild = async (child: ChildProfile) => {
-    setState(s => ({ ...s, children: [...s.children, child] }))
-    if (user) {
-      try {
-        await supabase.from('children').insert({
-          id: child.id, profile_id: user.id, name: child.name,
-          birth_date: child.birthDate, avatar_emoji: child.avatarEmoji,
-        })
-      } catch (err) {
-        console.warn('Add child failed:', err)
-        setState(s => ({ ...s, children: s.children.filter(c => c.id !== child.id), error: 'Kind konnte nicht hinzugefuegt werden.' }))
-      }
-    }
+  const updateChild = (child: ChildProfile) => {
+    setState(s => ({
+      ...s,
+      children: s.children.map(c => (c.id === child.id ? child : c)),
+    }))
   }
 
-  const removeChild = async (id: string) => {
-    const removed = state.children.find(c => c.id === id)
-    setState(s => ({ ...s, children: s.children.filter(c => c.id !== id) }))
-    if (user) {
-      try {
-        await supabase.from('children').delete().eq('id', id).eq('profile_id', user.id)
-      } catch (err) {
-        console.warn('Remove child failed:', err)
-        if (removed) setState(s => ({ ...s, children: [...s.children, removed] }))
+  const removeChild = (childId: string) => {
+    setState(s => {
+      const newChildren = s.children.filter(c => c.id !== childId)
+      const { [childId]: _, ...restChildData } = s.childData
+
+      let newActiveId = s.activeChildId
+      let newFavorites = s.favorites
+      let newCompletedAct = s.completedActivities
+      let newCompletedRec = s.completedRecipes
+      let newWeekPlan = s.weekPlan
+      let newStars = s.tukiStars
+
+      if (s.activeChildId === childId) {
+        // Switch to another child or null
+        if (newChildren.length > 0) {
+          newActiveId = newChildren[0].id
+          const data = restChildData[newActiveId] || defaultPerChild
+          newFavorites = data.favorites
+          newCompletedAct = data.completedActivities
+          newCompletedRec = data.completedRecipes
+          newWeekPlan = data.weekPlan
+          newStars = data.tukiStars
+        } else {
+          newActiveId = null
+          newFavorites = []
+          newCompletedAct = []
+          newCompletedRec = []
+          newWeekPlan = {}
+          newStars = { total: 0, level: 0, levelName: 'Kleiner Entdecker' }
+        }
       }
-    }
+
+      return {
+        ...s,
+        children: newChildren,
+        childData: restChildData,
+        activeChildId: newActiveId,
+        favorites: newFavorites,
+        completedActivities: newCompletedAct,
+        completedRecipes: newCompletedRec,
+        weekPlan: newWeekPlan,
+        tukiStars: newStars,
+      }
+    })
   }
 
-  const setOnboarded = () => setState(s => ({ ...s, isOnboarded: true }))
-  const clearError = () => setState(s => ({ ...s, error: null }))
+  const setActiveChild = (childId: string) => {
+    setState(s => {
+      if (s.activeChildId === childId) return s
+      // Save current child's data
+      const saved = saveCurrentChildData(s)
+      // Load new child's data
+      const data = saved.childData[childId] || defaultPerChild
+      return {
+        ...saved,
+        activeChildId: childId,
+        favorites: data.favorites,
+        completedActivities: data.completedActivities,
+        completedRecipes: data.completedRecipes,
+        weekPlan: data.weekPlan,
+        tukiStars: data.tukiStars,
+      }
+    })
+  }
+
+  const setOnboarded = () => {
+    setState(s => ({ ...s, isOnboarded: true }))
+  }
+
+  const getActiveChild = (): ChildProfile | null => {
+    if (!state.activeChildId) return null
+    return state.children.find(c => c.id === state.activeChildId) || null
+  }
+
+  const getChildAge = (childId?: string): number | null => {
+    const id = childId || state.activeChildId
+    if (!id) return null
+    const child = state.children.find(c => c.id === id)
+    if (!child) return null
+    const birth = new Date(child.birthDate)
+    const now = new Date()
+    let years = now.getFullYear() - birth.getFullYear()
+    const m = now.getMonth() - birth.getMonth()
+    if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) years--
+    return Math.max(0, years)
+  }
 
   return (
     <AppContext.Provider
       value={{
-        ...state, toggleFavorite, isFavorite, completeActivity, completeRecipe,
-        addToWeekPlan, removeFromWeekPlan, addChild, removeChild, setOnboarded, clearError,
+        ...state,
+        toggleFavorite,
+        isFavorite,
+        completeActivity,
+        completeRecipe,
+        addToWeekPlan,
+        removeFromWeekPlan,
+        addChild,
+        updateChild,
+        removeChild,
+        setActiveChild,
+        setOnboarded,
+        getActiveChild,
+        getChildAge,
       }}
     >
       {childNodes}
