@@ -15,37 +15,36 @@ import LoginPage from './pages/LoginPage'
 import OnboardingPage from './pages/OnboardingPage'
 import WochenplanPage from './pages/WochenplanPage'
 import ZutatenCheckPage from './pages/ZutatenCheckPage'
+import FavoritenPage from './pages/FavoritenPage'
 
 function LoadingScreen() {
   return (
     <div className="min-h-screen bg-tuki-cream flex items-center justify-center">
       <div className="text-center">
-        <div className="w-16 h-16 rounded-2xl gradient-rot flex items-center justify-center mx-auto mb-4 animate-pulse">
-          <span className="text-white font-bold text-2xl">T</span>
-        </div>
-        <p className="text-gray-400 text-sm">Laden...</p>
+        <div className="text-6xl mb-4 animate-bounce">{'\uD83D\uDC23'}</div>
+        <p className="text-tuki-brown font-medium">Tuki l\u00e4dt...</p>
       </div>
     </div>
   )
 }
 
 export default function App() {
-  const { user, loading } = useAuth()
+  const { loading, user } = useAuth()
 
   if (loading) return <LoadingScreen />
   if (!user) return <LoginPage />
 
-  return <AppContent />
+  return <AuthenticatedApp />
 }
 
-function AppContent() {
+function AuthenticatedApp() {
   const { isOnboarded } = useApp()
 
   if (!isOnboarded) return <OnboardingPage />
 
   return (
     <div className="min-h-screen bg-tuki-cream flex">
-      {/* Sidebar â visible on desktop (md+) */}
+      {/* Sidebar \u2013 visible on desktop (md+) */}
       <SideNav />
 
       {/* Main content area */}
@@ -59,10 +58,11 @@ function AppContent() {
           <Route path="/entwicklung" element={<DevelopmentPage />} />
           <Route path="/community" element={<CommunityPage />} />
           <Route path="/profil" element={<ProfilePage />} />
-                      <Route path="/wochenplan" element={<WochenplanPage />} />
-              <Route path="/zutaten-check" element={<ZutatenCheckPage />} />
-              </Routes>
-        {/* Bottom nav â mobile only */}
+          <Route path="/wochenplan" element={<WochenplanPage />} />
+          <Route path="/zutaten-check" element={<ZutatenCheckPage />} />
+          <Route path="/favoriten" element={<FavoritenPage />} />
+        </Routes>
+        {/* Bottom nav \u2013 mobile only */}
         <BottomNav />
       </div>
     </div>
