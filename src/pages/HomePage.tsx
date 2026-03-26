@@ -7,7 +7,86 @@ import { activities, getActivitiesByAge } from '../data/activities'
 import { getMilestonesForAge, getPhaseForAge } from '../data/milestones'
 import { useApp } from '../context/AppContext'
 import { useNavigate } from 'react-router-dom'
-rray deterministically by day
+
+function getGreeting(): string {
+  const hour = new Date().getHours()
+  if (hour < 11) return 'Guten Morgen'
+  if (hour < 14) return 'Mahlzeit'
+  if (hour < 18) return 'Guten Nachmittag'
+  return 'Guten Abend'
+}
+
+function getSeasonEmoji(): string {
+  const month = new Date().getMonth()
+  if (month >= 2 && month <= 4) return '🌸'
+  if (month >= 5 && month <= 7) return '☀️'
+  if (month >= 8 && month <= 10) return '🍂'
+  return '❄️'
+}
+
+function getSeasonName(): string {
+  const month = new Date().getMonth()
+  if (month >= 2 && month <= 4) return 'Frühling'
+  if (month >= 5 && month <= 7) return 'Sommer'
+  if (month >= 8 && month <= 10) return 'Herbst'
+  return 'Winter'
+}
+
+function getSeasonKey(): string {
+  const month = new Date().getMonth()
+  if (month >= 2 && month <= 4) return 'frühling'
+  if (month >= 5 && month <= 7) return 'sommer'
+  if (month >= 8 && month <= 10) return 'herbst'
+  return 'winter'
+}
+
+function getChildAge(birthDate: string): number {
+  const birth = new Date(birthDate)
+  const now = new Date()
+  const months = (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth())
+  return Math.round(months / 12 * 10) / 10 // age in years with 1 decimal
+}
+
+function getAgeLabel(birthDate: string): string {
+  const birth = new Date(birthDate)
+  const now = new Date()
+  const months = (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth())
+  if (months < 12) return `${months} Monate`
+  const years = Math.floor(months / 12)
+  const rem = months % 12
+  return rem > 0 ? `${years} J. ${rem} M.` : `${years} Jahre`
+}
+
+function getPhaseLabel(age: number): string {
+  if (age < 1.5) return 'Baby'
+  if (age < 2) return 'Kleinkind (früh)'
+  if (age < 3) return 'Kleinkind'
+  if (age < 5) return 'Vorschulkind'
+  return 'Schulkind'
+}
+
+function getChildAgeMonths(birthDate: string): number {
+  const birth = new Date(birthDate)
+  const now = new Date()
+  const months = (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth())
+  return months
+}
+
+const PHASE_INSIGHTS = [
+  'Jedes Kind hat sein eigenes Tempo — Vergleiche bringen nichts, Vertrauen schon.',
+  'In dieser Phase passiert gerade ganz viel im Kopf — auch wenn man es nicht immer sieht.',
+  'Kleine Rückschritte gehören dazu. Sie sind oft ein Zeichen, dass ein grosser Sprung bevorsteht.',
+  'Du machst das richtig. Dass du dich informierst, zeigt wie sehr dir die Entwicklung am Herzen liegt.',
+  'Kinder lernen am meisten durch Nachmachen — du bist das beste Vorbild.',
+  'Langeweile ist kein Problem, sondern der Anfang von Kreativität.',
+  'Routine gibt Sicherheit. Kleine Rituale sind wertvoller als perfekte Tage.',
+]
+
+function getDayOfYear(): number {
+  return Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000)
+}
+
+// Shuffle array deterministically by day
 function shuffleByDay<T>(arr: T[]): T[] {
   const day = new Date().getDate()
   const shuffled = [...arr]
@@ -16,7 +95,75 @@ function shuffleByDay<T>(arr: T[]): T[] {
     ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
   }
   return shuffled
-}nt-semibold text-gray-700">{completedActivities.length + completedRecipes.length}</p>
+}
+
+export default function HomePage() {
+  const navigate = useNavigate()
+  const { children, tukiStars, completedActivities, completedRecipes } = useApp()
+
+  const child = children[0]
+  const childAge = child ? getChildAge(child.birthDate) : null
+  const childAgeMonths = child ? getChildAgeMonths(child.birthDate) : 0
+  const childName = child?.name || ''
+  const ageLabel = child ? getAgeLabel(child.birthDate) : ''
+  const phaseLabel = childAge !== null ? getPhaseLabel(childAge) : ''
+
+  // Personalized content: filter by age, exclude completed, shuffle daily
+  const personalRecipes = childAge !== null
+    ? shuffleByDay(getRecipesByAge(childAge).filter(r => !completedRecipes.includes(r.id)))
+    : shuffleByDay(getSeasonalRecipes())
+  const personalActivities = childAge !== null
+    ? shuffleByDay(getActivitiesByAge(childAge).filter(a => !completedActivities.includes(a.id)))
+    : shuffleByDay(activities)
+
+  const featuredRecipes = personalRecipes.slice(0, 4)
+  const featuredActivities = personalActivities.slice(0, 4)
+
+  // Seasonal extras
+  const allSeasonalRecipes = getSeasonalRecipes()
+
+  // Tagesimpuls: pick ONE recipe and ONE activity for today
+  const dailyRecipe = personalRecipes.length > 0 ? personalRecipes[0] : null
+  const dailyActivity = personalActivities.length > 0 ? personalActivities[0] : null
+
+  // Phase insight
+  const phase = child ? getPhaseForAge(childAgeMonths) : null
+  const dayOfYear = getDayOfYear()
+  const phaseInsight = PHASE_INSIGHTS[dayOfYear % PHASE_INSIGHTS.length]
+
+  return (
+    <div className="pb-24">
+      <Header />
+
+      {/* Hero Section — personalized */}
+      <div className="px-4 mt-2 mb-6">
+        <div className="relative rounded-3xl overflow-hidden gradient-mint p-5">
+          <div className="relative z-10">
+            <p className="text-tuki-rot-dark text-sm font-medium">{getGreeting()} 👋</p>
+            <h1 className="text-2xl font-bold text-gray-800 mt-1 leading-tight">
+              {childName
+                ? <>Was entdecken wir<br />heute mit {childName}?</>
+                : <>Was entdecken wir<br />heute zusammen?</>
+              }
+            </h1>
+            {child && (
+              <div className="flex items-center gap-2 mt-2">
+                <span className="text-lg">{child.avatarEmoji}</span>
+                <span className="text-xs text-gray-600 font-medium">{childName} · {ageLabel} · {phaseLabel}</span>
+              </div>
+            )}
+            <div className="flex items-center gap-3 mt-3">
+              <div className="bg-white/70 rounded-xl px-3 py-2 flex items-center gap-2">
+                <span>⭐</span>
+                <div>
+                  <p className="text-xs font-semibold text-gray-700">{tukiStars.total} Sterne</p>
+                  <p className="text-[10px] text-gray-500">{tukiStars.levelName}</p>
+                </div>
+              </div>
+              <div className="bg-white/70 rounded-xl px-3 py-2 flex items-center gap-2">
+                <span>✅</span>
+                <div>
+                  <p className="text-xs font-semibold text-gray-700">{completedActivities.length + completedRecipes.length}</p>
                   <p className="text-[10px] text-gray-500">Abgeschlossen</p>
                 </div>
               </div>
