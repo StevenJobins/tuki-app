@@ -1,26 +1,30 @@
 import { useState } from 'react'
 import { useApp } from '../context/AppContext'
 
-const AVATAR_EMOJIS = ['👶', '👧', '👦', '🧒', '👸', '🤴', '🦁', '🐻', '🌟', '🦊', '🐰', '🦄']
+const AVATAR_EMOJIS = ['ð¶', 'ð§', 'ð¦', 'ð§', 'ð¸', 'ð¤´', 'ð¦', 'ð»', 'ð', 'ð¦', 'ð°', 'ð¦']
 
 export default function OnboardingPage() {
   const { addChild, setOnboarded } = useApp()
   const [step, setStep] = useState(0)
   const [name, setName] = useState('')
   const [birthDate, setBirthDate] = useState('')
-  const [avatarEmoji, setAvatarEmoji] = useState('👶')
+  const [avatarEmoji, setAvatarEmoji] = useState('ð¶')
   const [saving, setSaving] = useState(false)
 
   const handleFinish = async () => {
     if (!name.trim() || !birthDate) return
     setSaving(true)
-    const child = {
-      id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(),
-      name: name.trim(),
-      birthDate,
-      avatarEmoji,
+    try {
+      const child = {
+        id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(),
+        name: name.trim(),
+        birthDate,
+        avatarEmoji,
+      }
+      await addChild(child)
+    } catch (e) {
+      console.warn('addChild failed, continuing offline:', e)
     }
-    await addChild(child)
     setOnboarded()
   }
 
@@ -46,7 +50,7 @@ export default function OnboardingPage() {
             <span className="text-white font-bold text-2xl">T</span>
           </div>
           <h1 className="text-2xl font-bold text-gray-800">Willkommen bei Tuki!</h1>
-          <p className="text-sm text-gray-500 mt-1">Erzähl uns von deinem Kind, damit wir die besten Inhalte für euch finden.</p>
+          <p className="text-sm text-gray-500 mt-1">ErzÃ¤hl uns von deinem Kind, damit wir die besten Inhalte fÃ¼r euch finden.</p>
         </div>
 
         {/* Progress dots */}
@@ -65,7 +69,7 @@ export default function OnboardingPage() {
         {step === 0 && (
           <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 animate-fadeIn">
             <div className="text-center mb-6">
-              <span className="text-4xl">👋</span>
+              <span className="text-4xl">ð</span>
               <h2 className="text-lg font-bold text-gray-800 mt-3">Wie heisst dein Kind?</h2>
             </div>
             <input
@@ -90,9 +94,9 @@ export default function OnboardingPage() {
         {step === 1 && (
           <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 animate-fadeIn">
             <div className="text-center mb-6">
-              <span className="text-4xl">🎂</span>
+              <span className="text-4xl">ð</span>
               <h2 className="text-lg font-bold text-gray-800 mt-3">Wann wurde {name} geboren?</h2>
-              <p className="text-xs text-gray-400 mt-1">So können wir altersgerechte Inhalte empfehlen</p>
+              <p className="text-xs text-gray-400 mt-1">So kÃ¶nnen wir altersgerechte Inhalte empfehlen</p>
             </div>
             <input
               type="date"
@@ -112,7 +116,7 @@ export default function OnboardingPage() {
                 onClick={() => setStep(0)}
                 className="flex-1 py-3 rounded-xl font-semibold text-gray-600 bg-gray-100"
               >
-                Zurück
+                ZurÃ¼ck
               </button>
               <button
                 onClick={() => birthDate && setStep(2)}
@@ -130,7 +134,7 @@ export default function OnboardingPage() {
           <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 animate-fadeIn">
             <div className="text-center mb-6">
               <span className="text-5xl">{avatarEmoji}</span>
-              <h2 className="text-lg font-bold text-gray-800 mt-3">Wähle ein Emoji für {name}</h2>
+              <h2 className="text-lg font-bold text-gray-800 mt-3">WÃ¤hle ein Emoji fÃ¼r {name}</h2>
             </div>
             <div className="grid grid-cols-4 gap-3">
               {AVATAR_EMOJIS.map(emoji => (
@@ -152,14 +156,14 @@ export default function OnboardingPage() {
                 onClick={() => setStep(1)}
                 className="flex-1 py-3 rounded-xl font-semibold text-gray-600 bg-gray-100"
               >
-                Zurück
+                ZurÃ¼ck
               </button>
               <button
                 onClick={handleFinish}
                 disabled={saving}
                 className="flex-1 py-3 rounded-xl font-semibold text-white gradient-rot disabled:opacity-40 transition-opacity"
               >
-                {saving ? 'Speichern...' : 'Los gehts! 🚀'}
+                {saving ? 'Speichern...' : 'Los gehts! ð'}
               </button>
             </div>
           </div>
