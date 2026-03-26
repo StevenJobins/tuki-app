@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
-import { useSearchParams, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { motion } from 'framer-motion'
 import Header from '../components/Header'
 import AgeFilter from '../components/AgeFilter'
 import RecipeCard from '../components/RecipeCard'
 import { recipes } from '../data/recipes'
+import { useApp } from '../context/AppContext'
 
 const difficultyFilter = [
   { value: 'all', label: 'Alle' },
@@ -12,46 +13,16 @@ const difficultyFilter = [
   { value: 'fortgeschritten', label: '🌟 Pro' },
 ]
 
-function getCurrentSeason(): string {
-  const month = new Date().getMonth()
-  if (month >= 2 && month <= 4) return 'Fruehling'
-  if (month >= 5 && month <= 7) return 'Sommer'
-  if (month >= 8 && month <= 10) return 'Herbst'
-  return 'Winter'
-}
-
-function getSeasonLabel(season: string): string {
-  const labels: Record<string, string> = {
-    'Fruehling': '🌸 Frühling',
-    'Sommer': '☀️ Sommer',
-    'Herbst': '🍂 Herbst',
-    'Winter': '❄️ Winter',
-  }
-  return labels[season] || season
-}
-
 export default function RecipesPage() {
-  const navigate = useNavigate()
-  const [searchParams, setSearchParams] = useSearchParams()
-  const [ageFilter, setAgeFilter] = useState('all')
+  const { getChildAge, getActiveChild, children, activeChildId, setActiveChild } = useApp()
+  const childAge = getChildAge()
+  const activeChild = getActiveChild()
+
+  // Auto-set age filter based on active child
+  const autoAgeFilter = childAge !== null ? getAgeRange(childAge) : 'all'
+  const [ageFilter, setAgeFilter] = useState(autoAgeFilter)
   const [diffFilter, setDiffFilter] = useState('all')
-  const [seasonFilter, setSeasonFilter] = useState(searchParams.get('season') || 'all')
   const [search, setSearch] = useState('')
-
-  useEffect(() => {
-    const s = searchParams.get('season')
-    if (s) setSeasonFilter(s)
-  }, [searchParams])
-
-  const handleSeasonChange = (val: string) => {
-    setSeasonFilter(val)
-    if (val === 'all') {
-      searchParams.delete('season')
-    } else {
-      searchParams.set('season', val)
-    }
-    setSearchParams(searchParams, { replace: true })
-  }
 
   const filtered = recipes.filter(r => {
     if (ageFilter !== 'all') {
@@ -59,9 +30,6 @@ export default function RecipesPage() {
       if (r.ageRange[0] > max || r.ageRange[1] < min) return false
     }
     if (diffFilter !== 'all' && r.difficulty !== diffFilter) return false
-    if (seasonFilter !== 'all') {
-      if (!r.season.includes(seasonFilter as any) && !r.season.includes('ganzjaehrig' as any) && !r.season.includes('ganzjährig' as any)) return false
-    }
     if (search) {
       const s = search.toLowerCase()
       return r.title.toLowerCase().includes(s) || r.tags.some(t => t.toLowerCase().includes(s))
@@ -73,22 +41,32 @@ export default function RecipesPage() {
     <div className="pb-24">
       <Header title="Rezepte" />
 
-      {/* Kühlschrank-Check Banner */}
-      <div className="px-4 mb-3">
-        <button
-          onClick={() => navigate('/zutaten-check')}
-          className="w-full bg-gradient-to-r from-cyan-50 to-tuki-mint/30 rounded-2xl p-3.5 border border-cyan-200/50 text-left flex items-center gap-3"
-        >
-          <span className="text-2xl">🧱</span>
-          <div className="flex-1">
-            <h3 className="font-semibold text-sm text-gray-800">Kühlschrank-Check</h3>
-            <p className="text-xs text-gray-500">Zutaten eingeben → passende Rezepte finden</p>
-          </div>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
-            <polyline points="9 18 15 12 9 6" />
-          </svg>
-        </button>
-      </div>
+      {/* Child Switcher (if multiple children) */}
+      {children.length > 1 && (
+        <div className="flex gap-2 px-4 mb-3 overflow-x-auto no-scrollbar py-1">
+          {children.map(child => {
+            const isActive = child.id === activeChildId
+            return (
+              <button
+                key={child.id}
+                onClick={() => {
+                  setActiveChild(child.id)
+                  const age = getChildAge(child.id)
+                  if (age !== null) setAgeFilter(getAgeRange(age))
+                }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all shrink-0 ${
+                  isActive
+                    ? 'bg-tuki-rot text-white'
+                    : 'bg-white text-gray-600 border border-gray-200'
+                }`}
+              >
+                <span>{child.avatarEmoji}</span>
+                {child.name}
+              </button>
+            )
+          })}
+        </div>
+      )}
 
       {/* Search */}
       <div className="px-4 mb-3">
@@ -111,29 +89,6 @@ export default function RecipesPage() {
         <AgeFilter selected={ageFilter} onChange={setAgeFilter} />
       </div>
 
-      {/* Season Filter */}
-      <div className="flex gap-2 px-4 mb-2 overflow-x-auto no-scrollbar">
-        {[
-          { value: 'all', label: 'Alle Saisons' },
-          { value: getCurrentSeason(), label: getSeasonLabel(getCurrentSeason()) + ' (jetzt)' },
-          ...['Fruehling', 'Sommer', 'Herbst', 'Winter']
-            .filter(s => s !== getCurrentSeason())
-            .map(s => ({ value: s, label: getSeasonLabel(s) }))
-        ].map(s => (
-          <button
-            key={s.value}
-            onClick={() => handleSeasonChange(s.value)}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${
-              seasonFilter === s.value
-                ? 'bg-tuki-rot text-white'
-                : 'bg-gray-100 text-gray-500'
-            }`}
-          >
-            {s.label}
-          </button>
-        ))}
-      </div>
-
       {/* Difficulty Filter */}
       <div className="flex gap-2 px-4 mb-4 overflow-x-auto no-scrollbar">
         {difficultyFilter.map(d => (
@@ -153,17 +108,30 @@ export default function RecipesPage() {
 
       {/* Results count */}
       <div className="px-4 mb-3">
-        <p className="text-xs text-gray-400">{filtered.length} Rezepte gefunden</p>
+        <p className="text-xs text-gray-400">
+          {filtered.length} Rezepte {activeChild ? `für ${activeChild.name} ` : ''}gefunden
+        </p>
       </div>
 
       {/* Recipe Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 px-4">
+      <motion.div
+        className="grid grid-cols-2 gap-3 px-4"
+        initial="hidden"
+        animate="show"
+        variants={{
+          hidden: { opacity: 0 },
+          show: { opacity: 1, transition: { staggerChildren: 0.05 } },
+        }}
+      >
         {filtered.map(recipe => (
-          <div key={recipe.id}>
+          <motion.div
+            key={recipe.id}
+            variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
+          >
             <RecipeCard recipe={recipe} />
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       {filtered.length === 0 && (
         <div className="text-center py-12 px-4">
@@ -174,4 +142,12 @@ export default function RecipesPage() {
       )}
     </div>
   )
+}
+
+function getAgeRange(age: number): string {
+  if (age <= 1) return '1-2'
+  if (age <= 2) return '1-2'
+  if (age <= 3) return '2-3'
+  if (age <= 5) return '3-5'
+  return '5-8'
 }
