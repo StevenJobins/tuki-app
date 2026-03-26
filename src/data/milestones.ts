@@ -44,7 +44,7 @@ export const agePhases: AgePhase[] = [
     focusAreas: ['Laufen & Klettern', 'Erste Wörter', 'Greifen & Stapeln', 'Selbst essen & trinken'],
     boxName: 'Entdecker-Box',
     boxDescription: 'Sorgfältig ausgewählte Materialien für die ersten grossen Schritte — Sinne anregen, Motorik fördern, Neugier wecken.',
-    boxItems: ['Sensorik-Bälle Set', 'Stapelturm aus Holz', 'Greifling mit Glöckchen', 'Fühlbuch Natur', 'Trinkbecher mit Griffen'],
+    boxItems: ['Tuki Learning Tower (Naturholz)', 'Regenbogen-Stapler aus Lindenholz', 'Montessori Greiflinge aus Buchenholz', 'Sensorik-Spieltuch aus Bio-Baumwolle', 'Trinkbecher-Set (BPA-frei, ergonomisch)'],
   },
   {
     id: 'toddler-early',
@@ -55,7 +55,7 @@ export const agePhases: AgePhase[] = [
     focusAreas: ['Selbstständig essen', 'Zwei-Wort-Sätze', 'Treppensteigen', 'Erste Rollenspiele'],
     boxName: 'Selbermacher-Box',
     boxDescription: 'Alles, damit dein Kind selbst aktiv werden kann — vom eigenen Besteck bis zum ersten Kreativset.',
-    boxItems: ['Kinderbesteck-Set', 'Wachsmalstifte (dick)', 'Knete-Set (Naturfarben)', 'Bildkarten Tiere & Natur', 'Montessori Einsteckpuzzle'],
+    boxItems: ['Montessori Kinderbesteck aus Edelstahl', 'Bienenwachs-Kreidestifte (ergonomisch)', 'Pflanzliche Spielknete aus Naturfarben', 'Montessori Einsteckpuzzle aus Holz', 'Montessori Bildkarten-Set (real-fotografisch)'],
   },
   {
     id: 'toddler-late',
@@ -66,7 +66,7 @@ export const agePhases: AgePhase[] = [
     focusAreas: ['Farben & Formen', 'Zählen lernen', 'Anziehen üben', 'Rennen & Hüpfen'],
     boxName: 'Forscher-Box',
     boxDescription: 'Materialien zum Sortieren, Entdecken und Staunen — alles auf natürliche Entwicklung abgestimmt.',
-    boxItems: ['Farbsortier-Set aus Holz', 'Montessori Büchergestell-Info', 'Lupe & Natursammelbox', 'Zahlenpuzzle', 'Bilderbuch Jahreszeiten'],
+    boxItems: ['Montessori Farbsortierbrett aus Eschenholz', 'Montessori Büchergestell (Wandregal)', 'Holz-Lupe & Natursammelbox', 'Zahlenstangen aus Buchenholz (1–10)', 'Jahreszeiten-Puzzle aus Holz'],
   },
   {
     id: 'preschool',
@@ -77,7 +77,7 @@ export const agePhases: AgePhase[] = [
     focusAreas: ['Schneiden & Basteln', 'Buchstaben entdecken', 'Freundschaften pflegen', 'Geschichten erzählen'],
     boxName: 'Kreativ-Box',
     boxDescription: 'Werkzeuge für kleine Kreative: Basteln, Experimentieren, Lesen — alles, was die Vorschulzeit bereichert.',
-    boxItems: ['Kinderschere (abgerundet)', 'Experimentier-Set Natur', 'Geschichten-Würfel', 'Buchstaben-Stempel', 'Mal- und Bastelpapier-Set'],
+    boxItems: ['Montessori Kinderschere (echtes Schneiden)', 'Natur-Experimentierset mit Holzzubehör', 'Geschichten-Würfel aus Holz', 'Montessori Sandpapier-Buchstaben', 'Aquarell-Malset mit Naturpigmenten'],
   },
   {
     id: 'school',
@@ -88,7 +88,7 @@ export const agePhases: AgePhase[] = [
     focusAreas: ['Lesen & Schreiben', 'Mengen & Messen', 'Verantwortung übernehmen', 'Teamarbeit'],
     boxName: 'Macher-Box',
     boxDescription: 'Für Kinder, die selbst entscheiden wollen: Echte Werkzeuge, spannende Projekte, eigene Verantwortung.',
-    boxItems: ['Eigenes Tagebuch', 'Projektplaner für Kinder', 'Experimentierset Wissenschaft', 'Weltkarte Poster', 'Kochmesser (altersgerecht)'],
+    boxItems: ['Leder-Tagebuch mit Holzstift', 'Montessori Wochenplaner für Kinder', 'MINT-Experimentierset (Holz & Glas)', 'Weltkarte aus Holz (Montessori-Stil)', 'Tuki Kindermesser aus Edelstahl'],
   },
 ]
 
@@ -112,7 +112,7 @@ export const milestones: Milestone[] = [
     expertName: 'Lisa Brunner', expertTitle: 'Montessori-Pädagogin',
     linkedRecipes: [],
     linkedActivities: ['sortier-spiel'],
-    suggestedProducts: ['Stapelturm aus Naturholz'],
+    suggestedProducts: ['Regenbogen-Stapler aus Lindenholz'],
   },
   {
     id: 'm3', title: 'Erste Wörter (5-10)', emoji: '💬',
@@ -122,7 +122,7 @@ export const milestones: Milestone[] = [
     expertName: 'Dr. Sarah Keller', expertTitle: 'Logopädin & Sprachtherapeutin',
     linkedRecipes: [],
     linkedActivities: ['haende-waschen-lied'],
-    suggestedProducts: [],
+    suggestedProducts: ['Montessori Bildkarten-Set (real-fotografisch)'],
   },
   {
     id: 'm4', title: 'Aus Becher trinken', emoji: '🥤',
@@ -132,7 +132,7 @@ export const milestones: Milestone[] = [
     expertName: 'Dr. Julia Meier', expertTitle: 'Kinderärztin',
     linkedRecipes: ['smoothie-bowl'],
     linkedActivities: ['wasser-giessen'],
-    suggestedProducts: [],
+    suggestedProducts: ['Trinkbecher-Set (BPA-frei, ergonomisch)'],
   },
   // 18-24 Monate
   {
@@ -163,7 +163,7 @@ export const milestones: Milestone[] = [
     expertName: 'Lisa Brunner', expertTitle: 'Montessori-Pädagogin',
     linkedRecipes: ['smoothie-bowl', 'overnight-oats'],
     linkedActivities: [],
-    suggestedProducts: [],
+    suggestedProducts: ['Montessori Kinderbesteck aus Edelstahl'],
   },
   {
     id: 'm8', title: 'Kritzeln mit Stift', emoji: '✏️',
@@ -173,7 +173,7 @@ export const milestones: Milestone[] = [
     expertName: 'Dr. Julia Meier', expertTitle: 'Kinderärztin',
     linkedRecipes: [],
     linkedActivities: ['knete-selber-machen'],
-    suggestedProducts: ['Wachsmalstifte (ergonomisch)'],
+    suggestedProducts: ['Bienenwachs-Kreidestifte (ergonomisch)'],
   },
   // 2-3 Jahre
   {
@@ -184,7 +184,7 @@ export const milestones: Milestone[] = [
     expertName: 'Prof. Martin Weber', expertTitle: 'Entwicklungspsychologe',
     linkedRecipes: ['energy-balls'],
     linkedActivities: [],
-    suggestedProducts: [],
+    suggestedProducts: ['Balancierbrett aus Buchenholz'],
   },
   {
     id: 'm10', title: 'Farben benennen', emoji: '🎨',
@@ -194,7 +194,7 @@ export const milestones: Milestone[] = [
     expertName: 'Lisa Brunner', expertTitle: 'Montessori-Pädagogin',
     linkedRecipes: ['regenbogen-spiesse'],
     linkedActivities: ['sortier-spiel'],
-    suggestedProducts: ['Farbsortier-Set aus Holz'],
+    suggestedProducts: ['Montessori Farbsortierbrett aus Eschenholz'],
   },
   {
     id: 'm11', title: 'Bücher selbst aussuchen', emoji: '📚',
@@ -214,7 +214,7 @@ export const milestones: Milestone[] = [
     expertName: 'Dr. Sarah Keller', expertTitle: 'Logopädin & Sprachtherapeutin',
     linkedRecipes: ['mini-pizzen', 'guetzli'],
     linkedActivities: ['zaehlen-beim-kochen'],
-    suggestedProducts: [],
+    suggestedProducts: ['Zahlenstangen aus Buchenholz (1–10)'],
   },
   // 3-5 Jahre
   {
@@ -225,7 +225,7 @@ export const milestones: Milestone[] = [
     expertName: 'Lisa Brunner', expertTitle: 'Montessori-Pädagogin',
     linkedRecipes: ['gemuesesticks-hummus', 'wrap-rolle'],
     linkedActivities: ['knete-selber-machen'],
-    suggestedProducts: [],
+    suggestedProducts: ['Montessori Kinderschere (echtes Schneiden)'],
   },
   {
     id: 'm14', title: 'Namen schreiben', emoji: '📝',
@@ -235,7 +235,7 @@ export const milestones: Milestone[] = [
     expertName: 'Dr. Julia Meier', expertTitle: 'Kinderärztin',
     linkedRecipes: ['guetzli'],
     linkedActivities: ['knete-selber-machen'],
-    suggestedProducts: ['Buchstaben-Stempel Set'],
+    suggestedProducts: ['Montessori Sandpapier-Buchstaben'],
   },
   {
     id: 'm15', title: 'Freundschaften schliessen', emoji: '🤝',
@@ -255,7 +255,7 @@ export const milestones: Milestone[] = [
     expertName: 'Dr. Sarah Keller', expertTitle: 'Logopädin & Sprachtherapeutin',
     linkedRecipes: [],
     linkedActivities: ['geschichten-kochen'],
-    suggestedProducts: ['Geschichten-Würfel'],
+    suggestedProducts: ['Geschichten-Würfel aus Holz'],
   },
   // 5-8 Jahre
   {
