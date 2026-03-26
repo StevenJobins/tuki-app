@@ -689,7 +689,7 @@ export const activities: Activity[] = [
     stars: 1,
   },
 
-]]
+]
 
 export function getActivityById(id: string): Activity | undefined {
   return activities.find(a => a.id === id)
