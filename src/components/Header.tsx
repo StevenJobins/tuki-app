@@ -10,13 +10,14 @@ interface HeaderProps {
 export default function Header({ title, showBack, transparent }: HeaderProps) {
   const navigate = useNavigate()
   const location = useLocation()
-  const { tukiStars } = useApp()
+  const { tukiStars, getActiveChild } = useApp()
 
   const isHome = location.pathname === '/'
+  const activeChild = getActiveChild()
 
   return (
     <header
-      className={`sticky top-0 z-40 px-4 py-3 md:px-6 md:py-4 flex items-center justify-between ${
+      className={`sticky top-0 z-40 px-4 py-3 flex items-center justify-between ${
         transparent ? '' : 'glass border-b border-gray-100/50'
       }`}
     >
@@ -46,6 +47,13 @@ export default function Header({ title, showBack, transparent }: HeaderProps) {
       </div>
 
       <div className="flex items-center gap-2">
+        {/* Active child badge */}
+        {activeChild && !isHome && (
+          <div className="flex items-center gap-1 bg-purple-50 px-2 py-1 rounded-full border border-purple-200">
+            <span className="text-sm">{activeChild.avatarEmoji}</span>
+            <span className="text-[10px] font-medium text-purple-700 max-w-[60px] truncate">{activeChild.name}</span>
+          </div>
+        )}
         {/* Tuki Stars badge */}
         <div className="flex items-center gap-1 bg-yellow-50 px-2.5 py-1 rounded-full border border-yellow-200">
           <span className="text-sm">⭐</span>
