@@ -23,3 +23,393 @@ interface PerChildData {
   redeemedRewards: string[]
   photoUploads: string[]
 }
+
+interface AppState {
+  // Active child's data (flat for backward compat)
+  favorites: string[]
+  completedActivities: string[]
+  completedRecipes: string[]
+  weekPlan: Record<string, string[]>
+  tukiStars: TukiStars
+  redeemedRewards: string[]
+  photoUploads: string[]
+  // Multi-child
+  children: ChildProfile[]
+  activeChildId: string | null
+  childData: Record<string, PerChildData>
+  // App
+  language: 'de' | 'en' | 'fr'
+  isOnboarded: boolean
+}
+
+interface AppContextType extends AppState {
+  toggleFavorite: (id: string) => void
+  isFavorite: (id: string) => boolean
+  completeActivity: (id: string, withPhoto?: boolean) => void
+  completeRecipe: (id: string, withPhoto?: boolean) => void
+  addToWeekPlan: (day: string, id: string) => void
+  removeFromWeekPlan: (day: string, id: string) => void
+  addChild: (child: ChildProfile) => void
+  updateChild: (child: ChildProfile) => void
+  removeChild: (childId: string) => void
+  setActiveChild: (childId: string) => void
+  setOnboarded: () => void
+  getActiveChild: () => ChildProfile | null
+  getChildAge: (childId?: string) => number | null
+  starBalance: () => number
+  spendStars: (amount: number, rewardId: string) => boolean
+}
+
+const LEVELS = [
+  { min: 0, name: 'Kleiner Entdecker' },
+  { min: 10, name: 'Kuechenhelfer' },
+  { min: 25, name: 'Nachwuchskoch' },
+  { min: 50, name: 'Familien-Star' },
+  { min: 100, name: 'Kuechenchef' },
+]
+
+function getLevelInfo(total: number): { level: number; levelName: string } {
+  let level = 0
+  let levelName = LEVELS[0].name
+  for (let i = LEVELS.length - 1; i >= 0; i--) {
+    if (total >= LEVELS[i].min) {
+      level = i
+      levelName = LEVELS[i].name
+      break
+    }
+  }
+  return { level, levelName }
+}
+
+const defaultPerChild: PerChildData = {
+  favorites: [],
+  completedActivities: [],
+  completedRecipes: [],
+  weekPlan: {},
+  tukiStars: { total: 0, spent: 0, level: 0, levelName: 'Kleiner Entdecker' },
+  redeemedRewards: [],
+  photoUploads: [],
+}
+
+const defaultState: AppState = {
+  favorites: [],
+  completedActivities: [],
+  completedRecipes: [],
+  weekPlan: {},
+  tukiStars: { total: 0, spent: 0, level: 0, levelName: 'Kleiner Entdecker' },
+  redeemedRewards: [],
+  photoUploads: [],
+  children: [],
+  activeChildId: null,
+  childData: {},
+  language: 'de',
+  isOnboarded: false,
+}
+
+function loadState(): AppState {
+  try {
+    const saved = localStorage.getItem('tuki-family-state')
+    if (saved) {
+      const parsed = JSON.parse(saved)
+      // Migration: old format had favorites as array with no childData
+      if (parsed && !parsed.childData) {
+        parsed.childData = {}
+        parsed.activeChildId = parsed.activeChildId || null
+      }
+      // Migration: add spent field to tukiStars if missing
+      if (parsed.tukiStars && parsed.tukiStars.spent === undefined) {
+        parsed.tukiStars.spent = 0
+      }
+      // Migration: add redeemedRewards and photoUploads if missing
+      if (!parsed.redeemedRewards) parsed.redeemedRewards = []
+      if (!parsed.photoUploads) parsed.photoUploads = []
+      // Migrate childData entries too
+      if (parsed.childData) {
+        Object.keys(parsed.childData).forEach(key => {
+          const cd = parsed.childData[key]
+          if (cd.tukiStars && cd.tukiStars.spent === undefined) cd.tukiStars.spent = 0
+          if (!cd.redeemedRewards) cd.redeemedRewards = []
+          if (!cd.photoUploads) cd.photoUploads = []
+        })
+      }
+      // Auto-set active child if children exist but none is active
+      if (parsed.children?.length > 0 && !parsed.activeChildId) {
+        parsed.activeChildId = parsed.children[0].id
+      }
+      return { ...defaultState, ...parsed }
+    }
+  } catch {}
+  return defaultState
+}
+
+const AppContext = createContext<AppContextType | null>(null)
+
+export function AppProvider({ children: childNodes }: { children: ReactNode }) {
+  const [state, setState] = useState<AppState>(loadState)
+
+  useEffect(() => {
+    localStorage.setItem('tuki-family-state', JSON.stringify(state))
+  }, [state])
+
+  // Save current child's data into childData before switching
+  const saveCurrentChildData = useCallback((s: AppState): AppState => {
+    if (!s.activeChildId) return s
+    return {
+      ...s,
+      childData: {
+        ...s.childData,
+        [s.activeChildId]: {
+          favorites: s.favorites,
+          completedActivities: s.completedActivities,
+          completedRecipes: s.completedRecipes,
+          weekPlan: s.weekPlan,
+          tukiStars: s.tukiStars,
+          redeemedRewards: s.redeemedRewards,
+          photoUploads: s.photoUploads,
+        },
+      },
+    }
+  }, [])
+
+  const toggleFavorite = (id: string) => {
+    setState(s => ({
+      ...s,
+      favorites: s.favorites.includes(id)
+        ? s.favorites.filter(f => f !== id)
+        : [...s.favorites, id],
+    }))
+  }
+
+  const isFavorite = (id: string) => state.favorites.includes(id)
+
+  const completeActivity = (id: string, withPhoto?: boolean) => {
+    setState(s => {
+      if (s.completedActivities.includes(id)) return s
+      const completed = [...s.completedActivities, id]
+      const earned = withPhoto ? 3 : 1
+      const newTotal = s.tukiStars.total + earned
+      const newPhotos = withPhoto ? [...s.photoUploads, id] : s.photoUploads
+      return {
+        ...s,
+        completedActivities: completed,
+        photoUploads: newPhotos,
+        tukiStars: { ...s.tukiStars, total: newTotal, ...getLevelInfo(newTotal) },
+      }
+    })
+  }
+
+  const completeRecipe = (id: string, withPhoto?: boolean) => {
+    setState(s => {
+      if (s.completedRecipes.includes(id)) return s
+      const completed = [...s.completedRecipes, id]
+      const earned = withPhoto ? 3 : 1
+      const newTotal = s.tukiStars.total + earned
+      const newPhotos = withPhoto ? [...s.photoUploads, id] : s.photoUploads
+      return {
+        ...s,
+        completedRecipes: completed,
+        photoUploads: newPhotos,
+        tukiStars: { ...s.tukiStars, total: newTotal, ...getLevelInfo(newTotal) },
+      }
+    })
+  }
+
+  const addToWeekPlan = (day: string, id: string) => {
+    setState(s => ({
+      ...s,
+      weekPlan: {
+        ...s.weekPlan,
+        [day]: [...(s.weekPlan[day] || []), id],
+      },
+    }))
+  }
+
+  const removeFromWeekPlan = (day: string, id: string) => {
+    setState(s => ({
+      ...s,
+      weekPlan: {
+        ...s.weekPlan,
+        [day]: (s.weekPlan[day] || []).filter(i => i !== id),
+      },
+    }))
+  }
+
+  const addChild = (child: ChildProfile) => {
+    setState(s => {
+      const isFirst = s.children.length === 0
+      let newState = { ...s, children: [...s.children, child] }
+
+      if (isFirst) {
+        // Migrate existing data to first child
+        newState.childData = {
+          ...newState.childData,
+          [child.id]: {
+            favorites: s.favorites,
+            completedActivities: s.completedActivities,
+            completedRecipes: s.completedRecipes,
+            weekPlan: s.weekPlan,
+            tukiStars: s.tukiStars,
+            redeemedRewards: s.redeemedRewards,
+            photoUploads: s.photoUploads,
+          },
+        }
+        newState.activeChildId = child.id
+      } else {
+        // Save current child data, then init new child with defaults
+        newState = saveCurrentChildData(newState)
+        newState.childData = {
+          ...newState.childData,
+          [child.id]: { ...defaultPerChild },
+        }
+      }
+      return newState
+    })
+  }
+
+  const updateChild = (child: ChildProfile) => {
+    setState(s => ({
+      ...s,
+      children: s.children.map(c => (c.id === child.id ? child : c)),
+    }))
+  }
+
+  const removeChild = (childId: string) => {
+    setState(s => {
+      const newChildren = s.children.filter(c => c.id !== childId)
+      const { [childId]: _, ...restChildData } = s.childData
+
+      let newActiveId = s.activeChildId
+      let newFavorites = s.favorites
+      let newCompletedAct = s.completedActivities
+      let newCompletedRec = s.completedRecipes
+      let newWeekPlan = s.weekPlan
+      let newStars = s.tukiStars
+      let newRedeemed = s.redeemedRewards
+      let newPhotos = s.photoUploads
+
+      if (s.activeChildId === childId) {
+        if (newChildren.length > 0) {
+          newActiveId = newChildren[0].id
+          const data = restChildData[newActiveId] || defaultPerChild
+          newFavorites = data.favorites
+          newCompletedAct = data.completedActivities
+          newCompletedRec = data.completedRecipes
+          newWeekPlan = data.weekPlan
+          newStars = data.tukiStars
+          newRedeemed = data.redeemedRewards
+          newPhotos = data.photoUploads
+        } else {
+          newActiveId = null
+          newFavorites = []
+          newCompletedAct = []
+          newCompletedRec = []
+          newWeekPlan = {}
+          newStars = { total: 0, spent: 0, level: 0, levelName: 'Kleiner Entdecker' }
+          newRedeemed = []
+          newPhotos = []
+        }
+      }
+
+      return {
+        ...s,
+        children: newChildren,
+        childData: restChildData,
+        activeChildId: newActiveId,
+        favorites: newFavorites,
+        completedActivities: newCompletedAct,
+        completedRecipes: newCompletedRec,
+        weekPlan: newWeekPlan,
+        tukiStars: newStars,
+        redeemedRewards: newRedeemed,
+        photoUploads: newPhotos,
+      }
+    })
+  }
+
+  const setActiveChild = (childId: string) => {
+    setState(s => {
+      if (s.activeChildId === childId) return s
+      const saved = saveCurrentChildData(s)
+      const data = saved.childData[childId] || defaultPerChild
+      return {
+        ...saved,
+        activeChildId: childId,
+        favorites: data.favorites,
+        completedActivities: data.completedActivities,
+        completedRecipes: data.completedRecipes,
+        weekPlan: data.weekPlan,
+        tukiStars: data.tukiStars,
+        redeemedRewards: data.redeemedRewards,
+        photoUploads: data.photoUploads,
+      }
+    })
+  }
+
+  const setOnboarded = () => {
+    setState(s => ({ ...s, isOnboarded: true }))
+  }
+
+  const getActiveChild = (): ChildProfile | null => {
+    if (!state.activeChildId) return null
+    return state.children.find(c => c.id === state.activeChildId) || null
+  }
+
+  const getChildAge = (childId?: string): number | null => {
+    const id = childId || state.activeChildId
+    if (!id) return null
+    const child = state.children.find(c => c.id === id)
+    if (!child) return null
+    const birth = new Date(child.birthDate)
+    const now = new Date()
+    let years = now.getFullYear() - birth.getFullYear()
+    const m = now.getMonth() - birth.getMonth()
+    if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) years--
+    return Math.max(0, years)
+  }
+
+  const starBalance = (): number => {
+    return state.tukiStars.total - state.tukiStars.spent
+  }
+
+  const spendStars = (amount: number, rewardId: string): boolean => {
+    const balance = state.tukiStars.total - state.tukiStars.spent
+    if (balance < amount) return false
+    setState(s => ({
+      ...s,
+      tukiStars: { ...s.tukiStars, spent: s.tukiStars.spent + amount },
+      redeemedRewards: [...s.redeemedRewards, rewardId],
+    }))
+    return true
+  }
+
+  return (
+    <AppContext.Provider
+      value={{
+        ...state,
+        toggleFavorite,
+        isFavorite,
+        completeActivity,
+        completeRecipe,
+        addToWeekPlan,
+        removeFromWeekPlan,
+        addChild,
+        updateChild,
+        removeChild,
+        setActiveChild,
+        setOnboarded,
+        getActiveChild,
+        getChildAge,
+        starBalance,
+        spendStars,
+      }}
+    >
+      {childNodes}
+    </AppContext.Provider>
+  )
+}
+
+export function useApp() {
+  const ctx = useContext(AppContext)
+  if (!ctx) throw new Error('useApp must be used within AppProvider')
+  return ctx
+}
