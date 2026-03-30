@@ -10,7 +10,7 @@ interface HeaderProps {
 export default function Header({ title, showBack, transparent }: HeaderProps) {
   const navigate = useNavigate()
   const location = useLocation()
-  const { tukiStars, getActiveChild } = useApp()
+  const { tukiStars, getActiveChild, starBalance } = useApp()
 
   const isHome = location.pathname === '/'
   const activeChild = getActiveChild()
@@ -55,9 +55,9 @@ export default function Header({ title, showBack, transparent }: HeaderProps) {
           </div>
         )}
         {/* Tuki Stars badge */}
-        <div className="flex items-center gap-1 bg-yellow-50 px-2.5 py-1 rounded-full border border-yellow-200">
-          <span className="text-sm">⭐</span>
-          <span className="text-xs font-semibold text-yellow-700">{tukiStars.total}</span>
+        <div onClick={() => navigate('/sterne-shop')} className="flex items-center gap-1 bg-yellow-50 cursor-pointer hover:bg-yellow-100 transition-colors px-2.5 py-1 rounded-full border border-yellow-200">
+          <span className="text-sm">â­</span>
+          <span className="text-xs font-semibold text-yellow-700">{starBalance()}</span>
         </div>
       </div>
     </header>
