@@ -85,7 +85,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const signUp = async (email: string, password: string, displayName: string) => {
-    const { data, error } = await supabase.auth.signUp({ email, password })
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: 'https://stevenjobins.github.io/tuki-app/' }
+    })
     if (error) return { error: error.message }
 
     if (data.user) {
@@ -103,7 +107,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) return { error: error.message }
+    if (error) {
+      if (error.message.includes('Email not confirmed')) {
+        return { error: 'EMAIL_NOT_CONFIRMED' }
+      }
+      return { error: error.message }
+    }
     return { error: null }
   }
 
