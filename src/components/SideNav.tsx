@@ -64,7 +64,7 @@ export default function SideNav() {
       <div className="mt-auto pt-4 border-t border-gray-100">
         <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-3 border border-yellow-200/50">
           <div className="flex items-center gap-2 mb-2">
-            <span>â­</span>
+            <span>{'\u2B50'}</span>
             <span className="text-sm font-semibold text-gray-700">{tukiStars.total} Sterne</span>
           </div>
           <div className="w-full h-1.5 bg-yellow-100 rounded-full overflow-hidden">
