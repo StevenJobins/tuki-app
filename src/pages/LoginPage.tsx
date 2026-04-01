@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
+import { supabase } from '../lib/supabase'
 
 export default function LoginPage() {
   const { signIn, signUp } = useAuth()
@@ -11,6 +12,7 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState('')
+  const [showResend, setShowResend] = useState(false)
   const [showResend, setShowResend] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,7 +31,7 @@ export default function LoginPage() {
       if (error) {
         setError(error)
       } else {
-        setSuccess('Konto erstellt! PrÃ¼fe deine E-Mails zur BestÃ¤tigung.')
+        setSuccess('Konto erstellt! PrÃÂ¼fe deine E-Mails zur BestÃÂ¤tigung.')
       }
     } else {
       const { error } = await signIn(email, password)
@@ -41,6 +43,19 @@ export default function LoginPage() {
           setError(error === 'Invalid login credentials' ? 'E-Mail oder Passwort falsch. Falls du dich gerade registriert hast, best\u00e4tige zuerst deine E-Mail.' : error)
         }
       }
+    }
+    setLoading(false)
+  }
+
+  const handleResend = async () => {
+    setLoading(true)
+    setError('')
+    const { error } = await supabase.auth.resend({ type: 'signup', email, options: { emailRedirectTo: 'https://stevenjobins.github.io/tuki-app/' } })
+    if (error) {
+      setError('Fehler beim Senden: ' + error.message)
+    } else {
+      setSuccess('Best\u00e4tigungsmail erneut gesendet! Pr\u00fcfe auch deinen Spam-Ordner.')
+      setShowResend(false)
     }
     setLoading(false)
   }
@@ -57,7 +72,7 @@ export default function LoginPage() {
             Tuki <span className="text-tuki-rot">Family</span>
           </h1>
           <p className="text-gray-500 text-sm mt-2">
-            {isRegister ? 'Erstelle dein Familienkonto' : 'Willkommen zurÃ¼ck!'}
+            {isRegister ? 'Erstelle dein Familienkonto' : 'Willkommen zurÃÂ¼ck!'}
           </p>
         </div>
 
@@ -70,7 +85,7 @@ export default function LoginPage() {
                 type="text"
                 value={displayName}
                 onChange={e => setDisplayName(e.target.value)}
-                placeholder="z.B. Familie MÃ¼ller"
+                placeholder="z.B. Familie MÃÂ¼ller"
                 className="w-full px-4 py-3 bg-white rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-tuki-mint focus:ring-2 focus:ring-tuki-mint/30"
               />
             </div>
@@ -100,6 +115,17 @@ export default function LoginPage() {
               className="w-full px-4 py-3 bg-white rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-tuki-mint focus:ring-2 focus:ring-tuki-mint/30"
             />
           </div>
+
+          {showResend && (
+            <button
+              type="button"
+              onClick={handleResend}
+              disabled={loading}
+              className="w-full py-2 px-4 text-sm font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-xl hover:bg-amber-100 transition-colors"
+            >
+              Best\u00e4tigungsmail erneut senden
+            </button>
+          )}
 
           {error && (
             <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3">
