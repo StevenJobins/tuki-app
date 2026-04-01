@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
-import { supabase } from '../lib/supabase'
 
 export default function LoginPage() {
   const { signIn, signUp } = useAuth()
@@ -13,9 +12,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState('')
   const [showResend, setShowResend] = useState(false)
-  const [showResend, setShowResend] = useState(false)
-
-  const handleSubmit = async (e: React.FormEvent) => {
+   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     setSuccess('')
@@ -31,7 +28,7 @@ export default function LoginPage() {
       if (error) {
         setError(error)
       } else {
-        setSuccess('Konto erstellt! PrÃÂ¼fe deine E-Mails zur BestÃÂ¤tigung.')
+        setSuccess('Konto erstellt! PrÃÂÃÂ¼fe deine E-Mails zur BestÃÂÃÂ¤tigung.')
       }
     } else {
       const { error } = await signIn(email, password)
@@ -72,7 +69,7 @@ export default function LoginPage() {
             Tuki <span className="text-tuki-rot">Family</span>
           </h1>
           <p className="text-gray-500 text-sm mt-2">
-            {isRegister ? 'Erstelle dein Familienkonto' : 'Willkommen zurÃÂ¼ck!'}
+            {isRegister ? 'Erstelle dein Familienkonto' : 'Willkommen zurÃÂÃÂ¼ck!'}
           </p>
         </div>
 
@@ -85,7 +82,7 @@ export default function LoginPage() {
                 type="text"
                 value={displayName}
                 onChange={e => setDisplayName(e.target.value)}
-                placeholder="z.B. Familie MÃÂ¼ller"
+                placeholder="z.B. Familie MÃÂÃÂ¼ller"
                 className="w-full px-4 py-3 bg-white rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-tuki-mint focus:ring-2 focus:ring-tuki-mint/30"
               />
             </div>
