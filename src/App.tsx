@@ -16,6 +16,7 @@ import OnboardingPage from './pages/OnboardingPage'
 import WochenplanPage from './pages/WochenplanPage'
 import ZutatenCheckPage from './pages/ZutatenCheckPage'
 import FavoritenPage from './pages/FavoritenPage'
+import StarShopPage from './pages/StarShopPage'
 
 function LoadingScreen() {
   return (
@@ -60,6 +61,7 @@ function AuthenticatedApp() {
           <Route path="/profil" element={<ProfilePage />} />
           <Route path="/wochenplan" element={<WochenplanPage />} />
           <Route path="/zutaten-check" element={<ZutatenCheckPage />} />
+          <Route path="/sterne-shop" element={<StarShopPage />} />
           <Route path="/favoriten" element={<FavoritenPage />} />
         </Routes>
         {/* Bottom nav \u2013 mobile only */}
