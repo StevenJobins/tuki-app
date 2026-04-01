@@ -8,7 +8,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     flowType: 'implicit',
     autoRefreshToken: true,
     persistSession: true,
-    detectSessionInUrl: false,
+    detectSessionInUrl: true,
     // Use a simple no-op lock to avoid navigator.locks deadlocks
     lock: async (_name: string, _acquireTimeout: number, fn: () => Promise<any>) => {
       return fn()
