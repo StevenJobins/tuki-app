@@ -35,9 +35,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .select('*')
         .eq('id', userId)
         .single()
-      if (data) setProfile(data)
+      if (data) {
+        setProfile(data)
+      } else {
+        // Profile doesn't exist yet - create it (first login after email confirmation)
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          const displayName = user.user_metadata?.display_name || 'Familie'
+          const { data: newProfile } = await supabase.from('profiles').upsert({
+            id: userId,
+            display_name: displayName,
+            avatar_emoji: '\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc67',
+          }).select().single()
+          if (newProfile) setProfile(newProfile)
+        }
+      }
     } catch (e) {
-      console.warn('Failed to fetch profile:', e)
+      // Profile might not exist yet - try to create it
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          const displayName = user.user_metadata?.display_name || 'Familie'
+          const { data: newProfile } = await supabase.from('profiles').upsert({
+            id: userId,
+            display_name: displayName,
+            avatar_emoji: '\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc67',
+          }).select().single()
+          if (newProfile) setProfile(newProfile)
+        }
+      } catch (e2) {
+        console.warn('Failed to create profile:', e2)
+      }
     }
   }
 
@@ -85,23 +113,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const signUp = async (email: string, password: string, displayName: string) => {
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: 'https://stevenjobins.github.io/tuki-app/' }
+      options: {
+        emailRedirectTo: 'https://stevenjobins.github.io/tuki-app/',
+        data: { display_name: displayName }
+      }
     })
     if (error) return { error: error.message }
-
-    if (data.user) {
-      const { error: profileError } = await supabase.from('profiles').insert({
-        id: data.user.id,
-        display_name: displayName,
-        avatar_emoji: '\u{1F468}\u200D\u{1F469}\u200D\u{1F467}',
-      })
-      if (profileError) return { error: profileError.message }
-      await fetchProfile(data.user.id)
-    }
-
     return { error: null }
   }
 
