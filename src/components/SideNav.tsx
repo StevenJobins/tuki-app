@@ -2,16 +2,16 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 
 const navItems = [
-  { path: '/', label: 'Home', emoji: 'ð ' },
-  { path: '/rezepte', label: 'Rezepte', emoji: 'ð³' },
-  { path: '/aktivitaeten', label: 'AktivitÃ¤ten', emoji: 'ð®' },
-  { path: '/favoriten', label: 'Favoriten', emoji: 'â¤ï¸' },
-  { path: '/wochenplan', label: 'Wochenplan', emoji: 'ð' },
-  { path: '/zutaten-check', label: 'KÃ¼hlschrank', emoji: 'ð§±' },
-  { path: '/entwicklung', label: 'Entwicklung', emoji: 'ð' },
-  { path: '/community', label: 'Community', emoji: 'ð¨âð©âð§' },
-  { path: '/sterne-shop', label: 'Sterne-Shop', emoji: '⭐' },
-  { path: '/profil', label: 'Profil', emoji: 'ð¤' },
+  { path: '/', label: 'Home', emoji: '\uD83C\uDFE0' },
+  { path: '/rezepte', label: 'Rezepte', emoji: '\uD83C\uDF73' },
+  { path: '/aktivitaeten', label: 'Aktivit\u00e4ten', emoji: '\uD83C\uDFAE' },
+  { path: '/favoriten', label: 'Favoriten', emoji: '\u2764\uFE0F' },
+  { path: '/wochenplan', label: 'Wochenplan', emoji: '\uD83D\uDCC5' },
+  { path: '/zutaten-check', label: 'K\u00fchlschrank', emoji: '\uD83E\uDDF1' },
+  { path: '/entwicklung', label: 'Entwicklung', emoji: '\uD83D\uDCC8' },
+  { path: '/community', label: 'Community', emoji: '\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67' },
+  { path: '/sterne-shop', label: 'Sterne-Shop', emoji: '\u2B50' },
+  { path: '/profil', label: 'Profil', emoji: '\uD83E\uDD17' },
 ]
 
 export default function SideNav() {
