@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { supabase } from '../lib/supabase'
 
 export default function LoginPage() {
   const { signIn, signUp } = useAuth()
@@ -10,6 +11,7 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState('')
+  const [showResend, setShowResend] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -27,12 +29,17 @@ export default function LoginPage() {
       if (error) {
         setError(error)
       } else {
-        setSuccess('Konto erstellt! Prüfe deine E-Mails zur Bestätigung.')
+        setSuccess('Konto erstellt! PrÃ¼fe deine E-Mails zur BestÃ¤tigung.')
       }
     } else {
       const { error } = await signIn(email, password)
       if (error) {
-        setError(error === 'Invalid login credentials' ? 'E-Mail oder Passwort falsch' : error)
+        if (error === 'EMAIL_NOT_CONFIRMED') {
+          setError('Deine E-Mail-Adresse ist noch nicht best\u00e4tigt. Bitte pr\u00fcfe dein Postfach (auch Spam-Ordner).')
+          setShowResend(true)
+        } else {
+          setError(error === 'Invalid login credentials' ? 'E-Mail oder Passwort falsch. Falls du dich gerade registriert hast, best\u00e4tige zuerst deine E-Mail.' : error)
+        }
       }
     }
     setLoading(false)
@@ -50,7 +57,7 @@ export default function LoginPage() {
             Tuki <span className="text-tuki-rot">Family</span>
           </h1>
           <p className="text-gray-500 text-sm mt-2">
-            {isRegister ? 'Erstelle dein Familienkonto' : 'Willkommen zurück!'}
+            {isRegister ? 'Erstelle dein Familienkonto' : 'Willkommen zurÃ¼ck!'}
           </p>
         </div>
 
@@ -63,7 +70,7 @@ export default function LoginPage() {
                 type="text"
                 value={displayName}
                 onChange={e => setDisplayName(e.target.value)}
-                placeholder="z.B. Familie Müller"
+                placeholder="z.B. Familie MÃ¼ller"
                 className="w-full px-4 py-3 bg-white rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-tuki-mint focus:ring-2 focus:ring-tuki-mint/30"
               />
             </div>
