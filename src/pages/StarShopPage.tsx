@@ -13,7 +13,7 @@ interface Reward {
 }
 
 const REWARDS: Reward[] = [
-  { id: 'sticker-set', emoji: '\u2B50', name: 'Tuki Sticker-Set', description: '12 suesse Tuki-Sticker fuer das Kinderzimmer', price: 8, category: 'produkt' },
+  { id: 'sticker-set', emoji: '⭐', name: 'Tuki Sticker-Set', description: '12 suesse Tuki-Sticker fuer das Kinderzimmer', price: 8, category: 'produkt' },
   { id: 'rezeptbuch', emoji: '\uD83D\uDCD6', name: 'Rezeptbuch Download', description: '20 exklusive Familienrezepte als PDF', price: 10, category: 'digital' },
   { id: 'gratis-versand', emoji: '\uD83D\uDE9A', name: 'Gratis Versand', description: 'Kostenloser Versand bei deiner naechsten Bestellung', price: 12, category: 'rabatt' },
   { id: 'snack-box', emoji: '\uD83C\uDF81', name: 'Tuki Snack-Box', description: 'Gesunde Snacks fuer die ganze Familie', price: 15, category: 'produkt' },
@@ -60,7 +60,7 @@ export default function StarShopPage() {
       {/* Star Balance Hero */}
       <div className="mx-4 mt-4 bg-gradient-to-br from-yellow-400 via-amber-400 to-orange-400 rounded-2xl p-6 text-white shadow-lg">
         <div className="text-center">
-          <div className="text-4xl mb-2">{'\u2B50'}</div>
+          <div className="text-4xl mb-2">{'⭐'}</div>
           <div className="text-5xl font-bold mb-1">{balance}</div>
           <div className="text-white/90 text-sm">
             {child ? `${child.name}s Sterne-Guthaben` : 'Dein Sterne-Guthaben'}
@@ -81,14 +81,14 @@ export default function StarShopPage() {
         <h3 className="font-semibold text-tuki-brown text-sm mb-2">{'\u2728'} So verdienst du Sterne</h3>
         <div className="flex gap-3">
           <div className="flex-1 bg-green-50 rounded-lg p-3 text-center">
-            <div className="text-lg mb-1">{'\u2705'}</div>
+            <div className="text-lg mb-1">{'✅'}</div>
             <div className="text-xs font-medium text-green-800">Aktivitaet / Rezept abschliessen</div>
-            <div className="text-green-600 font-bold text-sm mt-1">+1 {'\u2B50'}</div>
+            <div className="text-green-600 font-bold text-sm mt-1">+1 {'⭐'}</div>
           </div>
           <div className="flex-1 bg-purple-50 rounded-lg p-3 text-center">
             <div className="text-lg mb-1">{'\uD83D\uDCF8'}</div>
             <div className="text-xs font-medium text-purple-800">Mit Foto abschliessen</div>
-            <div className="text-purple-600 font-bold text-sm mt-1">+3 {'\u2B50'}</div>
+            <div className="text-purple-600 font-bold text-sm mt-1">+3 {'⭐'}</div>
           </div>
         </div>
       </div>
@@ -99,7 +99,7 @@ export default function StarShopPage() {
           { key: 'alle', label: 'Alle' },
           { key: 'produkt', label: '\uD83C\uDF81 Produkte' },
           { key: 'rabatt', label: '\uD83C\uDFF7\uFE0F Rabatte' },
-          { key: 'digital', label: '\uD83D\uDCF1 Digital' },
+          { key: 'digital', label: '📱 Digital' },
         ].map(f => (
           <button
             key={f.key}
@@ -143,12 +143,12 @@ export default function StarShopPage() {
               <div className="mt-3 flex items-center justify-between">
                 {isRedeemed ? (
                   <span className="text-xs font-medium text-green-600 flex items-center gap-1">
-                    {wasJustRedeemed ? '\uD83C\uDF89' : '\u2705'} Eingeloest
+                    {wasJustRedeemed ? '\uD83C\uDF89' : '✅'} Eingeloest
                   </span>
                 ) : (
                   <>
                     <span className={`text-sm font-bold ${canAfford ? 'text-amber-600' : 'text-gray-400'}`}>
-                      {reward.price} {'\u2B50'}
+                      {reward.price} {'⭐'}
                     </span>
                     {canAfford && (
                       <span className="text-xs text-amber-600 font-medium">Einloesen</span>
@@ -165,7 +165,7 @@ export default function StarShopPage() {
       {redeemedRewards.length > 0 && (
         <div className="mx-4 mt-6 mb-4">
           <h3 className="text-sm font-semibold text-tuki-brown mb-2">
-            {'\uD83C\uDF1F'} Eingeloeste Belohnungen ({redeemedRewards.length})
+            {'🌟'} Eingeloeste Belohnungen ({redeemedRewards.length})
           </h3>
           <div className="flex flex-wrap gap-2">
             {redeemedRewards.map(rId => {
@@ -204,7 +204,7 @@ export default function StarShopPage() {
                 <p className="text-sm text-gray-500 mt-1">{selectedReward.description}</p>
                 <div className="mt-4 bg-amber-50 rounded-xl p-3">
                   <span className="text-amber-700 font-medium">
-                    {selectedReward.price} {'\u2B50'} einloesen?
+                    {selectedReward.price} {'⭐'} einloesen?
                   </span>
                   <div className="text-xs text-amber-600 mt-1">
                     Verbleibendes Guthaben: {balance - selectedReward.price} Sterne
@@ -221,7 +221,7 @@ export default function StarShopPage() {
                     onClick={confirmRedeem}
                     className="flex-1 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-medium shadow-md"
                   >
-                    Einloesen {'\u2B50'}
+                    Einloesen {'⭐'}
                   </button>
                 </div>
               </div>
