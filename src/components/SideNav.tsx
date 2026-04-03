@@ -3,14 +3,14 @@ import { useApp } from '../context/AppContext'
 
 const navItems = [
   { path: '/', label: 'Home', emoji: '\uD83C\uDFE0' },
-  { path: '/rezepte', label: 'Rezepte', emoji: '\uD83C\uDF73' },
-  { path: '/aktivitaeten', label: 'Aktivit\u00e4ten', emoji: '\uD83C\uDFAE' },
-  { path: '/favoriten', label: 'Favoriten', emoji: '\u2764\uFE0F' },
+  { path: '/rezepte', label: 'Rezepte', emoji: '🍳' },
+  { path: '/aktivitaeten', label: 'Aktivitäten', emoji: '🎮' },
+  { path: '/favoriten', label: 'Favoriten', emoji: '❤\uFE0F' },
   { path: '/wochenplan', label: 'Wochenplan', emoji: '\uD83D\uDCC5' },
-  { path: '/zutaten-check', label: 'K\u00fchlschrank', emoji: '\uD83E\uDDF1' },
+  { path: '/zutaten-check', label: 'Kühlschrank', emoji: '\uD83E\uDDF1' },
   { path: '/entwicklung', label: 'Entwicklung', emoji: '\uD83D\uDCC8' },
-  { path: '/community', label: 'Community', emoji: '\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67' },
-  { path: '/sterne-shop', label: 'Sterne-Shop', emoji: '\u2B50' },
+  { path: '/community', label: 'Community', emoji: '👨\u200D👩\u200D\uD83D\uDC67' },
+  { path: '/sterne-shop', label: 'Sterne-Shop', emoji: '⭐' },
   { path: '/profil', label: 'Profil', emoji: '\uD83E\uDD17' },
 ]
 
@@ -64,7 +64,7 @@ export default function SideNav() {
       <div className="mt-auto pt-4 border-t border-gray-100">
         <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-3 border border-yellow-200/50">
           <div className="flex items-center gap-2 mb-2">
-            <span>{'\u2B50'}</span>
+            <span>{'⭐'}</span>
             <span className="text-sm font-semibold text-gray-700">{tukiStars.total} Sterne</span>
           </div>
           <div className="w-full h-1.5 bg-yellow-100 rounded-full overflow-hidden">
