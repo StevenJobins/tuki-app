@@ -18,6 +18,7 @@ import ZutatenCheckPage from './pages/ZutatenCheckPage'
 import FavoritenPage from './pages/FavoritenPage'
 import StarShopPage from './pages/StarShopPage'
 import InstallPrompt from './components/InstallPrompt'
+import NotificationPrompt from './components/NotificationPrompt'
 
 function LoadingScreen() {
   return (
@@ -68,6 +69,7 @@ function AuthenticatedApp() {
         {/* Bottom nav \u2013 mobile only */}
         <BottomNav />
         <InstallPrompt />
+        <NotificationPrompt />
       </div>
     </div>
   )
