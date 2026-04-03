@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 
@@ -19,6 +19,7 @@ export default function NotificationPrompt() {
   const { user } = useAuth()
   const [show, setShow] = useState(false)
   const [subscribing, setSubscribing] = useState(false)
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     if (!('Notification' in window) || !('serviceWorker' in navigator)) return
@@ -30,11 +31,11 @@ export default function NotificationPrompt() {
         if (sub) return // Already subscribed, don't show
         const timer = setTimeout(() => setShow(true), 30000)
         // Store cleanup in a variable accessible to the effect cleanup
-        (window as any).__tukiNotifTimer = timer
+        timerRef.current = timer
       })
     })
     return () => {
-      if ((window as any).__tukiNotifTimer) clearTimeout((window as any).__tukiNotifTimer)
+      if (timerRef.current) clearTimeout(timerRef.current)
     }
   }, [])
 
