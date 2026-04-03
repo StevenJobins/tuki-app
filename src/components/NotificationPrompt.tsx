@@ -30,11 +30,11 @@ export default function NotificationPrompt() {
         if (sub) return // Already subscribed, don't show
         const timer = setTimeout(() => setShow(true), 30000)
         // Store cleanup in a variable accessible to the effect cleanup
-        window.__tukiNotifTimer = timer
+        (window as any).__tukiNotifTimer = timer
       })
     })
     return () => {
-      if (window.__tukiNotifTimer) clearTimeout(window.__tukiNotifTimer)
+      if ((window as any).__tukiNotifTimer) clearTimeout((window as any).__tukiNotifTimer)
     }
   }, [])
 
