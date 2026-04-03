@@ -80,7 +80,7 @@ export default function NotificationPrompt() {
           <span className="text-2xl">{'🔔'}</span>
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-sm text-gray-800">T\u00e4gliche Erinnerung</p>
+          <p className="font-semibold text-sm text-gray-800">Tägliche Erinnerung</p>
           <p className="text-xs text-gray-500 mt-0.5">Erhalte morgens deinen Tuki-Tagesplan</p>
         </div>
         <div className="flex gap-2 shrink-0">
@@ -88,7 +88,7 @@ export default function NotificationPrompt() {
             onClick={() => setShow(false)}
             className="text-xs text-gray-400 px-2 py-1.5"
           >
-            Sp\u00e4ter
+            Später
           </button>
           <button
             onClick={handleEnable}
