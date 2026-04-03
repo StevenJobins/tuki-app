@@ -43,7 +43,7 @@ export default function InstallPrompt() {
             onClick={() => setDismissed(true)}
             className="text-xs text-gray-400 px-2 py-1.5"
           >
-            Sp{'\u00e4'}ter
+            Sp{'ä'}ter
           </button>
           <button
             onClick={handleInstall}
