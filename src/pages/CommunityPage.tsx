@@ -68,29 +68,42 @@ export default function CommunityPage() {
 
   async function loadPosts() {
     setLoading(true)
-    const { data } = await supabase
-      .from('community_posts')
-      .select('*, profiles(display_name, avatar_emoji)')
-      .order('created_at', { ascending: false })
-      .limit(20)
+    try {
+      const { data } = await supabase
+        .from('community_posts')
+        .select('*, profiles(display_name, avatar_emoji)')
+        .order('created_at', { ascending: false })
+        .limit(20)
 
-    if (data) {
-      const postsWithCounts = await Promise.all(
-        data.map(async (post) => {
-          const { count: likeCount } = await supabase
-            .from('post_likes')
-            .select('*', { count: 'exact', head: true })
-            .eq('post_id', post.id)
-          const { count: commentCount } = await supabase
-            .from('post_comments')
-            .select('*', { count: 'exact', head: true })
-            .eq('post_id', post.id)
-          return { ...post, like_count: likeCount || 0, comment_count: commentCount || 0 }
-        })
-      )
-      setPosts(postsWithCounts as CommunityPost[])
+      if (data) {
+        const postsWithCounts = await Promise.all(
+          data.map(async (post) => {
+            let likeCount = 0
+            let commentCount = 0
+            try {
+              const likes = await supabase
+                .from('post_likes')
+                .select('*', { count: 'exact', head: true })
+                .eq('post_id', post.id)
+              likeCount = likes.count || 0
+            } catch {}
+            try {
+              const comments = await supabase
+                .from('post_comments')
+                .select('*', { count: 'exact', head: true })
+                .eq('post_id', post.id)
+              commentCount = comments.count || 0
+            } catch {}
+            return { ...post, like_count: likeCount, comment_count: commentCount }
+          })
+        )
+        setPosts(postsWithCounts as CommunityPost[])
+      }
+    } catch (e) {
+      console.error('Failed to load posts:', e)
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   async function loadLikes() {
