@@ -21,13 +21,21 @@ export default function NotificationPrompt() {
   const [subscribing, setSubscribing] = useState(false)
 
   useEffect(() => {
-    // Only show if notifications are supported and not yet asked
     if (!('Notification' in window) || !('serviceWorker' in navigator)) return
+    // Don't show if already granted or denied
     if (Notification.permission !== 'default') return
-
-    // Show prompt after 30 seconds of app usage
-    const timer = setTimeout(() => setShow(true), 30000)
-    return () => clearTimeout(timer)
+    // Don't show if already subscribed
+    navigator.serviceWorker.ready.then(reg => {
+      reg.pushManager.getSubscription().then(sub => {
+        if (sub) return // Already subscribed, don't show
+        const timer = setTimeout(() => setShow(true), 30000)
+        // Store cleanup in a variable accessible to the effect cleanup
+        window.__tukiNotifTimer = timer
+      })
+    })
+    return () => {
+      if (window.__tukiNotifTimer) clearTimeout(window.__tukiNotifTimer)
+    }
   }, [])
 
   if (!show) return null
@@ -47,20 +55,21 @@ export default function NotificationPrompt() {
         applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) as BufferSource
       })
 
-      // Save subscription to Supabase
+      // Save subscription to Supabase (non-blocking)
       if (user) {
-        await supabase.from('push_subscriptions').upsert({
+        supabase.from('push_subscriptions').upsert({
           profile_id: user.id,
           subscription: JSON.parse(JSON.stringify(subscription)),
           created_at: new Date().toISOString()
-        }, { onConflict: 'profile_id' })
+        }, { onConflict: 'profile_id' }).then(({ error }) => {
+          if (error) console.error('Failed to save push subscription:', error)
+        })
       }
-
-      setShow(false)
     } catch (e) {
       console.error('Push subscription failed:', e)
     } finally {
       setSubscribing(false)
+      setShow(false)
     }
   }
 
@@ -71,7 +80,7 @@ export default function NotificationPrompt() {
           <span className="text-2xl">{'🔔'}</span>
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-sm text-gray-800">Tägliche Erinnerung</p>
+          <p className="font-semibold text-sm text-gray-800">T\u00e4gliche Erinnerung</p>
           <p className="text-xs text-gray-500 mt-0.5">Erhalte morgens deinen Tuki-Tagesplan</p>
         </div>
         <div className="flex gap-2 shrink-0">
@@ -79,7 +88,7 @@ export default function NotificationPrompt() {
             onClick={() => setShow(false)}
             className="text-xs text-gray-400 px-2 py-1.5"
           >
-            Später
+            Sp\u00e4ter
           </button>
           <button
             onClick={handleEnable}
