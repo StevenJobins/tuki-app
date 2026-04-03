@@ -16,8 +16,24 @@ function getAllIngredients(): string[] {
   const all = new Set<string>()
   recipes.forEach(r => {
     r.ingredients.forEach(i => {
-      const normalized = normalizeIngredient(i.name)
-      if (normalized.length > 0) all.add(normalized)
+      const name = i.name
+      // Split compound ingredients like "Gem\u00fcse: Oliven, Paprika, Mais"
+      if (name.includes(':')) {
+        const parts = name.split(':').slice(1).join(':').split(',')
+        parts.forEach(p => {
+          const normalized = normalizeIngredient(p)
+          if (normalized.length > 1) all.add(normalized)
+        })
+      } else if (name.includes(',')) {
+        const parts = name.split(',')
+        parts.forEach(p => {
+          const normalized = normalizeIngredient(p)
+          if (normalized.length > 1) all.add(normalized)
+        })
+      } else {
+        const normalized = normalizeIngredient(i.name)
+        if (normalized.length > 0) all.add(normalized)
+      }
     })
   })
   return [...all].sort()
