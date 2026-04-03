@@ -17,7 +17,7 @@ function getAllIngredients(): string[] {
   recipes.forEach(r => {
     r.ingredients.forEach(i => {
       const name = i.name
-      // Split compound ingredients like "Gem\u00fcse: Oliven, Paprika, Mais"
+      // Split compound ingredients like "Gemüse: Oliven, Paprika, Mais"
       if (name.includes(':')) {
         const parts = name.split(':').slice(1).join(':').split(',')
         parts.forEach(p => {
