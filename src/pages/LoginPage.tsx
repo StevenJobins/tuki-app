@@ -34,10 +34,10 @@ export default function LoginPage() {
       const { error } = await signIn(email, password)
       if (error) {
         if (error === 'EMAIL_NOT_CONFIRMED') {
-          setError('Deine E-Mail-Adresse ist noch nicht best\u00e4tigt. Bitte pr\u00fcfe dein Postfach (auch Spam-Ordner).')
+          setError('Deine E-Mail-Adresse ist noch nicht bestätigt. Bitte prüfe dein Postfach (auch Spam-Ordner).')
           setShowResend(true)
         } else {
-          setError(error === 'Invalid login credentials' ? 'E-Mail oder Passwort falsch. Falls du dich gerade registriert hast, best\u00e4tige zuerst deine E-Mail.' : error)
+          setError(error === 'Invalid login credentials' ? 'E-Mail oder Passwort falsch. Falls du dich gerade registriert hast, bestätige zuerst deine E-Mail.' : error)
         }
       }
     }
@@ -51,7 +51,7 @@ export default function LoginPage() {
     if (error) {
       setError('Fehler beim Senden: ' + error.message)
     } else {
-      setSuccess('Best\u00e4tigungsmail erneut gesendet! Pr\u00fcfe auch deinen Spam-Ordner.')
+      setSuccess('Bestätigungsmail erneut gesendet! Prüfe auch deinen Spam-Ordner.')
       setShowResend(false)
     }
     setLoading(false)
@@ -120,7 +120,7 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full py-2 px-4 text-sm font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-xl hover:bg-amber-100 transition-colors"
             >
-              Best\u00e4tigungsmail erneut senden
+              Bestätigungsmail erneut senden
             </button>
           )}
 
