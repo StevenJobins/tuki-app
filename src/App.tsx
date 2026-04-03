@@ -25,7 +25,7 @@ function LoadingScreen() {
     <div className="min-h-screen bg-tuki-cream flex items-center justify-center">
       <div className="text-center">
         <div className="text-6xl mb-4 animate-bounce">{'\uD83D\uDC23'}</div>
-        <p className="text-tuki-brown font-medium">Tuki l\u00e4dt...</p>
+        <p className="text-tuki-brown font-medium">Tuki lädt...</p>
       </div>
     </div>
   )
