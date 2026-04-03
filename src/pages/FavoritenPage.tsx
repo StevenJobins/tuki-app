@@ -20,7 +20,7 @@ export default function FavoritenPage() {
   const tabs: { key: TabType; label: string; count: number }[] = [
     { key: 'alle', label: 'Alle', count: favRecipes.length + favActivities.length },
     { key: 'rezepte', label: 'Rezepte', count: favRecipes.length },
-    { key: 'aktivitaeten', label: 'Aktivit\u00e4ten', count: favActivities.length },
+    { key: 'aktivitaeten', label: 'Aktivitäten', count: favActivities.length },
   ]
 
   const showRecipes = activeTab === 'alle' || activeTab === 'rezepte'
@@ -62,7 +62,7 @@ export default function FavoritenPage() {
             Noch keine Favoriten
           </h2>
           <p className="text-gray-500 mb-6 max-w-xs mx-auto">
-            Tippe auf das Herz-Icon bei Rezepten und Aktivit\u00e4ten, um sie hier zu speichern.
+            Tippe auf das Herz-Icon bei Rezepten und Aktivitäten, um sie hier zu speichern.
           </p>
           <div className="flex gap-3 justify-center">
             <button
@@ -75,7 +75,7 @@ export default function FavoritenPage() {
               onClick={() => navigate('/aktivitaeten')}
               className="px-4 py-2 bg-white text-tuki-brown border border-tuki-brown/20 rounded-xl text-sm font-medium shadow-sm active:scale-95 transition-transform"
             >
-              Aktivit\u00e4ten entdecken
+              Aktivitäten entdecken
             </button>
           </div>
         </div>
@@ -106,7 +106,7 @@ export default function FavoritenPage() {
           {activeTab === 'alle' && (
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-lg font-bold text-gray-800">
-                {'\uD83C\uDFAE'} Aktivit\u00e4ten
+                {'🎮'} Aktivitäten
               </h2>
               <span className="text-sm text-gray-400">{favActivities.length} gespeichert</span>
             </div>
@@ -128,7 +128,7 @@ export default function FavoritenPage() {
           <p className="text-gray-400 text-sm">
             {activeTab === 'rezepte'
               ? 'Noch keine Rezepte als Favorit markiert.'
-              : 'Noch keine Aktivit\u00e4ten als Favorit markiert.'}
+              : 'Noch keine Aktivitäten als Favorit markiert.'}
           </p>
         </div>
       )}
