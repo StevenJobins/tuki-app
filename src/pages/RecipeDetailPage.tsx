@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getRecipeById } from '../data/recipes'
 import FavoriteButton from '../components/FavoriteButton'
+import ShareButton from '../components/ShareButton'
 import { useApp } from '../context/AppContext'
 
 function KochModus({ recipe, onClose, onComplete }: { recipe: any; onClose: () => void; onComplete: () => void }) {
@@ -173,7 +174,10 @@ export default function RecipeDetailPage() {
               <polyline points="15 18 9 12 15 6" />
             </svg>
           </button>
-          <FavoriteButton id={recipe.id} />
+          <div className="flex items-center gap-2">
+            <ShareButton title={recipe.title} text={recipe.subtitle + ' \u2014 Tuki Family'} />
+            <FavoriteButton id={recipe.id} />
+          </div>
         </div>
 
         {/* Title overlay */}
