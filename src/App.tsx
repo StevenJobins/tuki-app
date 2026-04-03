@@ -17,6 +17,7 @@ import WochenplanPage from './pages/WochenplanPage'
 import ZutatenCheckPage from './pages/ZutatenCheckPage'
 import FavoritenPage from './pages/FavoritenPage'
 import StarShopPage from './pages/StarShopPage'
+import InstallPrompt from './components/InstallPrompt'
 
 function LoadingScreen() {
   return (
@@ -66,6 +67,7 @@ function AuthenticatedApp() {
         </Routes>
         {/* Bottom nav \u2013 mobile only */}
         <BottomNav />
+        <InstallPrompt />
       </div>
     </div>
   )
