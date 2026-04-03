@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext'
 
 const VAPID_PUBLIC_KEY = 'BG89SIUwDKguddpp125gYZDT7XdL600DzEnScYBTe0k-MzPorKnVrvi9IBtGQipZBQbuzXpA3UD7mM3ASvKBnCI'
 
-function urlBase64ToUint8Array(base64String: string): Uint8Array {
+function urlBase64ToUint8Array(base64String: string) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4)
   const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
   const rawData = atob(base64)
@@ -44,7 +44,7 @@ export default function NotificationPrompt() {
       const registration = await navigator.serviceWorker.ready
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) as BufferSource
       })
 
       // Save subscription to Supabase
@@ -71,7 +71,7 @@ export default function NotificationPrompt() {
           <span className="text-2xl">{'🔔'}</span>
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-sm text-gray-800">T\u00e4gliche Erinnerung</p>
+          <p className="font-semibold text-sm text-gray-800">Tägliche Erinnerung</p>
           <p className="text-xs text-gray-500 mt-0.5">Erhalte morgens deinen Tuki-Tagesplan</p>
         </div>
         <div className="flex gap-2 shrink-0">
@@ -79,7 +79,7 @@ export default function NotificationPrompt() {
             onClick={() => setShow(false)}
             className="text-xs text-gray-400 px-2 py-1.5"
           >
-            Sp\u00e4ter
+            Später
           </button>
           <button
             onClick={handleEnable}
