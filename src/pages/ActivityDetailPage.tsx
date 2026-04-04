@@ -51,7 +51,7 @@ export default function ActivityDetailPage() {
             </svg>
           </button>
           <div className="flex items-center gap-2">
-            <ShareButton title={activity.title} text={activity.subtitle + ' \u2014 Tuki Family'} />
+            <ShareButton title={activity.title} text={activity.subtitle + ' \u2014 Tuki Family'} activityId={activity.id} />
             <FavoriteButton id={activity.id} />
           </div>
         </div>
