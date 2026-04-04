@@ -41,10 +41,10 @@ function getAllIngredients(): string[] {
 
 // Common ingredient categories for quick-add
 const quickCategories = [
-  { label: '🥚 Basics', items: ['eier', 'mehl', 'zucker', 'butter', 'milch', 'salz', 'olivenoel'] },
+  { label: '🥚 Basics', items: ['eier', 'mehl', 'zucker', 'butter', 'milch', 'salz', 'olivenöl'] },
   { label: '🍌 Obst', items: ['banane', 'apfel', 'beeren', 'erdbeeren', 'blaubeeren', 'zitrone', 'mandarine'] },
   { label: '🥕 Gemüse', items: ['karotte', 'zucchini', 'gurke', 'paprika', 'tomate', 'mais', 'erbsen'] },
-  { label: '🧀 Milchprodukte', items: ['joghurt', 'frischkaese', 'mozzarella', 'kaese'] },
+  { label: '🧀 Milchprodukte', items: ['joghurt', 'frischkäse', 'mozzarella', 'käse'] },
   { label: '🌾 Vorrat', items: ['haferflocken', 'reis', 'nudeln', 'kokosraspeln', 'kakaopulver', 'backpulver'] },
 ]
 
@@ -72,7 +72,7 @@ export default function ZutatenCheckPage() {
 
   // Quick-add: check if any quick category item partially matches an actual ingredient
   const addQuickItem = (item: string) => {
-    const match = allIngredients.find(i => i.includes(item))
+    const match = allIngredients.find(i => i === item) || allIngredients.find(i => i.startsWith(item)) || allIngredients.find(i => i.includes(item))
     if (match && !selectedIngredients.includes(match)) {
       setSelectedIngredients(prev => [...prev, match])
     }
