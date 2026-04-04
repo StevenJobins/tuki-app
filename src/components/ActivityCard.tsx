@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Activity, categoryInfo } from '../data/activities'
 import FavoriteButton from './FavoriteButton'
@@ -7,9 +8,32 @@ interface ActivityCardProps {
   size?: 'normal' | 'compact'
 }
 
+const gradients = [
+  'from-teal-400 to-emerald-500',
+  'from-blue-400 to-indigo-500',
+  'from-amber-400 to-orange-500',
+  'from-rose-400 to-pink-500',
+  'from-violet-400 to-purple-500',
+  'from-cyan-400 to-sky-500',
+]
+
+function ImgWithFallback({ src, alt, emoji, className, idx = 0 }: { src: string; alt: string; emoji: string; className?: string; idx?: number }) {
+  const [err, setErr] = useState(false)
+  const grad = gradients[idx % gradients.length]
+  if (err || !src) {
+    return (
+      <div className={`${className} bg-gradient-to-br ${grad} flex items-center justify-center`}>
+        <span className="text-5xl drop-shadow-lg animate-float">{emoji}</span>
+      </div>
+    )
+  }
+  return <img src={src} alt={alt} className={className} loading="lazy" onError={() => setErr(true)} />
+}
+
 export default function ActivityCard({ activity, size = 'normal' }: ActivityCardProps) {
   const navigate = useNavigate()
   const cat = categoryInfo[activity.category]
+  const idx = activity.id.charCodeAt(0) + activity.id.length
 
   if (size === 'compact') {
     return (
@@ -36,15 +60,10 @@ export default function ActivityCard({ activity, size = 'normal' }: ActivityCard
   return (
     <div
       onClick={() => navigate(`/aktivitaet/${activity.id}`)}
-      className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer active:scale-[0.97] transition-transform"
+      className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer active:scale-[0.97] transition-transform card-lift"
     >
       <div className="relative h-36">
-        <img
-          src={activity.image}
-          alt={activity.title}
-          className="w-full h-full object-cover"
-          loading="lazy"
-        />
+        <ImgWithFallback src={activity.image} alt={activity.title} emoji={activity.emoji} className="w-full h-full object-cover" idx={idx} />
         <div className="absolute top-2 right-2">
           <FavoriteButton id={activity.id} />
         </div>
