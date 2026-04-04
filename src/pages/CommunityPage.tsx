@@ -137,6 +137,8 @@ export default function CommunityPage() {
   const [newContent, setNewContent] = useState('')
   const [newTag, setNewTag] = useState('Tipp')
   const [activeReaction, setActiveReaction] = useState<Record<string, string>>({})
+  const [commentTexts, setCommentTexts] = useState<Record<string, string>>({})
+  const [localComments, setLocalComments] = useState<Record<string, Array<{author: string; emoji: string; text: string; ago: string}>>>({})
   const [embedType, setEmbedType] = useState<'recipe' | 'activity' | null>(null)
   const [embedId, setEmbedId] = useState<string | null>(null)
   const [showEmbedPicker, setShowEmbedPicker] = useState(false)
@@ -181,7 +183,24 @@ export default function CommunityPage() {
   }
 
   function toggleReaction(id: string, emoji: string) {
-    setActiveReaction(prev => ({ ...prev, [id]: prev[id] === emoji ? '' : emoji }))
+    const prev = activeReaction[id]
+    const removing = prev === emoji
+    setActiveReaction(p => ({ ...p, [id]: removing ? '' : emoji }))
+    setPosts(pp => pp.map(post => {
+      if (post.id !== id) return post
+      const r = { ...(post.reactions || {}) }
+      // Remove old reaction if switching
+      if (prev && prev !== emoji && r[prev]) r[prev] = Math.max(0, (r[prev] || 0) - 1)
+      if (removing) {
+        r[emoji] = Math.max(0, (r[emoji] || 0) - 1)
+      } else {
+        r[emoji] = (r[emoji] || 0) + 1
+      }
+      // Clean zero entries
+      Object.keys(r).forEach(k => { if (r[k] <= 0) delete r[k] })
+      const newLikeCount = Object.values(r).reduce((s: number, v) => s + (v as number), 0)
+      return { ...post, reactions: r, like_count: newLikeCount }
+    }))
   }
 
   function selectEmbed(type: 'recipe' | 'activity', id: string) {
@@ -214,6 +233,15 @@ export default function CommunityPage() {
     setNewTag('Tipp')
     clearEmbed()
     setShowCompose(false)
+  }
+
+  function addComment(postId: string) {
+    const text = (commentTexts[postId] || '').trim()
+    if (!text) return
+    const newComment = { author: 'Dominic', emoji: '👨‍💻', text, ago: 'gerade eben' }
+    setLocalComments(prev => ({ ...prev, [postId]: [...(prev[postId] || []), newComment] }))
+    setCommentTexts(prev => ({ ...prev, [postId]: '' }))
+    setPosts(pp => pp.map(p => p.id === postId ? { ...p, comment_count: (p.comment_count || 0) + 1 } : p))
   }
 
   const filtered = activeTag ? posts.filter(p => p.tag === activeTag) : posts
@@ -347,7 +375,7 @@ export default function CommunityPage() {
               const tag = tagConfig[post.tag] || tagConfig['Tipp']
               const grad = gradients[idx % gradients.length]
               const pr = post.reactions || {}
-              const comments = seedComments[post.id] || []
+              const comments = [...(seedComments[post.id] || []), ...(localComments[post.id] || [])]
               const isExpanded = expandedComments.has(post.id)
               return (
                 <motion.div key={post.id} variants={item} className="card-lift bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden md:mb-3 md:break-inside-avoid">
@@ -380,7 +408,7 @@ export default function CommunityPage() {
                     <button onClick={() => toggleComments(post.id)} className={'flex items-center gap-1.5 px-4 py-2 text-xs font-medium border-l border-gray-100 transition-all ' + (isExpanded ? 'text-tuki-rot bg-red-50/50' : 'text-gray-500 hover:text-gray-700')}>{'💬'} {post.comment_count || 0}</button>
                   </div>
                   <AnimatePresence>
-                    {isExpanded && comments.length > 0 && (
+                    {isExpanded && (
                       <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden border-t border-gray-100 bg-gray-50/50">
                         <div className="p-3 space-y-2.5">
                           {comments.map((c, ci) => (
@@ -394,7 +422,7 @@ export default function CommunityPage() {
                           ))}
                           <div className="flex gap-2 pt-1">
                             <div className="w-7 h-7 rounded-full bg-gradient-to-br from-tuki-mint to-emerald-200 flex items-center justify-center text-sm shrink-0">{'👨‍💻'}</div>
-                            <input type="text" placeholder="Kommentar schreiben..." className="flex-1 text-xs bg-white rounded-full border border-gray-200 px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-tuki-mint/30 focus:border-tuki-mint" />
+                            <input type="text" placeholder="Kommentar schreiben..." value={commentTexts[post.id] || ''} onChange={e => setCommentTexts(prev => ({ ...prev, [post.id]: e.target.value }))} onKeyDown={e => { if (e.key === 'Enter') addComment(post.id) }} className="flex-1 text-xs bg-white rounded-full border border-gray-200 px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-tuki-mint/30 focus:border-tuki-mint" />
                           </div>
                         </div>
                       </motion.div>
