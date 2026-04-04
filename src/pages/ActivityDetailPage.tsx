@@ -1,4 +1,5 @@
-import { useState, useParams, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import { getActivityById, categoryInfo } from '../data/activities'
 import FavoriteButton from '../components/FavoriteButton'
 import ShareButton from '../components/ShareButton'
