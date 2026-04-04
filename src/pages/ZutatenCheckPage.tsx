@@ -47,17 +47,16 @@ const quickCategories = [
   { label: '🧀 Milchprodukte', items: ['joghurt', 'frischkäse', 'mozzarella', 'käse'] },
   { label: '🌾 Vorrat', items: ['haferflocken', 'reis', 'nudeln', 'kokosraspeln', 'kakaopulver', 'backpulver'] },
 ]
-
 export default function ZutatenCheckPage() {
   const [searchInput, setSearchInput] = useState('')
   const [selectedIngredients, setSelectedIngredients] = useState<string[]>([])
+
   const allIngredients = useMemo(() => getAllIngredients(), [])
 
   // Filter suggestions based on input
   const suggestions = searchInput.length >= 2
     ? allIngredients.filter(i =>
-        i.includes(searchInput.toLowerCase()) &&
-        !selectedIngredients.includes(i)
+        i.includes(searchInput.toLowerCase()) && !selectedIngredients.includes(i)
       ).slice(0, 6)
     : []
 
@@ -70,11 +69,11 @@ export default function ZutatenCheckPage() {
     setSearchInput('')
   }
 
-  // Quick-add: check if any quick category item partially matches an actual ingredient
+  // Quick-add: add the simple category item name directly
+  // Recipe matching uses includes() so "eier" will match "bunte ostereier" etc.
   const addQuickItem = (item: string) => {
-    const matches = allIngredients.filter(i => i.includes(item)); const match = matches.sort((a, b) => a.length - b.length)[0]
-    if (match && !selectedIngredients.includes(match)) {
-      setSelectedIngredients(prev => [...prev, match])
+    if (!selectedIngredients.includes(item)) {
+      setSelectedIngredients(prev => [...prev, item])
     }
   }
 
@@ -176,20 +175,20 @@ export default function ZutatenCheckPage() {
               <p className="text-xs font-semibold text-gray-600 mb-1.5">{cat.label}</p>
               <div className="flex flex-wrap gap-1.5">
                 {cat.items.map(item => {
-                  const match = allIngredients.find(i => i.includes(item))
-                  if (!match) return null
-                  const isSelected = selectedIngredients.includes(match)
+                  const hasMatch = allIngredients.some(i => i.includes(item))
+                  if (!hasMatch) return null
+                  const isSelected = selectedIngredients.includes(item)
                   return (
                     <button
                       key={item}
-                      onClick={() => isSelected ? toggleIngredient(match) : addQuickItem(item)}
+                      onClick={() => isSelected ? toggleIngredient(item) : addQuickItem(item)}
                       className={`px-2.5 py-1 rounded-full text-xs transition-colors capitalize ${
                         isSelected
                           ? 'bg-tuki-rot text-white'
                           : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                       }`}
                     >
-                      {match}
+                      {item}
                     </button>
                   )
                 })}
