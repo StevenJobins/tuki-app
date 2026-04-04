@@ -11,9 +11,11 @@ export default function Header({ title, showBack, transparent }: HeaderProps) {
   const navigate = useNavigate()
   const location = useLocation()
   const { tukiStars, getActiveChild, starBalance } = useApp()
-
   const isHome = location.pathname === '/'
   const activeChild = getActiveChild()
+
+  // Use import.meta.env.BASE_URL for correct path in GitHub Pages
+  const basePath = import.meta.env.BASE_URL || '/'
 
   return (
     <header
@@ -25,20 +27,23 @@ export default function Header({ title, showBack, transparent }: HeaderProps) {
         {showBack && (
           <button
             onClick={() => navigate(-1)}
-            className="w-9 h-9 rounded-full bg-white/80 flex items-center justify-center shadow-sm"
+            className="w-9 h-9 rounded-full bg-white/80 flex items-center justify-center shadow-sm active:scale-95 transition-transform"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2D2D2D" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="15 18 9 12 15 6" />
             </svg>
           </button>
         )}
+
         {isHome ? (
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg gradient-rot flex items-center justify-center">
-              <span className="text-white font-bold text-sm">{'\u2B50'}</span>
-            </div>
+          <div className="flex items-center gap-2.5">
+            <img
+              src={basePath + 'tuki-logo.svg'}
+              alt="Tuki"
+              className="h-7"
+            />
             <span className="font-rubik font-semibold text-lg text-gray-800">
-              Tuki <span className="text-tuki-rot">Family</span>
+              <span className="text-tuki-rot">Family</span>
             </span>
           </div>
         ) : (
@@ -50,13 +55,17 @@ export default function Header({ title, showBack, transparent }: HeaderProps) {
         {/* Active child badge */}
         {activeChild && !isHome && (
           <div className="flex items-center gap-1 bg-purple-50 px-2 py-1 rounded-full border border-purple-200">
-            <span className="text-sm">{'\u2B50'}</span>
+            <span className="text-sm">{activeChild.avatarEmoji}</span>
             <span className="text-[10px] font-medium text-purple-700 max-w-[60px] truncate">{activeChild.name}</span>
           </div>
         )}
+
         {/* Tuki Stars badge */}
-        <div onClick={() => navigate('/sterne-shop')} className="flex items-center gap-1 bg-yellow-50 cursor-pointer hover:bg-yellow-100 transition-colors px-2.5 py-1 rounded-full border border-yellow-200">
-          <span className="text-sm">{'\u2B50'}</span>
+        <div
+          onClick={() => navigate('/sterne-shop')}
+          className="flex items-center gap-1 bg-yellow-50 cursor-pointer hover:bg-yellow-100 transition-colors px-2.5 py-1 rounded-full border border-yellow-200"
+        >
+          <span className="text-sm">⭐</span>
           <span className="text-xs font-semibold text-yellow-700">{starBalance()}</span>
         </div>
       </div>
