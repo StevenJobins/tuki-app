@@ -16,16 +16,19 @@
     <meta property="og:image" content="https://stevenjobins.github.io/tuki-app/og-image.png" />
     <meta property="og:url" content="https://stevenjobins.github.io/tuki-app/" />
     <title>Tuki Family</title>
-    <script type="module" crossorigin src="/tuki-app/assets/index-pGhzvLtF.js"></script>
+    <script type="module" crossorigin src="/tuki-app/assets/index-CIwWjmZm.js"></script>
     <link rel="stylesheet" crossorigin href="/tuki-app/assets/index-Cioh1z1g.css">
   </head>
   <body>
     <div id="root"></div>
     <script>
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/tuki-app/sw.js')
-          .then(function(r) { console.log('SW registered:', r.scope) })
-          .catch(function(e) { console.log('SW failed:', e) })
+        navigator.serviceWorker.getRegistrations().then(function(regs) {
+          regs.forEach(function(r) { r.unregister() })
+        })
+        caches.keys().then(function(keys) {
+          keys.forEach(function(k) { caches.delete(k) })
+        })
       }
     </script>
   </body>
