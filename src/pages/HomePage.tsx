@@ -142,7 +142,7 @@ export default function HomePage() {
             </p>
             <h1 className="text-2xl font-bold text-gray-800 mt-1 leading-tight">
               {activeChild
-                ? <>Was entdeckt {activeChild.name}<br />heute?</>
+                ? <>Was entdeckt {activeChild.name} <br />heute?</>
                 : <>Was entdecken wir<br />heute zusammen?</>
               }
             </h1>
