@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Recipe } from '../data/recipes'
 import FavoriteButton from './FavoriteButton'
@@ -7,8 +8,31 @@ interface RecipeCardProps {
   size?: 'normal' | 'featured'
 }
 
+const gradients = [
+  'from-orange-400 to-rose-400',
+  'from-emerald-400 to-teal-500',
+  'from-violet-400 to-purple-500',
+  'from-amber-400 to-orange-500',
+  'from-sky-400 to-blue-500',
+  'from-pink-400 to-fuchsia-500',
+]
+
+function ImgWithFallback({ src, alt, emoji, className, idx = 0 }: { src: string; alt: string; emoji: string; className?: string; idx?: number }) {
+  const [err, setErr] = useState(false)
+  const grad = gradients[idx % gradients.length]
+  if (err || !src) {
+    return (
+      <div className={`${className} bg-gradient-to-br ${grad} flex items-center justify-center`}>
+        <span className="text-5xl drop-shadow-lg animate-float">{emoji}</span>
+      </div>
+    )
+  }
+  return <img src={src} alt={alt} className={className} loading="lazy" onError={() => setErr(true)} />
+}
+
 export default function RecipeCard({ recipe, size = 'normal' }: RecipeCardProps) {
   const navigate = useNavigate()
+  const idx = recipe.id.charCodeAt(0) + recipe.id.length
 
   if (size === 'featured') {
     return (
@@ -16,12 +40,7 @@ export default function RecipeCard({ recipe, size = 'normal' }: RecipeCardProps)
         onClick={() => navigate(`/rezept/${recipe.id}`)}
         className="relative rounded-2xl overflow-hidden shadow-md cursor-pointer min-w-[280px] h-[200px] snap-start active:scale-[0.98] transition-transform"
       >
-        <img
-          src={recipe.image}
-          alt={recipe.title}
-          className="w-full h-full object-cover"
-          loading="lazy"
-        />
+        <ImgWithFallback src={recipe.image} alt={recipe.title} emoji={recipe.emoji} className="w-full h-full object-cover" idx={idx} />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
         <div className="absolute top-3 right-3">
           <FavoriteButton id={recipe.id} />
@@ -43,15 +62,10 @@ export default function RecipeCard({ recipe, size = 'normal' }: RecipeCardProps)
   return (
     <div
       onClick={() => navigate(`/rezept/${recipe.id}`)}
-      className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer active:scale-[0.97] transition-transform"
+      className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer active:scale-[0.97] transition-transform card-lift"
     >
       <div className="relative h-36">
-        <img
-          src={recipe.image}
-          alt={recipe.title}
-          className="w-full h-full object-cover"
-          loading="lazy"
-        />
+        <ImgWithFallback src={recipe.image} alt={recipe.title} emoji={recipe.emoji} className="w-full h-full object-cover" idx={idx} />
         <div className="absolute top-2 right-2">
           <FavoriteButton id={recipe.id} />
         </div>
