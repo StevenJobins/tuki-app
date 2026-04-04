@@ -193,6 +193,29 @@ export default function CommunityPage() {
 
   function clearEmbed() { setEmbedType(null); setEmbedId(null) }
 
+  function handlePost() {
+    if (!newContent.trim()) return
+    const newPost = {
+      id: 'user-' + Date.now(),
+      profile_name: 'Dominic',
+      avatar_emoji: '👨‍💻',
+      tag: newTag,
+      content: newContent,
+      embed_type: embedType,
+      embed_id: embedId,
+      image_url: '',
+      created_at: new Date().toISOString(),
+      like_count: 0,
+      comment_count: 0,
+      reactions: {},
+    }
+    setPosts(prev => [newPost, ...prev])
+    setNewContent('')
+    setNewTag('Tipp')
+    clearEmbed()
+    setShowCompose(false)
+  }
+
   const filtered = activeTag ? posts.filter(p => p.tag === activeTag) : posts
   const container = { hidden: {}, show: { transition: { staggerChildren: 0.07 } } }
   const item = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }
@@ -296,7 +319,7 @@ export default function CommunityPage() {
                   <button onClick={() => setShowEmbedPicker(!showEmbedPicker)} className={'text-xs px-3 py-1.5 rounded-full border transition-all flex items-center gap-1.5 ' + (showEmbedPicker ? 'bg-tuki-mint-bg text-tuki-rot border-tuki-mint' : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300')}>
                     {'🔗'} Rezept / Aktivität anhängen
                   </button>
-                  <button onClick={() => { setShowCompose(false); setNewContent(''); clearEmbed() }} className="bg-tuki-rot text-white text-sm font-semibold px-5 py-2 rounded-xl active:scale-95 transition-all shadow-sm">Posten</button>
+                  <button onClick={handlePost} className="bg-tuki-rot text-white text-sm font-semibold px-5 py-2 rounded-xl active:scale-95 transition-all shadow-sm">Posten</button>
                 </div>
               </div>
             </motion.div>
