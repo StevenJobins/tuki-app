@@ -2,23 +2,23 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 
 const navItems = [
-  { path: '/', label: 'Home', emoji: '\uD83C\uDFE0' },
-  { path: '/rezepte', label: 'Rezepte', emoji: 'ð³' },
-  { path: '/aktivitaeten', label: 'AktivitÃ¤ten', emoji: 'ð®' },
-  { path: '/favoriten', label: 'Favoriten', emoji: 'â¤\uFE0F' },
-  { path: '/wochenplan', label: 'Wochenplan', emoji: '\uD83D\uDCC5' },
-  { path: '/zutaten-check', label: 'KÃ¼hlschrank', emoji: '\uD83E\uDDF1' },
-  { path: '/entwicklung', label: 'Entwicklung', emoji: '\uD83D\uDCC8' },
-  { path: '/community', label: 'Community', emoji: 'ð¨\u200Dð©\u200D\uD83D\uDC67' },
-  { path: '/sterne-shop', label: 'Sterne-Shop', emoji: 'â­' },
-  { path: '/profil', label: 'Profil', emoji: '\uD83E\uDD17' },
+  { path: '/', label: 'Home', emoji: '🏠' },
+  { path: '/rezepte', label: 'Rezepte', emoji: '🍳' },
+  { path: '/aktivitaeten', label: 'Aktivitäten', emoji: '🎮' },
+  { path: '/favoriten', label: 'Favoriten', emoji: '❤️' },
+  { path: '/wochenplan', label: 'Wochenplan', emoji: '📅' },
+  { path: '/zutaten-check', label: 'Kühlschrank', emoji: '🧱' },
+  { path: '/entwicklung', label: 'Entwicklung', emoji: '📈' },
+  { path: '/community', label: 'Community', emoji: '👨‍👩‍👧' },
+  { path: '/sterne-shop', label: 'Sterne-Shop', emoji: '⭐' },
+  { path: '/profil', label: 'Profil', emoji: '🤗' },
 ]
 
 export default function SideNav() {
-  const basePath = (import.meta as any).env?.BASE_URL || '/tuki-app/'
   const location = useLocation()
   const navigate = useNavigate()
   const { tukiStars } = useApp()
+  const basePath = (import.meta as any).env?.BASE_URL || '/tuki-app/'
 
   return (
     <nav className="hidden md:flex flex-col w-64 min-h-screen bg-white border-r border-gray-100 p-4 shrink-0 sticky top-0 h-screen overflow-y-auto">
@@ -38,7 +38,6 @@ export default function SideNav() {
           const active = item.path === '/'
             ? location.pathname === '/'
             : location.pathname.startsWith(item.path)
-
           return (
             <button
               key={item.path}
@@ -50,9 +49,7 @@ export default function SideNav() {
               }`}
             >
               {active && (
-                <div
-                  className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full bg-tuki-rot"
-                />
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full bg-tuki-rot" />
               )}
               <span className="text-lg">{item.emoji}</span>
               <span>{item.label}</span>
@@ -65,7 +62,7 @@ export default function SideNav() {
       <div className="mt-auto pt-4 border-t border-gray-100">
         <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-3 border border-yellow-200/50">
           <div className="flex items-center gap-2 mb-2">
-            <span>{'â­'}</span>
+            <span>{'⭐'}</span>
             <span className="text-sm font-semibold text-gray-700">{tukiStars.total} Sterne</span>
           </div>
           <div className="w-full h-1.5 bg-yellow-100 rounded-full overflow-hidden">
