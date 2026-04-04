@@ -69,14 +69,25 @@ export default function CommunityPage() {
   async function loadPosts() {
     setLoading(true)
     try {
-      const { data } = await supabase
+      const controller = new AbortController()
+      const timer = setTimeout(() => controller.abort(), 8000)
+      const { data, error } = await supabase
         .from('community_posts')
         .select('*, profiles(display_name, avatar_emoji)')
         .order('created_at', { ascending: false })
         .limit(20)
+        .abortSignal(controller.signal)
+      clearTimeout(timer)
 
-      if (data) {
-        const postsWithCounts = await Promise.all(
+      if (error) {
+        console.error('Supabase query error:', error)
+        setPosts([])
+      } else if (data) {
+        // Show posts immediately with zero counts
+        const postsBasic = data.map(p => ({ ...p, like_count: 0, comment_count: 0 }))
+        setPosts(postsBasic as CommunityPost[])
+        // Load counts in background (non-blocking)
+        Promise.all(
           data.map(async (post) => {
             let likeCount = 0
             let commentCount = 0
@@ -96,11 +107,15 @@ export default function CommunityPage() {
             } catch {}
             return { ...post, like_count: likeCount, comment_count: commentCount }
           })
-        )
-        setPosts(postsWithCounts as CommunityPost[])
+        ).then(postsWithCounts => {
+          setPosts(postsWithCounts as CommunityPost[])
+        }).catch(() => {})
+      } else {
+        setPosts([])
       }
     } catch (e) {
       console.error('Failed to load posts:', e)
+      setPosts([])
     } finally {
       setLoading(false)
     }
