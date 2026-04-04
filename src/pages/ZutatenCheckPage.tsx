@@ -72,7 +72,7 @@ export default function ZutatenCheckPage() {
 
   // Quick-add: check if any quick category item partially matches an actual ingredient
   const addQuickItem = (item: string) => {
-    const match = allIngredients.find(i => i === item) || allIngredients.find(i => i.startsWith(item)) || allIngredients.find(i => i.includes(item))
+    const matches = allIngredients.filter(i => i.includes(item)); const match = matches.sort((a, b) => a.length - b.length)[0]
     if (match && !selectedIngredients.includes(match)) {
       setSelectedIngredients(prev => [...prev, match])
     }
