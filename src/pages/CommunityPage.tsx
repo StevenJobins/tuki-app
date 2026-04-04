@@ -123,7 +123,7 @@ export default function CommunityPage() {
         .order('created_at', { ascending: false })
         .abortSignal(controller.signal)
       clearTimeout(timer)
-      setPosts(data && data.length > 0 ? data : seedPosts)
+      setPosts(data && data.length >= 3 ? data : seedPosts)
     } catch {
       setPosts(seedPosts)
     }
