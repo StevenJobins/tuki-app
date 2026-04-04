@@ -98,13 +98,13 @@ function KochTimer({ minutes }: { minutes: number }) {
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
           <span className={`text-sm font-bold ${secondsLeft === 0 ? 'text-green-500' : 'text-gray-700'}`}>
-            {secondsLeft === 0 ? '✅' : `${mins}:${secs.toString().padStart(2, '0')}`}
+            {secondsLeft === 0 ? 'â' : `${mins}:${secs.toString().padStart(2, '0')}`}
           </span>
         </div>
       </div>
       <div className="flex-1">
         <p className="text-xs font-semibold text-gray-700">
-          {secondsLeft === 0 ? 'Fertig!' : running ? 'Timer läuft...' : started ? 'Pausiert' : 'Koch-Timer'}
+          {secondsLeft === 0 ? 'Fertig!' : running ? 'Timer lÃ¤uft...' : started ? 'Pausiert' : 'Koch-Timer'}
         </p>
         <p className="text-[10px] text-gray-400 mt-0.5">{minutes} Minuten Kochzeit</p>
         <div className="flex gap-2 mt-2">
@@ -114,7 +114,7 @@ function KochTimer({ minutes }: { minutes: number }) {
               secondsLeft === 0 ? 'bg-green-100 text-green-700' :
               'gradient-rot text-white shadow-sm'
             }`}>
-            {secondsLeft === 0 ? 'Fertig ✅' : running ? '⏸ Pause' : started ? '▶ Weiter' : '▶ Start'}
+            {secondsLeft === 0 ? 'Fertig â' : running ? 'â¸ Pause' : started ? 'â¶ Weiter' : 'â¶ Start'}
           </button>
           {started && <button onClick={resetTimer} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-500">Reset</button>}
         </div>
@@ -146,12 +146,12 @@ function KochModus({ recipe, onClose, onComplete }: { recipe: any; onClose: () =
     return (
       <div className="fixed inset-0 z-50 bg-white flex flex-col">
         <div className="gradient-rot text-white px-4 py-3 flex items-center justify-between shrink-0">
-          <button onClick={onClose} className="text-white/80 text-sm font-medium">✕ Beenden</button>
+          <button onClick={onClose} className="text-white/80 text-sm font-medium">â Beenden</button>
           <span className="font-bold text-sm">{recipe.emoji} Koch-Modus</span>
           <span className="text-white/70 text-xs">{recipe.duration} Min.</span>
         </div>
         <div className="flex-1 overflow-y-auto px-4 py-5">
-          <h2 className="text-lg font-bold text-gray-800 mb-1">Alles bereit? ✅</h2>
+          <h2 className="text-lg font-bold text-gray-800 mb-1">Alles bereit? â</h2>
           <p className="text-xs text-gray-500 mb-4">Hake alle Zutaten ab, bevor ihr startet.</p>
           <div className="space-y-2">
             {recipe.ingredients.map((ing: any, i: number) => (
@@ -169,7 +169,7 @@ function KochModus({ recipe, onClose, onComplete }: { recipe: any; onClose: () =
         <div className="p-4 border-t border-gray-100 bg-white shrink-0">
           <button onClick={() => setShowIngredients(false)}
             className={`w-full py-4 rounded-2xl font-bold text-base shadow-lg active:scale-[0.97] transition-all ${allChecked ? 'gradient-rot text-white shadow-red-500/25' : 'bg-gray-200 text-gray-500'}`}>
-            {allChecked ? "Los geht's! 🚀" : `Noch ${checkedIngs.filter(c => !c).length} Zutaten...`}
+            {allChecked ? "Los geht's! ð" : `Noch ${checkedIngs.filter(c => !c).length} Zutaten...`}
           </button>
         </div>
       </div>
@@ -180,7 +180,7 @@ function KochModus({ recipe, onClose, onComplete }: { recipe: any; onClose: () =
     <div className="fixed inset-0 z-50 bg-white flex flex-col">
       <div className="gradient-rot text-white shrink-0">
         <div className="px-4 py-3 flex items-center justify-between">
-          <button onClick={onClose} className="text-white/80 text-sm font-medium">✕ Beenden</button>
+          <button onClick={onClose} className="text-white/80 text-sm font-medium">â Beenden</button>
           <span className="font-bold text-sm">Schritt {step + 1} von {totalSteps}</span>
           <span className="text-white/70 text-xs">{recipe.emoji}</span>
         </div>
@@ -199,7 +199,7 @@ function KochModus({ recipe, onClose, onComplete }: { recipe: any; onClose: () =
         </p>
         {currentStep.tip && (
           <div className="mt-6 bg-amber-50 rounded-2xl p-4 border border-amber-100 mx-auto max-w-sm animate-slide-up">
-            <p className="text-sm text-amber-800 text-center">💡 {currentStep.tip}</p>
+            <p className="text-sm text-amber-800 text-center">ð¡ {currentStep.tip}</p>
           </div>
         )}
       </div>
@@ -207,17 +207,17 @@ function KochModus({ recipe, onClose, onComplete }: { recipe: any; onClose: () =
         <div className="flex gap-3">
           <button onClick={prevStep} disabled={step === 0}
             className={`flex-1 py-3.5 rounded-xl font-semibold text-sm border transition-all ${step === 0 ? 'border-gray-200 text-gray-300' : 'border-gray-300 text-gray-600 active:scale-[0.97]'}`}>
-            ← Zurück
+            â ZurÃ¼ck
           </button>
           {step < totalSteps - 1 ? (
             <button onClick={nextStep}
               className="flex-[2] py-3.5 rounded-xl gradient-rot text-white font-bold text-sm shadow-lg shadow-red-500/25 active:scale-[0.97] transition-transform">
-              Weiter →
+              Weiter â
             </button>
           ) : (
             <button onClick={() => { onComplete(); onClose(); }}
               className="flex-[2] py-3.5 rounded-xl bg-green-500 text-white font-bold text-sm shadow-lg shadow-green-500/25 active:scale-[0.97] transition-transform">
-              ⭐ Fertig! Sterne verdienen
+              â­ Fertig! Sterne verdienen
             </button>
           )}
         </div>
@@ -234,6 +234,7 @@ export default function RecipeDetailPage() {
   const recipe = getRecipeById(id || '')
   const [kochModus, setKochModus] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
+  const [heroImgErr, setHeroImgErr] = useState(false)
   const [checkedIngs, setCheckedIngs] = useState<boolean[]>([])
 
   useEffect(() => {
@@ -255,9 +256,9 @@ export default function RecipeDetailPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center animate-scale-pop">
-          <span className="text-4xl block mb-3">🤔</span>
+          <span className="text-4xl block mb-3">ð¤</span>
           <p className="text-gray-500">Rezept nicht gefunden</p>
-          <button onClick={() => navigate('/rezepte')} className="text-tuki-rot text-sm mt-2 font-medium">Zurück zu Rezepten</button>
+          <button onClick={() => navigate('/rezepte')} className="text-tuki-rot text-sm mt-2 font-medium">ZurÃ¼ck zu Rezepten</button>
         </div>
       </div>
     )
@@ -279,7 +280,7 @@ export default function RecipeDetailPage() {
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2D2D2D" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
           </button>
           <div className="flex items-center gap-2">
-            <ShareButton title={recipe.title} text={recipe.subtitle + ' — Tuki Family'} />
+            <ShareButton title={recipe.title} text={recipe.subtitle + ' â Tuki Family'} />
             <FavoriteButton id={recipe.id} />
           </div>
         </div>
@@ -297,10 +298,10 @@ export default function RecipeDetailPage() {
       {/* Quick Info - Glass Cards */}
       <div className="flex gap-2 px-4 -mt-5 relative z-10 mb-4">
         {[
-          { icon: '⏱️', val: recipe.duration + ' Min.', label: 'Dauer' },
-          { icon: '👶', val: recipe.ageRange[0] + '-' + recipe.ageRange[1] + ' J.', label: 'Alter' },
-          { icon: '📊', val: recipe.difficulty, label: 'Level' },
-          { icon: '🍽️', val: recipe.servings + '', label: 'Portionen' },
+          { icon: 'â±ï¸', val: recipe.duration + ' Min.', label: 'Dauer' },
+          { icon: 'ð¶', val: recipe.ageRange[0] + '-' + recipe.ageRange[1] + ' J.', label: 'Alter' },
+          { icon: 'ð', val: recipe.difficulty, label: 'Level' },
+          { icon: 'ð½ï¸', val: recipe.servings + '', label: 'Portionen' },
         ].map((info, i) => (
           <div key={i} className="flex-1 glass rounded-2xl p-2.5 text-center shadow-sm">
             <span className="text-base">{info.icon}</span>
@@ -331,7 +332,7 @@ export default function RecipeDetailPage() {
       {/* Ingredients with interactive checklist */}
       <div className="px-4 mt-2">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-semibold text-base text-gray-800">🛒 Zutaten</h2>
+          <h2 className="font-semibold text-base text-gray-800">ð Zutaten</h2>
           {checkedCount > 0 && (
             <span className="text-[10px] font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full animate-count-up">
               {checkedCount}/{recipe.ingredients.length} bereit
@@ -354,7 +355,7 @@ export default function RecipeDetailPage() {
 
       {/* Steps */}
       <div className="px-4 mt-6">
-        <h2 className="font-semibold text-base text-gray-800 mb-3">👩‍🍳 Zubereitung</h2>
+        <h2 className="font-semibold text-base text-gray-800 mb-3">ð©âð³ Zubereitung</h2>
         <div className="space-y-4">
           {recipe.steps.map((step: any, i: number) => (
             <div key={i} className="flex gap-3">
@@ -365,7 +366,7 @@ export default function RecipeDetailPage() {
                 <p className="text-sm text-gray-700 leading-relaxed">{step.text}</p>
                 {step.tip && (
                   <div className="mt-2 bg-amber-50 rounded-xl p-2.5 border border-amber-100">
-                    <p className="text-xs text-amber-700">💡 {step.tip}</p>
+                    <p className="text-xs text-amber-700">ð¡ {step.tip}</p>
                   </div>
                 )}
               </div>
@@ -378,10 +379,10 @@ export default function RecipeDetailPage() {
       <div className="px-4 mt-6">
         <button onClick={() => setKochModus(true)}
           className="w-full py-4 rounded-2xl gradient-sunset text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-orange-500/25 active:scale-[0.97] transition-transform animate-pulse-glow">
-          👨‍🍳 Koch-Modus starten
+          ð¨âð³ Koch-Modus starten
         </button>
         <p className="text-[10px] text-gray-400 text-center mt-1.5">
-          Schritt-für-Schritt im Vollbild — perfekt zum gemeinsamen Kochen
+          Schritt-fÃ¼r-Schritt im Vollbild â perfekt zum gemeinsamen Kochen
         </p>
       </div>
 
@@ -394,9 +395,9 @@ export default function RecipeDetailPage() {
               : 'gradient-rot text-white shadow-lg shadow-tuki-rot/25'
           }`}>
           {isCompleted ? (
-            <>✅ Geschafft! +{recipe.stars} Sterne verdient</>
+            <>â Geschafft! +{recipe.stars} Sterne verdient</>
           ) : (
-            <>⭐ Rezept geschafft — {recipe.stars} Sterne verdienen</>
+            <>â­ Rezept geschafft â {recipe.stars} Sterne verdienen</>
           )}
         </button>
       </div>
