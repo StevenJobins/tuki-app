@@ -37,14 +37,12 @@ export default function Header({ title, showBack, transparent }: HeaderProps) {
 
         {isHome ? (
           <div className="flex items-center gap-2.5">
-            <img
-              src={basePath + 'tuki-logo.svg'}
-              alt="Tuki"
-              className="h-7"
-            />
-            <span className="font-rubik font-semibold text-lg text-gray-800">
-              <span className="text-tuki-rot">Family</span>
-            </span>
+            <div className="w-9 h-9 rounded-xl bg-white shadow-sm border border-gray-100 flex items-center justify-center p-1.5">
+                <img src={basePath + 'tuki-logo.svg'} alt="Tuki" className="h-full w-auto" />
+              </div>
+              <span className="font-rubik font-semibold text-lg text-gray-800">
+                Tuki <span className="text-tuki-rot">Family</span>
+              </span>
           </div>
         ) : (
           <h1 className="font-rubik font-semibold text-lg text-gray-800">{title}</h1>
@@ -65,7 +63,7 @@ export default function Header({ title, showBack, transparent }: HeaderProps) {
           onClick={() => navigate('/sterne-shop')}
           className="flex items-center gap-1 bg-yellow-50 cursor-pointer hover:bg-yellow-100 transition-colors px-2.5 py-1 rounded-full border border-yellow-200"
         >
-          <span className="text-sm">⭐</span>
+          <span className="text-sm">â­</span>
           <span className="text-xs font-semibold text-yellow-700">{starBalance()}</span>
         </div>
       </div>
