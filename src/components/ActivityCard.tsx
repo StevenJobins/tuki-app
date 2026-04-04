@@ -60,7 +60,7 @@ export default function ActivityCard({ activity, size = 'normal' }: ActivityCard
   return (
     <div
       onClick={() => navigate(`/aktivitaet/${activity.id}`)}
-      className="bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100/80 cursor-pointer active:scale-[0.96] transition-all duration-200"
+      className="card-lift bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100/80 cursor-pointer"
     >
       <div className="relative h-40">
         <ImgWithFallback src={activity.image} alt={activity.title} emoji={activity.emoji} className="w-full h-full object-cover" idx={idx} />
