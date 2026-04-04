@@ -22,9 +22,12 @@
     <script type="module" src="/src/main.tsx"></script>
     <script>
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/tuki-app/sw.js')
-          .then(function(r) { console.log('SW registered:', r.scope) })
-          .catch(function(e) { console.log('SW failed:', e) })
+        navigator.serviceWorker.getRegistrations().then(function(regs) {
+          regs.forEach(function(r) { r.unregister() })
+        })
+        caches.keys().then(function(keys) {
+          keys.forEach(function(k) { caches.delete(k) })
+        })
       }
     </script>
   </body>
