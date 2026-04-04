@@ -38,7 +38,7 @@ export default function RecipeCard({ recipe, size = 'normal' }: RecipeCardProps)
     return (
       <div
         onClick={() => navigate(`/rezept/${recipe.id}`)}
-        className="relative rounded-2xl overflow-hidden shadow-lg cursor-pointer min-w-[280px] h-[200px] snap-start active:scale-[0.96] transition-all duration-200"
+        className="card-lift relative rounded-2xl overflow-hidden shadow-lg cursor-pointer min-w-[280px] h-[200px] snap-start"
       >
         <ImgWithFallback src={recipe.image} alt={recipe.title} emoji={recipe.emoji} className="w-full h-full object-cover" idx={idx} />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
