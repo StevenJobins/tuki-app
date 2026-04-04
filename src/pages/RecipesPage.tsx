@@ -115,7 +115,7 @@ export default function RecipesPage() {
 
       {/* Recipe Grid */}
       <motion.div
-        className="grid grid-cols-2 gap-3 px-4"
+        className="grid grid-cols-2 gap-3 px-4 py-2"
         initial="hidden"
         animate="show"
         variants={{
