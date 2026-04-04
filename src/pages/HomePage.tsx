@@ -110,7 +110,7 @@ export default function HomePage() {
   const streakDays = Math.min(totalDone, 30)
 
   return (
-    <motion.div variants={container} initial="hidden" animate="show" className="pb-24 overflow-x-hidden">
+    <motion.div variants={container} initial="hidden" animate="show" className="pb-24">
       <Header />
 
       {/* Child Switcher */}
@@ -270,7 +270,7 @@ export default function HomePage() {
       {/* Featured Recipes */}
       <motion.div variants={item}>
         <SectionHeader title={activeChild ? `Rezepte für ${activeChild.name}` : 'Beliebte Rezepte'} emoji="🍳" linkTo="/rezepte" />
-        <div className="flex gap-4 overflow-x-auto px-4 pb-2 no-scrollbar snap-x max-w-full">
+        <div className="flex gap-4 overflow-x-auto px-4 py-3 no-scrollbar snap-x max-w-full">
           {displayRecipes.map(recipe => (
             <RecipeCard key={recipe.id} recipe={recipe} size="featured" />
           ))}
@@ -280,7 +280,7 @@ export default function HomePage() {
       {/* Activities */}
       <motion.div variants={item} className="mt-6">
         <SectionHeader title={activeChild ? `Aktivitäten für ${activeChild.name}` : 'Aktivitäten für heute'} emoji="🎯" linkTo="/aktivitaeten" />
-        <div className="grid grid-cols-2 gap-3 px-4">
+        <div className="grid grid-cols-2 gap-3 px-4 py-2">
           {displayActivities.map(activity => (
             <ActivityCard key={activity.id} activity={activity} />
           ))}
