@@ -13,12 +13,12 @@ interface Reward {
 }
 
 const REWARDS: Reward[] = [
-  { id: 'sticker-set', emoji: '⭐', name: 'Tuki Sticker-Set', description: '12 suesse Tuki-Sticker fuer das Kinderzimmer', price: 8, category: 'produkt' },
+  { id: 'sticker-set', emoji: '⭐', name: 'Tuki Sticker-Set', description: '12 süsse Tuki-Sticker für das Kinderzimmer', price: 8, category: 'produkt' },
   { id: 'rezeptbuch', emoji: '\uD83D\uDCD6', name: 'Rezeptbuch Download', description: '20 exklusive Familienrezepte als PDF', price: 10, category: 'digital' },
-  { id: 'gratis-versand', emoji: '\uD83D\uDE9A', name: 'Gratis Versand', description: 'Kostenloser Versand bei deiner naechsten Bestellung', price: 12, category: 'rabatt' },
-  { id: 'snack-box', emoji: '\uD83C\uDF81', name: 'Tuki Snack-Box', description: 'Gesunde Snacks fuer die ganze Familie', price: 15, category: 'produkt' },
-  { id: 'rabatt-10', emoji: '\uD83C\uDFF7\uFE0F', name: '10% Rabatt', description: '10% auf deine naechste Tuki-Bestellung', price: 20, category: 'rabatt' },
-  { id: 'ueberraschung', emoji: '\uD83C\uDF89', name: 'Ueberraschungspaket', description: 'Lass dich ueberraschen mit tollen Tuki-Produkten', price: 30, category: 'produkt' },
+  { id: 'gratis-versand', emoji: '🚚', name: 'Gratis Versand', description: 'Kostenloser Versand bei deiner nächsten Bestellung', price: 12, category: 'rabatt' },
+  { id: 'snack-box', emoji: '🎁', name: 'Tuki Snack-Box', description: 'Gesunde Snacks für die ganze Familie', price: 15, category: 'produkt' },
+  { id: 'rabatt-10', emoji: '🏷️', name: '10% Rabatt', description: '10% auf deine nächste Tuki-Bestellung', price: 20, category: 'rabatt' },
+  { id: 'ueberraschung', emoji: '🎉', name: 'Überraschungspaket', description: 'Lass dich überraschen mit tollen Tuki-Produkten', price: 30, category: 'produkt' },
 ]
 
 export default function StarShopPage() {
@@ -82,7 +82,7 @@ export default function StarShopPage() {
         <div className="flex gap-3">
           <div className="flex-1 bg-green-50 rounded-lg p-3 text-center">
             <div className="text-lg mb-1">{'✅'}</div>
-            <div className="text-xs font-medium text-green-800">Aktivitaet / Rezept abschliessen</div>
+            <div className="text-xs font-medium text-green-800">Aktivität / Rezept abschliessen</div>
             <div className="text-green-600 font-bold text-sm mt-1">+1 {'⭐'}</div>
           </div>
           <div className="flex-1 bg-purple-50 rounded-lg p-3 text-center">
@@ -97,8 +97,8 @@ export default function StarShopPage() {
       <div className="flex gap-2 px-4 mt-5 mb-3 overflow-x-auto no-scrollbar">
         {[
           { key: 'alle', label: 'Alle' },
-          { key: 'produkt', label: '\uD83C\uDF81 Produkte' },
-          { key: 'rabatt', label: '\uD83C\uDFF7\uFE0F Rabatte' },
+          { key: 'produkt', label: '🎁 Produkte' },
+          { key: 'rabatt', label: '🏷️ Rabatte' },
           { key: 'digital', label: '📱 Digital' },
         ].map(f => (
           <button
@@ -143,7 +143,7 @@ export default function StarShopPage() {
               <div className="mt-3 flex items-center justify-between">
                 {isRedeemed ? (
                   <span className="text-xs font-medium text-green-600 flex items-center gap-1">
-                    {wasJustRedeemed ? '\uD83C\uDF89' : '✅'} Eingeloest
+                    {wasJustRedeemed ? '🎉' : '✅'} Eingeloest
                   </span>
                 ) : (
                   <>
