@@ -129,8 +129,8 @@ const seedComments: Record<string, Array<{author: string; emoji: string; text: s
 export default function CommunityPage() {
   const { user } = useAuth()
   const [searchParams, setSearchParams] = useSearchParams()
-  const [posts, setPosts] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
+  const [posts, setPosts] = useState<any[]>(seedPosts)
+  const [loading, setLoading] = useState(false)
   const [activeTag, setActiveTag] = useState<string | null>(null)
   const [showCompose, setShowCompose] = useState(false)
   const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set())
@@ -167,15 +167,13 @@ export default function CommunityPage() {
   useEffect(() => { loadPosts() }, [])
 
   async function loadPosts() {
-    setLoading(true)
     try {
       const controller = new AbortController()
-      const timer = setTimeout(() => controller.abort(), 4000)
+      const timer = setTimeout(() => controller.abort(), 2000)
       const { data } = await supabase.from('community_posts').select('*, profiles(display_name, avatar_emoji)').order('created_at', { ascending: false }).abortSignal(controller.signal)
       clearTimeout(timer)
-      setPosts(data && data.length >= 3 ? data : seedPosts)
-    } catch { setPosts(seedPosts) }
-    setLoading(false)
+      if (data && data.length >= 3) setPosts(data)
+    } catch {}
   }
 
   function toggleComments(id: string) {
