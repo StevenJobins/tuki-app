@@ -1,6 +1,10 @@
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
+import { supabase } from '../lib/supabase'
+import { useAuth } from './AuthContext'
+import { getRecipeById } from '../data/recipes'
+import { getActivityById } from '../data/activities'
 
-export interface ChildProfile {
+interface ChildProfile {
   id: string
   name: string
   birthDate: string
@@ -9,35 +13,17 @@ export interface ChildProfile {
 
 interface TukiStars {
   total: number
-  spent: number
   level: number
   levelName: string
 }
 
-interface PerChildData {
-  favorites: string[]
-  completedActivities: string[]
-  completedRecipes: string[]
-  weekPlan: Record<string, string[]>
-  tukiStars: TukiStars
-  redeemedRewards: string[]
-  photoUploads: string[]
-}
-
 interface AppState {
-  // Active child's data (flat for backward compat)
   favorites: string[]
   completedActivities: string[]
   completedRecipes: string[]
   weekPlan: Record<string, string[]>
-  tukiStars: TukiStars
-  redeemedRewards: string[]
-  photoUploads: string[]
-  // Multi-child
   children: ChildProfile[]
-  activeChildId: string | null
-  childData: Record<string, PerChildData>
-  // App
+  tukiStars: TukiStars
   language: 'de' | 'en' | 'fr'
   isOnboarded: boolean
 }
@@ -45,30 +31,23 @@ interface AppState {
 interface AppContextType extends AppState {
   toggleFavorite: (id: string) => void
   isFavorite: (id: string) => boolean
-  completeActivity: (id: string, withPhoto?: boolean) => void
-  completeRecipe: (id: string, withPhoto?: boolean) => void
+  completeActivity: (id: string) => void
+  completeRecipe: (id: string) => void
   addToWeekPlan: (day: string, id: string) => void
   removeFromWeekPlan: (day: string, id: string) => void
   addChild: (child: ChildProfile) => void
-  updateChild: (child: ChildProfile) => void
-  removeChild: (childId: string) => void
-  setActiveChild: (childId: string) => void
   setOnboarded: () => void
-  getActiveChild: () => ChildProfile | null
-  getChildAge: (childId?: string) => number | null
-  starBalance: () => number
-  spendStars: (amount: number, rewardId: string) => boolean
 }
 
 const LEVELS = [
   { min: 0, name: 'Kleiner Entdecker' },
-  { min: 10, name: 'Kuechenhelfer' },
+  { min: 10, name: 'Küchenhelfer' },
   { min: 25, name: 'Nachwuchskoch' },
   { min: 50, name: 'Familien-Star' },
-  { min: 100, name: 'Kuechenchef' },
+  { min: 100, name: 'Küchenchef' },
 ]
 
-function getLevelInfo(total: number): { level: number; levelName: string } {
+function calculateLevel(total: number): TukiStars {
   let level = 0
   let levelName = LEVELS[0].name
   for (let i = LEVELS.length - 1; i >= 0; i--) {
@@ -78,17 +57,20 @@ function getLevelInfo(total: number): { level: number; levelName: string } {
       break
     }
   }
-  return { level, levelName }
+  return { total, level, levelName }
 }
 
-const defaultPerChild: PerChildData = {
-  favorites: [],
-  completedActivities: [],
-  completedRecipes: [],
-  weekPlan: {},
-  tukiStars: { total: 0, spent: 0, level: 0, levelName: 'Kleiner Entdecker' },
-  redeemedRewards: [],
-  photoUploads: [],
+function calculateTotalStars(completedRecipes: string[], completedActivities: string[]): number {
+  let total = 0
+  for (const id of completedRecipes) {
+    const recipe = getRecipeById(id)
+    total += recipe?.stars || 1
+  }
+  for (const id of completedActivities) {
+    const activity = getActivityById(id)
+    total += activity?.stars || 1
+  }
+  return total
 }
 
 const defaultState: AppState = {
@@ -96,290 +78,159 @@ const defaultState: AppState = {
   completedActivities: [],
   completedRecipes: [],
   weekPlan: {},
-  tukiStars: { total: 0, spent: 0, level: 0, levelName: 'Kleiner Entdecker' },
-  redeemedRewards: [],
-  photoUploads: [],
   children: [],
-  activeChildId: null,
-  childData: {},
+  tukiStars: calculateLevel(0),
   language: 'de',
   isOnboarded: false,
-}
-
-function loadState(): AppState {
-  try {
-    const saved = localStorage.getItem('tuki-family-state')
-    if (saved) {
-      const parsed = JSON.parse(saved)
-      // Migration: old format had favorites as array with no childData
-      if (parsed && !parsed.childData) {
-        parsed.childData = {}
-        parsed.activeChildId = parsed.activeChildId || null
-      }
-      // Migration: add spent field to tukiStars if missing
-      if (parsed.tukiStars && parsed.tukiStars.spent === undefined) {
-        parsed.tukiStars.spent = 0
-      }
-      // Migration: add redeemedRewards and photoUploads if missing
-      if (!parsed.redeemedRewards) parsed.redeemedRewards = []
-      if (!parsed.photoUploads) parsed.photoUploads = []
-      // Migrate childData entries too
-      if (parsed.childData) {
-        Object.keys(parsed.childData).forEach(key => {
-          const cd = parsed.childData[key]
-          if (cd.tukiStars && cd.tukiStars.spent === undefined) cd.tukiStars.spent = 0
-          if (!cd.redeemedRewards) cd.redeemedRewards = []
-          if (!cd.photoUploads) cd.photoUploads = []
-        })
-      }
-      // Auto-set active child if children exist but none is active
-      if (parsed.children?.length > 0 && !parsed.activeChildId) {
-        parsed.activeChildId = parsed.children[0].id
-      }
-      return { ...defaultState, ...parsed }
-    }
-  } catch {}
-  return defaultState
 }
 
 const AppContext = createContext<AppContextType | null>(null)
 
 export function AppProvider({ children: childNodes }: { children: ReactNode }) {
-  const [state, setState] = useState<AppState>(loadState)
+  const { user } = useAuth()
+  const [state, setState] = useState<AppState>(defaultState)
 
-  useEffect(() => {
-    localStorage.setItem('tuki-family-state', JSON.stringify(state))
-  }, [state])
+  // Load data from Supabase when user logs in
+  const loadFromSupabase = useCallback(async (userId: string) => {
+    // Load completed items
+    const { data: completedItems } = await supabase
+      .from('completed_items')
+      .select('item_id, item_type')
+      .eq('profile_id', userId)
 
-  // Save current child's data into childData before switching
-  const saveCurrentChildData = useCallback((s: AppState): AppState => {
-    if (!s.activeChildId) return s
-    return {
-      ...s,
-      childData: {
-        ...s.childData,
-        [s.activeChildId]: {
-          favorites: s.favorites,
-          completedActivities: s.completedActivities,
-          completedRecipes: s.completedRecipes,
-          weekPlan: s.weekPlan,
-          tukiStars: s.tukiStars,
-          redeemedRewards: s.redeemedRewards,
-          photoUploads: s.photoUploads,
-        },
-      },
-    }
-  }, [])
+    // Load favorites
+    const { data: favItems } = await supabase
+      .from('favorites')
+      .select('item_id')
+      .eq('profile_id', userId)
 
-  const toggleFavorite = (id: string) => {
+    // Load children
+    const { data: childrenData } = await supabase
+      .from('children')
+      .select('*')
+      .eq('profile_id', userId)
+
+    const completedActivities = (completedItems || [])
+      .filter(i => i.item_type === 'activity')
+      .map(i => i.item_id)
+    const completedRecipes = (completedItems || [])
+      .filter(i => i.item_type === 'recipe')
+      .map(i => i.item_id)
+    const favorites = (favItems || []).map(f => f.item_id)
+    const children: ChildProfile[] = (childrenData || []).map(c => ({
+      id: c.id,
+      name: c.name,
+      birthDate: c.birth_date || '',
+      avatarEmoji: c.avatar_emoji || '👶',
+    }))
+
+    const total = calculateTotalStars(completedRecipes, completedActivities)
+
     setState(s => ({
       ...s,
-      favorites: s.favorites.includes(id)
-        ? s.favorites.filter(f => f !== id)
-        : [...s.favorites, id],
+      completedActivities,
+      completedRecipes,
+      favorites,
+      children,
+      tukiStars: calculateLevel(total),
+      isOnboarded: true,
     }))
+  }, [])
+
+  useEffect(() => {
+    if (user) {
+      loadFromSupabase(user.id)
+    } else {
+      setState(defaultState)
+    }
+  }, [user, loadFromSupabase])
+
+  const toggleFavorite = async (id: string) => {
+    const isFav = state.favorites.includes(id)
+    // Optimistic update
+    setState(s => ({
+      ...s,
+      favorites: isFav ? s.favorites.filter(f => f !== id) : [...s.favorites, id],
+    }))
+    // Sync with Supabase
+    if (user) {
+      if (isFav) {
+        await supabase.from('favorites').delete().eq('profile_id', user.id).eq('item_id', id)
+      } else {
+        await supabase.from('favorites').insert({ profile_id: user.id, item_id: id })
+      }
+    }
   }
 
   const isFavorite = (id: string) => state.favorites.includes(id)
 
-  const completeActivity = (id: string, withPhoto?: boolean) => {
+  const completeActivity = async (id: string) => {
+    if (state.completedActivities.includes(id)) return
+    const activity = getActivityById(id)
+    const starsEarned = activity?.stars || 1
+    // Optimistic update
     setState(s => {
-      if (s.completedActivities.includes(id)) return s
       const completed = [...s.completedActivities, id]
-      const earned = withPhoto ? 3 : 1
-      const newTotal = s.tukiStars.total + earned
-      const newPhotos = withPhoto ? [...s.photoUploads, id] : s.photoUploads
-      return {
-        ...s,
-        completedActivities: completed,
-        photoUploads: newPhotos,
-        tukiStars: { ...s.tukiStars, total: newTotal, ...getLevelInfo(newTotal) },
-      }
+      const newTotal = s.tukiStars.total + starsEarned
+      return { ...s, completedActivities: completed, tukiStars: calculateLevel(newTotal) }
     })
+    // Sync with Supabase
+    if (user) {
+      await supabase.from('completed_items').insert({
+        profile_id: user.id,
+        item_id: id,
+        item_type: 'activity',
+      })
+    }
   }
 
-  const completeRecipe = (id: string, withPhoto?: boolean) => {
+  const completeRecipe = async (id: string) => {
+    if (state.completedRecipes.includes(id)) return
+    const recipe = getRecipeById(id)
+    const starsEarned = recipe?.stars || 1
     setState(s => {
-      if (s.completedRecipes.includes(id)) return s
       const completed = [...s.completedRecipes, id]
-      const earned = withPhoto ? 3 : 1
-      const newTotal = s.tukiStars.total + earned
-      const newPhotos = withPhoto ? [...s.photoUploads, id] : s.photoUploads
-      return {
-        ...s,
-        completedRecipes: completed,
-        photoUploads: newPhotos,
-        tukiStars: { ...s.tukiStars, total: newTotal, ...getLevelInfo(newTotal) },
-      }
+      const newTotal = s.tukiStars.total + starsEarned
+      return { ...s, completedRecipes: completed, tukiStars: calculateLevel(newTotal) }
     })
+    if (user) {
+      await supabase.from('completed_items').insert({
+        profile_id: user.id,
+        item_id: id,
+        item_type: 'recipe',
+      })
+    }
   }
 
   const addToWeekPlan = (day: string, id: string) => {
     setState(s => ({
       ...s,
-      weekPlan: {
-        ...s.weekPlan,
-        [day]: [...(s.weekPlan[day] || []), id],
-      },
+      weekPlan: { ...s.weekPlan, [day]: [...(s.weekPlan[day] || []), id] },
     }))
   }
 
   const removeFromWeekPlan = (day: string, id: string) => {
     setState(s => ({
       ...s,
-      weekPlan: {
-        ...s.weekPlan,
-        [day]: (s.weekPlan[day] || []).filter(i => i !== id),
-      },
+      weekPlan: { ...s.weekPlan, [day]: (s.weekPlan[day] || []).filter(i => i !== id) },
     }))
   }
 
-  const addChild = (child: ChildProfile) => {
-    setState(s => {
-      const isFirst = s.children.length === 0
-      let newState = { ...s, children: [...s.children, child] }
-
-      if (isFirst) {
-        // Migrate existing data to first child
-        newState.childData = {
-          ...newState.childData,
-          [child.id]: {
-            favorites: s.favorites,
-            completedActivities: s.completedActivities,
-            completedRecipes: s.completedRecipes,
-            weekPlan: s.weekPlan,
-            tukiStars: s.tukiStars,
-            redeemedRewards: s.redeemedRewards,
-            photoUploads: s.photoUploads,
-          },
-        }
-        newState.activeChildId = child.id
-      } else {
-        // Save current child data, then init new child with defaults
-        newState = saveCurrentChildData(newState)
-        newState.childData = {
-          ...newState.childData,
-          [child.id]: { ...defaultPerChild },
-        }
-      }
-      return newState
-    })
-  }
-
-  const updateChild = (child: ChildProfile) => {
-    setState(s => ({
-      ...s,
-      children: s.children.map(c => (c.id === child.id ? child : c)),
-    }))
-  }
-
-  const removeChild = (childId: string) => {
-    setState(s => {
-      const newChildren = s.children.filter(c => c.id !== childId)
-      const { [childId]: _, ...restChildData } = s.childData
-
-      let newActiveId = s.activeChildId
-      let newFavorites = s.favorites
-      let newCompletedAct = s.completedActivities
-      let newCompletedRec = s.completedRecipes
-      let newWeekPlan = s.weekPlan
-      let newStars = s.tukiStars
-      let newRedeemed = s.redeemedRewards
-      let newPhotos = s.photoUploads
-
-      if (s.activeChildId === childId) {
-        if (newChildren.length > 0) {
-          newActiveId = newChildren[0].id
-          const data = restChildData[newActiveId] || defaultPerChild
-          newFavorites = data.favorites
-          newCompletedAct = data.completedActivities
-          newCompletedRec = data.completedRecipes
-          newWeekPlan = data.weekPlan
-          newStars = data.tukiStars
-          newRedeemed = data.redeemedRewards
-          newPhotos = data.photoUploads
-        } else {
-          newActiveId = null
-          newFavorites = []
-          newCompletedAct = []
-          newCompletedRec = []
-          newWeekPlan = {}
-          newStars = { total: 0, spent: 0, level: 0, levelName: 'Kleiner Entdecker' }
-          newRedeemed = []
-          newPhotos = []
-        }
-      }
-
-      return {
-        ...s,
-        children: newChildren,
-        childData: restChildData,
-        activeChildId: newActiveId,
-        favorites: newFavorites,
-        completedActivities: newCompletedAct,
-        completedRecipes: newCompletedRec,
-        weekPlan: newWeekPlan,
-        tukiStars: newStars,
-        redeemedRewards: newRedeemed,
-        photoUploads: newPhotos,
-      }
-    })
-  }
-
-  const setActiveChild = (childId: string) => {
-    setState(s => {
-      if (s.activeChildId === childId) return s
-      const saved = saveCurrentChildData(s)
-      const data = saved.childData[childId] || defaultPerChild
-      return {
-        ...saved,
-        activeChildId: childId,
-        favorites: data.favorites,
-        completedActivities: data.completedActivities,
-        completedRecipes: data.completedRecipes,
-        weekPlan: data.weekPlan,
-        tukiStars: data.tukiStars,
-        redeemedRewards: data.redeemedRewards,
-        photoUploads: data.photoUploads,
-      }
-    })
+  const addChild = async (child: ChildProfile) => {
+    setState(s => ({ ...s, children: [...s.children, child] }))
+    if (user) {
+      await supabase.from('children').insert({
+        id: child.id,
+        profile_id: user.id,
+        name: child.name,
+        birth_date: child.birthDate,
+        avatar_emoji: child.avatarEmoji,
+      })
+    }
   }
 
   const setOnboarded = () => {
     setState(s => ({ ...s, isOnboarded: true }))
-  }
-
-  const getActiveChild = (): ChildProfile | null => {
-    if (!state.activeChildId) return null
-    return state.children.find(c => c.id === state.activeChildId) || null
-  }
-
-  const getChildAge = (childId?: string): number | null => {
-    const id = childId || state.activeChildId
-    if (!id) return null
-    const child = state.children.find(c => c.id === id)
-    if (!child) return null
-    const birth = new Date(child.birthDate)
-    const now = new Date()
-    let years = now.getFullYear() - birth.getFullYear()
-    const m = now.getMonth() - birth.getMonth()
-    if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) years--
-    return Math.max(0, years)
-  }
-
-  const starBalance = (): number => {
-    return state.tukiStars.total - state.tukiStars.spent
-  }
-
-  const spendStars = (amount: number, rewardId: string): boolean => {
-    const balance = state.tukiStars.total - state.tukiStars.spent
-    if (balance < amount) return false
-    setState(s => ({
-      ...s,
-      tukiStars: { ...s.tukiStars, spent: s.tukiStars.spent + amount },
-      redeemedRewards: [...s.redeemedRewards, rewardId],
-    }))
-    return true
   }
 
   return (
@@ -393,14 +244,7 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
         addToWeekPlan,
         removeFromWeekPlan,
         addChild,
-        updateChild,
-        removeChild,
-        setActiveChild,
         setOnboarded,
-        getActiveChild,
-        getChildAge,
-        starBalance,
-        spendStars,
       }}
     >
       {childNodes}
