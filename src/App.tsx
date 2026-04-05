@@ -46,7 +46,7 @@ function AuthenticatedApp() {
   if (!isOnboarded) return <OnboardingPage />
 
   return (
-    <div className="min-h-screen bg-tuki-cream flex overflow-hidden">
+    <div className="min-h-screen bg-tuki-cream flex">
       {/* Sidebar \u2013 visible on desktop (md+) */}
       <SideNav />
 
