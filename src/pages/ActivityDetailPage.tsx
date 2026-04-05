@@ -1,8 +1,6 @@
-import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getActivityById, categoryInfo } from '../data/activities'
 import FavoriteButton from '../components/FavoriteButton'
-import ShareButton from '../components/ShareButton'
 import { useApp } from '../context/AppContext'
 
 export default function ActivityDetailPage() {
@@ -15,10 +13,10 @@ export default function ActivityDetailPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <span className="text-4xl block mb-3">ð¤</span>
-          <p className="text-gray-500">AktivitÃ¤t nicht gefunden</p>
+          <span className="text-4xl block mb-3">🤔</span>
+          <p className="text-gray-500">Aktivität nicht gefunden</p>
           <button onClick={() => navigate('/aktivitaeten')} className="text-tuki-rot text-sm mt-2">
-            ZurÃ¼ck zu AktivitÃ¤ten
+            Zurück zu Aktivitäten
           </button>
         </div>
       </div>
@@ -26,20 +24,13 @@ export default function ActivityDetailPage() {
   }
 
   const cat = categoryInfo[activity.category]
-  const [heroImgErr, setHeroImgErr] = useState(false)
   const isCompleted = completedActivities.includes(activity.id)
 
   return (
     <div className="pb-8">
       {/* Hero Image */}
       <div className="relative h-56">
-        {heroImgErr ? (
-          <div className="w-full h-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center">
-            <span className="text-7xl drop-shadow-lg animate-float">{activity.emoji}</span>
-          </div>
-        ) : (
-          <img src={activity.image} alt={activity.title} className="w-full h-full object-cover" onError={() => setHeroImgErr(true)} />
-        )}
+        <img src={activity.image} alt={activity.title} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
         <div className="absolute top-0 left-0 right-0 flex items-center justify-between p-4">
           <button
@@ -50,10 +41,7 @@ export default function ActivityDetailPage() {
               <polyline points="15 18 9 12 15 6" />
             </svg>
           </button>
-          <div className="flex items-center gap-2">
-            <ShareButton title={activity.title} text={activity.subtitle + ' \u2014 Tuki Family'} activityId={activity.id} />
-            <FavoriteButton id={activity.id} />
-          </div>
+          <FavoriteButton id={activity.id} />
         </div>
         <div className="absolute bottom-0 left-0 right-0 p-4">
           <span className={`text-[10px] font-semibold px-2 py-1 rounded-full ${cat.color} inline-block mb-2`}>
@@ -67,19 +55,19 @@ export default function ActivityDetailPage() {
       {/* Quick Info */}
       <div className="flex justify-around py-4 bg-white border-b border-gray-100">
         <div className="text-center">
-          <span className="text-lg">â±ï¸</span>
+          <span className="text-lg">⏱️</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5">{activity.duration} Min.</p>
         </div>
         <div className="text-center">
-          <span className="text-lg">ð¶</span>
+          <span className="text-lg">👶</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5">{activity.ageRange[0]}-{activity.ageRange[1]} J.</p>
         </div>
         <div className="text-center">
-          <span className="text-lg">ð</span>
+          <span className="text-lg">📊</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5 capitalize">{activity.difficulty}</p>
         </div>
         <div className="text-center">
-          <span className="text-lg">â­</span>
+          <span className="text-lg">⭐</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5">{activity.stars} Sterne</p>
         </div>
       </div>
@@ -99,11 +87,11 @@ export default function ActivityDetailPage() {
 
       {/* Learning Goals */}
       <div className="px-4 mt-6">
-        <h2 className="font-semibold text-base text-gray-800 mb-3">ð Das lernt dein Kind</h2>
+        <h2 className="font-semibold text-base text-gray-800 mb-3">🎓 Das lernt dein Kind</h2>
         <div className="flex flex-wrap gap-2">
           {activity.learningGoals.map((goal, i) => (
             <span key={i} className="bg-green-50 text-green-700 text-xs font-medium px-3 py-1.5 rounded-full border border-green-100">
-              â {goal}
+              ✓ {goal}
             </span>
           ))}
         </div>
@@ -111,14 +99,14 @@ export default function ActivityDetailPage() {
 
       {/* Materials */}
       <div className="px-4 mt-6">
-        <h2 className="font-semibold text-base text-gray-800 mb-3">ð§° Das brauchst du</h2>
+        <h2 className="font-semibold text-base text-gray-800 mb-3">🧰 Das brauchst du</h2>
         <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
           {activity.materials.map((mat, i) => (
             <div
               key={i}
               className={`flex items-center gap-3 px-4 py-3 ${i < activity.materials.length - 1 ? 'border-b border-gray-50' : ''}`}
             >
-              <span className="text-tuki-mint-dark">â</span>
+              <span className="text-tuki-mint-dark">●</span>
               <span className="text-sm text-gray-600">{mat}</span>
             </div>
           ))}
@@ -127,7 +115,7 @@ export default function ActivityDetailPage() {
 
       {/* Steps */}
       <div className="px-4 mt-6">
-        <h2 className="font-semibold text-base text-gray-800 mb-3">ð So geht's</h2>
+        <h2 className="font-semibold text-base text-gray-800 mb-3">📋 So geht's</h2>
         <div className="space-y-4">
           {activity.steps.map((step, i) => (
             <div
@@ -141,7 +129,7 @@ export default function ActivityDetailPage() {
                 <p className="text-sm text-gray-700 leading-relaxed">{step.text}</p>
                 {step.tip && (
                   <div className="mt-2 bg-yellow-50 rounded-lg p-2.5 border border-yellow-200/50">
-                    <p className="text-xs text-yellow-700">ð¡ {step.tip}</p>
+                    <p className="text-xs text-yellow-700">💡 {step.tip}</p>
                   </div>
                 )}
               </div>
@@ -162,9 +150,9 @@ export default function ActivityDetailPage() {
           }`}
         >
           {isCompleted ? (
-            <>â Geschafft! +{activity.stars} Sterne verdient</>
+            <>✅ Geschafft! +{activity.stars} Sterne verdient</>
           ) : (
-            <>â­ AktivitÃ¤t geschafft â {activity.stars} Sterne verdienen</>
+            <>⭐ Aktivität geschafft — {activity.stars} Sterne verdienen</>
           )}
         </button>
       </div>
