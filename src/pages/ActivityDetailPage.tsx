@@ -56,8 +56,8 @@ function AktivitaetsModus({ activity, onClose, onComplete }: { activity: any; on
     return (
       <div className="fixed inset-0 z-50 bg-white flex flex-col">
         <div className="bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 text-white px-4 py-3 flex items-center justify-between shrink-0">
-          <button onClick={onClose} className="text-white/80 text-sm font-medium">{'\u2715'} Beenden</button>
-          <span className="font-bold text-sm">{activity.emoji} Aktivit\u00e4ts-Modus</span>
+          <button onClick={onClose} className="text-white/80 text-sm font-medium">✕ Beenden</button>
+          <span className="font-bold text-sm">{activity.emoji} Aktivitäts-Modus</span>
           <span className="text-white/70 text-xs">{activity.duration} Min.</span>
         </div>
 
@@ -80,7 +80,7 @@ function AktivitaetsModus({ activity, onClose, onComplete }: { activity: any; on
             onClick={() => setShowMaterials(false)}
             className="w-full py-4 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-bold text-base shadow-lg shadow-purple-500/25 active:scale-[0.97] transition-transform"
           >
-            Los geht's! \ud83d\ude80
+            Los geht's! 🚀
           </button>
         </div>
       </div>
@@ -91,7 +91,7 @@ function AktivitaetsModus({ activity, onClose, onComplete }: { activity: any; on
     <div className="fixed inset-0 z-50 bg-white flex flex-col">
       <div className="bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 text-white shrink-0">
         <div className="px-4 py-3 flex items-center justify-between">
-          <button onClick={onClose} className="text-white/80 text-sm font-medium">{'\u2715'} Beenden</button>
+          <button onClick={onClose} className="text-white/80 text-sm font-medium">✕ Beenden</button>
           <span className="font-bold text-sm">Schritt {step + 1} von {totalSteps}</span>
           <span className="text-white/70 text-xs">{activity.emoji}</span>
         </div>
@@ -123,7 +123,7 @@ function AktivitaetsModus({ activity, onClose, onComplete }: { activity: any; on
 
         {currentStep.tip && (
           <div className="mt-6 bg-amber-50 rounded-2xl p-4 border border-amber-100 mx-auto max-w-sm">
-            <p className="text-sm text-amber-800 text-center">{'\ud83d\udca1'} {currentStep.tip}</p>
+            <p className="text-sm text-amber-800 text-center">💡 {currentStep.tip}</p>
           </div>
         )}
       </div>
@@ -137,21 +137,21 @@ function AktivitaetsModus({ activity, onClose, onComplete }: { activity: any; on
               step === 0 ? 'border-gray-200 text-gray-300' : 'border-gray-300 text-gray-600 active:scale-[0.97]'
             }`}
           >
-            {'\u2190'} Zur\u00fcck
+            ← Zurück
           </button>
           {step < totalSteps - 1 ? (
             <button
               onClick={nextStep}
               className="flex-[2] py-3.5 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-bold text-sm shadow-lg shadow-purple-500/25 active:scale-[0.97] transition-transform"
             >
-              Weiter {'\u2192'}
+              Weiter →
             </button>
           ) : (
             <button
               onClick={() => { onComplete(); onClose(); }}
               className="flex-[2] py-3.5 rounded-xl bg-green-500 text-white font-bold text-sm shadow-lg shadow-green-500/25 active:scale-[0.97] transition-transform"
             >
-              {'\u2b50'} Fertig! Sterne verdienen
+              ⭐ Fertig! Sterne verdienen
             </button>
           )}
         </div>
