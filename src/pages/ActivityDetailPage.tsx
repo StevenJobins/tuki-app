@@ -100,10 +100,23 @@ function AktivitaetsModus({ activity, onClose, onComplete }: { activity: any; on
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto flex flex-col justify-center px-6 py-8">
-        {/* Big emoji display */}
-        <div className="text-center mb-4">
-          {parsed.emoji ? (
+      <div className="flex-1 overflow-y-auto flex flex-col justify-center px-6 py-6">
+        {/* Step image or emoji */}
+        <div className="text-center mb-3">
+          {currentStep.image ? (
+            <div className="mx-auto mb-3 max-w-xs">
+              <img
+                src={currentStep.image}
+                alt={parsed.title || `Schritt ${step + 1}`}
+                className="w-full h-48 object-cover rounded-2xl shadow-lg shadow-purple-200/30"
+              />
+              {parsed.emoji && (
+                <div className="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center -mt-5 mx-auto relative z-10 border-2 border-purple-100">
+                  <span className="text-xl">{parsed.emoji}</span>
+                </div>
+              )}
+            </div>
+          ) : parsed.emoji ? (
             <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-purple-100 to-indigo-100 flex items-center justify-center mx-auto mb-3 shadow-lg shadow-purple-200/50">
               <span className="text-5xl">{parsed.emoji}</span>
             </div>
