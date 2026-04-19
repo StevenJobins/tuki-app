@@ -4,6 +4,46 @@ import { getRecipeById } from '../data/recipes'
 import FavoriteButton from '../components/FavoriteButton'
 import { useApp } from '../context/AppContext'
 
+// Keyword-to-image mapping for KochModus step illustrations
+const STEP_IMAGES: Record<string, string> = {
+  mischen: 'https://images.unsplash.com/photo-1645397799189-533051fefc35?w=400&h=300&fit=crop',
+  ruehren: 'https://images.unsplash.com/photo-1645397799189-533051fefc35?w=400&h=300&fit=crop',
+  verruehren: 'https://images.unsplash.com/photo-1645397799189-533051fefc35?w=400&h=300&fit=crop',
+  kneten: 'https://images.unsplash.com/photo-1624715082216-7eef9c03ec19?w=400&h=300&fit=crop',
+  formen: 'https://images.unsplash.com/photo-1624715082216-7eef9c03ec19?w=400&h=300&fit=crop',
+  schneiden: 'https://images.unsplash.com/photo-1617541163845-17c8d3278584?w=400&h=300&fit=crop',
+  hacken: 'https://images.unsplash.com/photo-1617541163845-17c8d3278584?w=400&h=300&fit=crop',
+  braten: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop',
+  pfanne: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop',
+  backen: 'https://images.unsplash.com/photo-1605433247501-698725862cea?w=400&h=300&fit=crop',
+  ofen: 'https://images.unsplash.com/photo-1605433247501-698725862cea?w=400&h=300&fit=crop',
+  servieren: 'https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?w=400&h=300&fit=crop',
+  garnieren: 'https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?w=400&h=300&fit=crop',
+  kuehlschrank: 'https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=400&h=300&fit=crop',
+  kuehlen: 'https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=400&h=300&fit=crop',
+  wasser: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=400&h=300&fit=crop',
+  kochen: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop',
+  zerdruecken: 'https://images.unsplash.com/photo-1758874960462-bc5c1d2adeb9?w=400&h=300&fit=crop',
+  schaelen: 'https://images.unsplash.com/photo-1617541163845-17c8d3278584?w=400&h=300&fit=crop',
+  giessen: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=400&h=300&fit=crop',
+  waelzen: 'https://images.unsplash.com/photo-1624715082216-7eef9c03ec19?w=400&h=300&fit=crop',
+  bestreichen: 'https://images.unsplash.com/photo-1624715082216-7eef9c03ec19?w=400&h=300&fit=crop',
+  puerieren: 'https://images.unsplash.com/photo-1645397799189-533051fefc35?w=400&h=300&fit=crop',
+  belegen: 'https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?w=400&h=300&fit=crop',
+  eier: 'https://images.unsplash.com/photo-1758874960462-bc5c1d2adeb9?w=400&h=300&fit=crop',
+  teig: 'https://images.unsplash.com/photo-1624715082216-7eef9c03ec19?w=400&h=300&fit=crop',
+  zutaten: 'https://images.unsplash.com/photo-1605433247501-698725862cea?w=400&h=300&fit=crop',
+}
+
+function getStepImage(stepText: string, recipeImage: string): string {
+  const normalized = stepText.toLowerCase()
+    .replace(/ü/g, 'ue').replace(/ö/g, 'oe').replace(/ä/g, 'ae')
+  for (const [keyword, url] of Object.entries(STEP_IMAGES)) {
+    if (normalized.includes(keyword)) return url
+  }
+  return recipeImage
+}
+
 function KochModus({ recipe, onClose, onComplete }: { recipe: any; onClose: () => void; onComplete: () => void }) {
   const [step, setStep] = useState(0)
   const [showIngredients, setShowIngredients] = useState(true)
@@ -33,7 +73,7 @@ function KochModus({ recipe, onClose, onComplete }: { recipe: any; onClose: () =
       <div className="fixed inset-0 z-50 bg-white flex flex-col">
         {/* Header */}
         <div className="bg-gradient-to-r from-tuki-rot to-red-500 text-white px-4 py-3 flex items-center justify-between shrink-0">
-          <button onClick={onClose} className="text-white/80 text-sm font-medium">✕ Beenden</button>
+          <button onClick={onClose} className="text-white/80 text-sm font-medium">â Beenden</button>
           <span className="font-bold text-sm">{recipe.emoji} Koch-Modus</span>
           <span className="text-white/70 text-xs">{recipe.duration} Min.</span>
         </div>
@@ -60,7 +100,7 @@ function KochModus({ recipe, onClose, onComplete }: { recipe: any; onClose: () =
             onClick={() => setShowIngredients(false)}
             className="w-full py-4 rounded-2xl gradient-rot text-white font-bold text-base shadow-lg shadow-red-500/25 active:scale-[0.97] transition-transform"
           >
-            Los geht's! 🚀
+            Los geht's! ð
           </button>
         </div>
       </div>
@@ -72,7 +112,7 @@ function KochModus({ recipe, onClose, onComplete }: { recipe: any; onClose: () =
       {/* Header with progress */}
       <div className="bg-gradient-to-r from-tuki-rot to-red-500 text-white shrink-0">
         <div className="px-4 py-3 flex items-center justify-between">
-          <button onClick={onClose} className="text-white/80 text-sm font-medium">✕ Beenden</button>
+          <button onClick={onClose} className="text-white/80 text-sm font-medium">â Beenden</button>
           <span className="font-bold text-sm">Schritt {step + 1} von {totalSteps}</span>
           <span className="text-white/70 text-xs">{recipe.emoji}</span>
         </div>
@@ -81,11 +121,20 @@ function KochModus({ recipe, onClose, onComplete }: { recipe: any; onClose: () =
         </div>
       </div>
 
-      {/* Step Content */}
-      <div className="flex-1 overflow-y-auto flex flex-col justify-center px-6 py-8">
-        <div className="text-center mb-6">
-          <div className="w-16 h-16 rounded-2xl gradient-rot flex items-center justify-center mx-auto mb-4 shadow-lg">
-            <span className="text-white text-2xl font-bold">{step + 1}</span>
+      {/* Step Content with Image */}
+      <div className="flex-1 overflow-y-auto flex flex-col px-6 py-4">
+        {/* Step Image for kids who can't read */}
+        <div className="rounded-2xl overflow-hidden mb-4 shadow-md mx-auto w-full max-w-sm">
+          <img
+            src={getStepImage(currentStep.text, recipe.image)}
+            alt={`Schritt ${step + 1}`}
+            className="w-full h-40 object-cover"
+          />
+        </div>
+
+        <div className="text-center mb-3">
+          <div className="w-12 h-12 rounded-xl gradient-rot flex items-center justify-center mx-auto shadow-lg">
+            <span className="text-white text-xl font-bold">{step + 1}</span>
           </div>
         </div>
 
@@ -95,7 +144,7 @@ function KochModus({ recipe, onClose, onComplete }: { recipe: any; onClose: () =
 
         {currentStep.tip && (
           <div className="mt-6 bg-amber-50 rounded-2xl p-4 border border-amber-100 mx-auto max-w-sm">
-            <p className="text-sm text-amber-800 text-center">💡 {currentStep.tip}</p>
+            <p className="text-sm text-amber-800 text-center">ð¡ {currentStep.tip}</p>
           </div>
         )}
       </div>
@@ -110,21 +159,21 @@ function KochModus({ recipe, onClose, onComplete }: { recipe: any; onClose: () =
               step === 0 ? 'border-gray-200 text-gray-300' : 'border-gray-300 text-gray-600 active:scale-[0.97]'
             }`}
           >
-            ← Zurück
+            â ZurÃ¼ck
           </button>
           {step < totalSteps - 1 ? (
             <button
               onClick={nextStep}
               className="flex-[2] py-3.5 rounded-xl gradient-rot text-white font-bold text-sm shadow-lg shadow-red-500/25 active:scale-[0.97] transition-transform"
             >
-              Weiter →
+              Weiter â
             </button>
           ) : (
             <button
               onClick={() => { onComplete(); onClose(); }}
               className="flex-[2] py-3.5 rounded-xl bg-green-500 text-white font-bold text-sm shadow-lg shadow-green-500/25 active:scale-[0.97] transition-transform"
             >
-              ⭐ Fertig! Sterne verdienen
+              â­ Fertig! Sterne verdienen
             </button>
           )}
         </div>
@@ -144,10 +193,10 @@ export default function RecipeDetailPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <span className="text-4xl block mb-3">🤔</span>
+          <span className="text-4xl block mb-3">ð¤</span>
           <p className="text-gray-500">Rezept nicht gefunden</p>
           <button onClick={() => navigate('/rezepte')} className="text-tuki-rot text-sm mt-2">
-            Zurück zu Rezepten
+            ZurÃ¼ck zu Rezepten
           </button>
         </div>
       </div>
@@ -193,22 +242,22 @@ export default function RecipeDetailPage() {
       {/* Quick Info */}
       <div className="flex justify-around py-4 bg-white border-b border-gray-100">
         <div className="text-center">
-          <span className="text-lg">⏱️</span>
+          <span className="text-lg">â±ï¸</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5">{recipe.duration} Min.</p>
           <p className="text-[10px] text-gray-400">Dauer</p>
         </div>
         <div className="text-center">
-          <span className="text-lg">👶</span>
+          <span className="text-lg">ð¶</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5">{recipe.ageRange[0]}-{recipe.ageRange[1]} J.</p>
           <p className="text-[10px] text-gray-400">Alter</p>
         </div>
         <div className="text-center">
-          <span className="text-lg">📊</span>
+          <span className="text-lg">ð</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5 capitalize">{recipe.difficulty}</p>
           <p className="text-[10px] text-gray-400">Level</p>
         </div>
         <div className="text-center">
-          <span className="text-lg">🍽️</span>
+          <span className="text-lg">ð½ï¸</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5">{recipe.servings}</p>
           <p className="text-[10px] text-gray-400">Portionen</p>
         </div>
@@ -229,7 +278,7 @@ export default function RecipeDetailPage() {
 
       {/* Ingredients */}
       <div className="px-4 mt-6">
-        <h2 className="font-semibold text-base text-gray-800 mb-3">🛒 Zutaten</h2>
+        <h2 className="font-semibold text-base text-gray-800 mb-3">ð Zutaten</h2>
         <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
           {recipe.ingredients.map((ing, i) => (
             <div
@@ -248,7 +297,7 @@ export default function RecipeDetailPage() {
 
       {/* Steps */}
       <div className="px-4 mt-6">
-        <h2 className="font-semibold text-base text-gray-800 mb-3">👩‍🍳 Zubereitung</h2>
+        <h2 className="font-semibold text-base text-gray-800 mb-3">ð©âð³ Zubereitung</h2>
         <div className="space-y-4">
           {recipe.steps.map((step, i) => (
             <div
@@ -262,7 +311,7 @@ export default function RecipeDetailPage() {
                 <p className="text-sm text-gray-700 leading-relaxed">{step.text}</p>
                 {step.tip && (
                   <div className="mt-2 bg-yellow-50 rounded-lg p-2.5 border border-yellow-200/50">
-                    <p className="text-xs text-yellow-700">💡 {step.tip}</p>
+                    <p className="text-xs text-yellow-700">ð¡ {step.tip}</p>
                   </div>
                 )}
               </div>
@@ -277,10 +326,10 @@ export default function RecipeDetailPage() {
           onClick={() => setKochModus(true)}
           className="w-full py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-orange-500/25 active:scale-[0.97] transition-transform"
         >
-          👨‍🍳 Koch-Modus starten
+          ð¨âð³ Koch-Modus starten
         </button>
         <p className="text-[10px] text-gray-400 text-center mt-1.5">
-          Schritt-für-Schritt im Vollbild — perfekt zum gemeinsamen Kochen
+          Schritt-fÃ¼r-Schritt im Vollbild â perfekt zum gemeinsamen Kochen
         </p>
       </div>
 
@@ -296,9 +345,9 @@ export default function RecipeDetailPage() {
           }`}
         >
           {isCompleted ? (
-            <>✅ Geschafft! +{recipe.stars} Sterne verdient</>
+            <>â Geschafft! +{recipe.stars} Sterne verdient</>
           ) : (
-            <>⭐ Rezept geschafft — {recipe.stars} Sterne verdienen</>
+            <>â­ Rezept geschafft â {recipe.stars} Sterne verdienen</>
           )}
         </button>
       </div>
