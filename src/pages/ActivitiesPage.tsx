@@ -1,12 +1,10 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import AgeFilter from '../components/AgeFilter'
 import ActivityCard from '../components/ActivityCard'
-import { activities, categoryInfo, getActivityById } from '../data/activities'
+import { activities, categoryInfo } from '../data/activities'
 
 export default function ActivitiesPage() {
-  const navigate = useNavigate()
   const [ageFilter, setAgeFilter] = useState('all')
   const [catFilter, setCatFilter] = useState('all')
   const [search, setSearch] = useState('')
@@ -37,10 +35,6 @@ export default function ActivitiesPage() {
     }
     return true
   })
-
-  // Featured: yoga-tiere
-  const yogaActivity = getActivityById('yoga-tiere')
-  const showFeatured = catFilter === 'all' && ageFilter === 'all' && !search
 
   return (
     <div className="pb-24">
@@ -84,41 +78,6 @@ export default function ActivitiesPage() {
       <div className="mb-4">
         <AgeFilter selected={ageFilter} onChange={setAgeFilter} />
       </div>
-
-      {/* Featured: Tier-Yoga */}
-      {showFeatured && yogaActivity && (
-        <div className="px-4 mb-5">
-          <button
-            onClick={() => navigate('/aktivitaet/yoga-tiere')}
-            className="w-full bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 rounded-2xl overflow-hidden shadow-lg shadow-purple-500/20 text-left active:scale-[0.98] transition-transform"
-          >
-            <div className="flex items-center">
-              <div className="flex-1 p-4">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">
-                    Highlight
-                  </span>
-                  <span className="bg-white/20 text-white text-[10px] font-medium px-2 py-0.5 rounded-full backdrop-blur-sm">
-                    🤸 Motorik
-                  </span>
-                </div>
-                <h3 className="text-white font-bold text-lg mb-0.5">🧘 Tier-Yoga</h3>
-                <p className="text-white/80 text-xs mb-2">8 Tierposen zum Nachmachen — Bewegung trifft Fantasie!</p>
-                <div className="flex items-center gap-3">
-                  <span className="text-white/70 text-[10px]">⏱️ 20 Min.</span>
-                  <span className="text-white/70 text-[10px]">👶 2-7 J.</span>
-                  <span className="text-white/70 text-[10px]">⭐ 2 Sterne</span>
-                </div>
-              </div>
-              <div className="w-28 h-28 shrink-0 mr-3">
-                <div className="w-full h-full rounded-xl bg-white/10 flex items-center justify-center text-5xl">
-                  🧘
-                </div>
-              </div>
-            </div>
-          </button>
-        </div>
-      )}
 
       {/* Results */}
       <div className="px-4 mb-3">
