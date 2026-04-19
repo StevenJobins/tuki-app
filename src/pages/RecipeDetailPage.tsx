@@ -37,6 +37,7 @@ const STEP_IMAGES: Record<string, string> = {
 
 function getStepImage(stepText: string, recipeImage: string): string {
   const normalized = stepText.toLowerCase()
+    .replace(/\u00fc/g, 'ue').replace(/\u00f6/g, 'oe').replace(/\u00e4/g, 'ae')
     .replace(/ü/g, 'ue').replace(/ö/g, 'oe').replace(/ä/g, 'ae')
   for (const [keyword, url] of Object.entries(STEP_IMAGES)) {
     if (normalized.includes(keyword)) return url
@@ -73,7 +74,7 @@ function KochModus({ recipe, onClose, onComplete }: { recipe: any; onClose: () =
       <div className="fixed inset-0 z-50 bg-white flex flex-col">
         {/* Header */}
         <div className="bg-gradient-to-r from-tuki-rot to-red-500 text-white px-4 py-3 flex items-center justify-between shrink-0">
-          <button onClick={onClose} className="text-white/80 text-sm font-medium">â Beenden</button>
+          <button onClick={onClose} className="text-white/80 text-sm font-medium">✕ Beenden</button>
           <span className="font-bold text-sm">{recipe.emoji} Koch-Modus</span>
           <span className="text-white/70 text-xs">{recipe.duration} Min.</span>
         </div>
@@ -100,7 +101,7 @@ function KochModus({ recipe, onClose, onComplete }: { recipe: any; onClose: () =
             onClick={() => setShowIngredients(false)}
             className="w-full py-4 rounded-2xl gradient-rot text-white font-bold text-base shadow-lg shadow-red-500/25 active:scale-[0.97] transition-transform"
           >
-            Los geht's! ð
+            Los geht's! 🚀
           </button>
         </div>
       </div>
@@ -112,7 +113,7 @@ function KochModus({ recipe, onClose, onComplete }: { recipe: any; onClose: () =
       {/* Header with progress */}
       <div className="bg-gradient-to-r from-tuki-rot to-red-500 text-white shrink-0">
         <div className="px-4 py-3 flex items-center justify-between">
-          <button onClick={onClose} className="text-white/80 text-sm font-medium">â Beenden</button>
+          <button onClick={onClose} className="text-white/80 text-sm font-medium">✕ Beenden</button>
           <span className="font-bold text-sm">Schritt {step + 1} von {totalSteps}</span>
           <span className="text-white/70 text-xs">{recipe.emoji}</span>
         </div>
@@ -144,7 +145,7 @@ function KochModus({ recipe, onClose, onComplete }: { recipe: any; onClose: () =
 
         {currentStep.tip && (
           <div className="mt-6 bg-amber-50 rounded-2xl p-4 border border-amber-100 mx-auto max-w-sm">
-            <p className="text-sm text-amber-800 text-center">ð¡ {currentStep.tip}</p>
+            <p className="text-sm text-amber-800 text-center">💡 {currentStep.tip}</p>
           </div>
         )}
       </div>
@@ -159,21 +160,21 @@ function KochModus({ recipe, onClose, onComplete }: { recipe: any; onClose: () =
               step === 0 ? 'border-gray-200 text-gray-300' : 'border-gray-300 text-gray-600 active:scale-[0.97]'
             }`}
           >
-            â ZurÃ¼ck
+            ← Zurück
           </button>
           {step < totalSteps - 1 ? (
             <button
               onClick={nextStep}
               className="flex-[2] py-3.5 rounded-xl gradient-rot text-white font-bold text-sm shadow-lg shadow-red-500/25 active:scale-[0.97] transition-transform"
             >
-              Weiter â
+              Weiter →
             </button>
           ) : (
             <button
               onClick={() => { onComplete(); onClose(); }}
               className="flex-[2] py-3.5 rounded-xl bg-green-500 text-white font-bold text-sm shadow-lg shadow-green-500/25 active:scale-[0.97] transition-transform"
             >
-              â­ Fertig! Sterne verdienen
+              ⭐ Fertig! Sterne verdienen
             </button>
           )}
         </div>
@@ -193,10 +194,10 @@ export default function RecipeDetailPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <span className="text-4xl block mb-3">ð¤</span>
+          <span className="text-4xl block mb-3">🤔</span>
           <p className="text-gray-500">Rezept nicht gefunden</p>
           <button onClick={() => navigate('/rezepte')} className="text-tuki-rot text-sm mt-2">
-            ZurÃ¼ck zu Rezepten
+            Zurück zu Rezepten
           </button>
         </div>
       </div>
@@ -242,22 +243,22 @@ export default function RecipeDetailPage() {
       {/* Quick Info */}
       <div className="flex justify-around py-4 bg-white border-b border-gray-100">
         <div className="text-center">
-          <span className="text-lg">â±ï¸</span>
+          <span className="text-lg">⏱️</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5">{recipe.duration} Min.</p>
           <p className="text-[10px] text-gray-400">Dauer</p>
         </div>
         <div className="text-center">
-          <span className="text-lg">ð¶</span>
+          <span className="text-lg">👶</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5">{recipe.ageRange[0]}-{recipe.ageRange[1]} J.</p>
           <p className="text-[10px] text-gray-400">Alter</p>
         </div>
         <div className="text-center">
-          <span className="text-lg">ð</span>
+          <span className="text-lg">📊</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5 capitalize">{recipe.difficulty}</p>
           <p className="text-[10px] text-gray-400">Level</p>
         </div>
         <div className="text-center">
-          <span className="text-lg">ð½ï¸</span>
+          <span className="text-lg">🍽️</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5">{recipe.servings}</p>
           <p className="text-[10px] text-gray-400">Portionen</p>
         </div>
@@ -278,7 +279,7 @@ export default function RecipeDetailPage() {
 
       {/* Ingredients */}
       <div className="px-4 mt-6">
-        <h2 className="font-semibold text-base text-gray-800 mb-3">ð Zutaten</h2>
+        <h2 className="font-semibold text-base text-gray-800 mb-3">🛒 Zutaten</h2>
         <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
           {recipe.ingredients.map((ing, i) => (
             <div
@@ -297,7 +298,7 @@ export default function RecipeDetailPage() {
 
       {/* Steps */}
       <div className="px-4 mt-6">
-        <h2 className="font-semibold text-base text-gray-800 mb-3">ð©âð³ Zubereitung</h2>
+        <h2 className="font-semibold text-base text-gray-800 mb-3">👩‍🍳 Zubereitung</h2>
         <div className="space-y-4">
           {recipe.steps.map((step, i) => (
             <div
@@ -311,7 +312,7 @@ export default function RecipeDetailPage() {
                 <p className="text-sm text-gray-700 leading-relaxed">{step.text}</p>
                 {step.tip && (
                   <div className="mt-2 bg-yellow-50 rounded-lg p-2.5 border border-yellow-200/50">
-                    <p className="text-xs text-yellow-700">ð¡ {step.tip}</p>
+                    <p className="text-xs text-yellow-700">💡 {step.tip}</p>
                   </div>
                 )}
               </div>
@@ -326,10 +327,10 @@ export default function RecipeDetailPage() {
           onClick={() => setKochModus(true)}
           className="w-full py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-orange-500/25 active:scale-[0.97] transition-transform"
         >
-          ð¨âð³ Koch-Modus starten
+          👨‍🍳 Koch-Modus starten
         </button>
         <p className="text-[10px] text-gray-400 text-center mt-1.5">
-          Schritt-fÃ¼r-Schritt im Vollbild â perfekt zum gemeinsamen Kochen
+          Schritt-für-Schritt im Vollbild — perfekt zum gemeinsamen Kochen
         </p>
       </div>
 
@@ -345,9 +346,9 @@ export default function RecipeDetailPage() {
           }`}
         >
           {isCompleted ? (
-            <>â Geschafft! +{recipe.stars} Sterne verdient</>
+            <>✅ Geschafft! +{recipe.stars} Sterne verdient</>
           ) : (
-            <>â­ Rezept geschafft â {recipe.stars} Sterne verdienen</>
+            <>⭐ Rezept geschafft — {recipe.stars} Sterne verdienen</>
           )}
         </button>
       </div>
