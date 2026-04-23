@@ -81,7 +81,7 @@ export default function ActivitiesPage() {
 
       {/* Results */}
       <div className="px-4 mb-3">
-        <p className="text-xs text-gray-400">{filtered.length} Aktivitäten gefunden</p>
+        <p className="text-xs text-gray-400">{filtered.length === 1 ? "Aktivität" : "Aktivitäten"} gefunden</p>
       </div>
 
       {/* Activity Grid */}
