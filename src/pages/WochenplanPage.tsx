@@ -132,28 +132,22 @@ export default function WochenplanPage() {
     const plan: Record<string, { recipes: Recipe[]; activity: Activity | null }> = {}
     const shuffledRecipes = [...suitableRecipes].sort(() => rand() - 0.5)
     const shuffledActivities = [...suitableActivities].sort(() => rand() - 0.5)
-    const uncompletedRecipes = shuffledRecipes.filter(r => !completedRecipes.includes(r.id))
-    const completedRecipesList = shuffledRecipes.filter(r => completedRecipes.includes(r.id))
-    const orderedRecipes = [...uncompletedRecipes, ...completedRecipesList]
-    const uncompletedActivities = shuffledActivities.filter(a => !completedActivities.includes(a.id))
-    const completedActivitiesList = shuffledActivities.filter(a => completedActivities.includes(a.id))
-    const orderedActivities = [...uncompletedActivities, ...completedActivitiesList]
     let recipeIdx = 0
     let activityIdx = 0
     DAYS.forEach((day) => {
       const dayRecipes: Recipe[] = []
-      for (let i = 0; i < 2 && recipeIdx < orderedRecipes.length; i++) {
-        dayRecipes.push(orderedRecipes[recipeIdx % orderedRecipes.length])
+      for (let i = 0; i < 2 && recipeIdx < shuffledRecipes.length; i++) {
+        dayRecipes.push(shuffledRecipes[recipeIdx % shuffledRecipes.length])
         recipeIdx++
       }
-      const activity = orderedActivities.length > 0
-        ? orderedActivities[activityIdx % orderedActivities.length]
+      const activity = shuffledActivities.length > 0
+        ? shuffledActivities[activityIdx % shuffledActivities.length]
         : null
       activityIdx++
       plan[day.key] = { recipes: dayRecipes, activity }
     })
     return plan
-  }, [weekNum, suitableRecipes, suitableActivities, completedRecipes, completedActivities])
+  }, [weekNum, suitableRecipes, suitableActivities])
 
   const dayPlan = generatedPlan[selectedDay] || { recipes: [], activity: null }
   const customItems = weekPlan[selectedDay] || []
