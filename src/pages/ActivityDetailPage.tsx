@@ -239,7 +239,7 @@ export default function ActivityDetailPage() {
         </div>
         <div className="text-center">
           <span className="text-lg">⭐</span>
-          <p className="text-xs font-semibold text-gray-700 mt-0.5">{activity.stars} Sterne</p>
+          <p className="text-xs font-semibold text-gray-700 mt-0.5">{activity.stars === 1 ? "1 Stern" : `${activity.stars} Sterne`}</p>
         </div>
       </div>
 
@@ -334,9 +334,9 @@ export default function ActivityDetailPage() {
           }`}
         >
           {isCompleted ? (
-            <>✅ Geschafft! +{activity.stars} Sterne verdient</>
+            <>✅ Geschafft! +{activity.stars} {activity.stars === 1 ? "Stern" : "Sterne"} verdient</>
           ) : (
-            <>⭐ Aktivität geschafft — {activity.stars} Sterne verdienen</>
+            <>⭐ Aktivität geschafft — {activity.stars} {activity.stars === 1 ? "Stern" : "Sterne"} verdienen</>
           )}
         </button>
       </div>
