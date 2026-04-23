@@ -346,9 +346,9 @@ export default function RecipeDetailPage() {
           }`}
         >
           {isCompleted ? (
-            <>✅ Geschafft! +{recipe.stars} Sterne verdient</>
+            <>✅ Geschafft! +{recipe.stars} {recipe.stars === 1 ? "Stern" : "Sterne"} verdient</>
           ) : (
-            <>⭐ Rezept geschafft — {recipe.stars} Sterne verdienen</>
+            <>⭐ Rezept geschafft — {recipe.stars} {recipe.stars === 1 ? "Stern" : "Sterne"} verdienen</>
           )}
         </button>
       </div>
