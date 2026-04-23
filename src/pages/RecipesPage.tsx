@@ -109,7 +109,7 @@ export default function RecipesPage() {
       {/* Results count */}
       <div className="px-4 mb-3">
         <p className="text-xs text-gray-400">
-          {filtered.length} Rezepte {activeChild ? `für ${activeChild.name} ` : ''}gefunden
+          {filtered.length === 1 ? "Rezept" : "Rezepte"} {activeChild ? `für ${activeChild.name} ` : ''}gefunden
         </p>
       </div>
 
