@@ -27,7 +27,7 @@ export default function ActivitiesPage() {
 
   const translatedCategoryInfo = getTranslatedCategoryInfo(language)
   const categories = [
-    { value: 'all', label: t.common.all, emoji: 'ð¯' },
+    { value: 'all', label: t.common.all, emoji: '🎯' },
     ...Object.entries(translatedCategoryInfo).map(([key, val]) => ({
       value: key,
       label: val.label,
@@ -127,7 +127,7 @@ export default function ActivitiesPage() {
 
       {filtered.length === 0 && (
         <div className="text-center py-12 px-4">
-          <span className="text-4xl block mb-3">ð¯</span>
+          <span className="text-4xl block mb-3">🎯</span>
           <p className="text-gray-500 text-sm">{t.activitiesPage.noResults}</p>
           <p className="text-gray-400 text-xs mt-1">{t.common.tryOtherFilter}</p>
         </div>
