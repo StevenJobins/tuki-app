@@ -19,12 +19,12 @@ export default function Sidebar() {
   ]
 
   const extraItems = [
-    { path: '/rezepte', label: t.nav.weeklyPlan || 'Wochenplan', emoji: '📅' },
-    { path: '/aktivitaeten', label: t.nav.fridgeCheck || 'Kühlschrank', emoji: '🧱' },
-    { path: '/entwicklung', label: t.nav.development || 'Entwicklung', emoji: '📈' },
+    { path: '/wochenplan', label: 'Wochenplan', emoji: '📅' },
+    { path: '/zutaten-check', label: 'Kühlschrank-Check', emoji: '🧱' },
+    { path: '/entwicklung', label: 'Entwicklung', emoji: '📈' },
   ]
 
-  const isActive = (path) =>
+  const isActive = (path: string) =>
     path === '/' ? location.pathname === '/' : location.pathname.startsWith(path)
 
   return (
@@ -72,38 +72,3 @@ export default function Sidebar() {
                   className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full bg-tuki-rot"
                   transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                 />
-              )}
-              <span className="text-base">{item.emoji}</span>
-              <span>{item.label}</span>
-            </button>
-          )
-        })}
-
-        <div className="border-t border-gray-100 my-3" />
-
-        {extraItems.map(item => (
-          <button
-            key={item.label}
-            onClick={() => navigate(item.path)}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-all"
-          >
-            <span className="text-base">{item.emoji}</span>
-            <span>{item.label}</span>
-          </button>
-        ))}
-      </nav>
-
-      <div className="px-4 py-4 border-t border-gray-100">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg gradient-rot flex items-center justify-center">
-            <span className="text-white font-bold text-xs">T</span>
-          </div>
-          <div>
-            <p className="text-[10px] text-gray-400">Tuki Family App v2.1</p>
-            <p className="text-[10px] text-gray-300">mimodo AG</p>
-          </div>
-        </div>
-      </div>
-    </aside>
-  )
-}
