@@ -107,7 +107,7 @@ export default function ActivitiesPage() {
 
       {/* Activity Grid */}
       <motion.div
-        className="grid grid-cols-2 gap-3 px-4"
+        className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 lg:gap-4 px-4"
         initial="hidden"
         animate="show"
         variants={{
