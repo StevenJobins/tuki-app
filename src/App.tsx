@@ -10,8 +10,8 @@ import ActivityDetailPage from './pages/ActivityDetailPage'
 import DevelopmentPage from './pages/DevelopmentPage'
 import CommunityPage from './pages/CommunityPage'
 import ProfilePage from './pages/ProfilePage'
-import FavoritesPage from './pages/FavoritesPage'
-import WeeklyPlanPage from './pages/WeeklyPlanPage'
+import FavoritenPage from './pages/FavoritenPage'
+import WochenplanPage from './pages/WochenplanPage'
 import ZutatenCheckPage from './pages/ZutatenCheckPage'
 import StarShopPage from './pages/StarShopPage'
 
@@ -33,8 +33,8 @@ export default function App() {
             <Route path="/entwicklung" element={<DevelopmentPage />} />
             <Route path="/community" element={<CommunityPage />} />
             <Route path="/profil" element={<ProfilePage />} />
-            <Route path="/favoriten" element={<FavoritesPage />} />
-            <Route path="/wochenplan" element={<WeeklyPlanPage />} />
+            <Route path="/favoriten" element={<FavoritenPage />} />
+            <Route path="/wochenplan" element={<WochenplanPage />} />
             <Route path="/zutaten-check" element={<ZutatenCheckPage />} />
             <Route path="/sterne-shop" element={<StarShopPage />} />
           </Routes>
