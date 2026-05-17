@@ -1,17 +1,21 @@
+import { motion } from 'framer-motion'
+import { useTranslation } from '../i18n/useTranslation'
+
 interface AgeFilterProps {
   selected: string
   onChange: (age: string) => void
 }
 
-const ages = [
-  { value: 'all', label: 'Alle' },
-  { value: '1-2', label: '1-2 J.' },
-  { value: '2-3', label: '2-3 J.' },
-  { value: '3-5', label: '3-5 J.' },
-  { value: '5-8', label: '5-8 J.' },
-]
-
 export default function AgeFilter({ selected, onChange }: AgeFilterProps) {
+  const { t } = useTranslation()
+
+  const ages = [
+    { value: 'all', label: t.ageFilter.all },
+    { value: '1-2', label: t.ageFilter.ranges[0] },
+    { value: '2-3', label: t.ageFilter.ranges[1] },
+    { value: '3-5', label: t.ageFilter.ranges[2] },
+    { value: '5-8', label: t.ageFilter.ranges[3] },
+  ]
   return (
     <div className="flex gap-2 px-4 overflow-x-auto no-scrollbar py-1">
       {ages.map(age => (
@@ -21,8 +25,10 @@ export default function AgeFilter({ selected, onChange }: AgeFilterProps) {
           className="relative px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors"
         >
           {selected === age.value && (
-            <div
-              className="absolute inset-0 bg-tuki-rot rounded-full transition-all duration-200"
+            <motion.div
+              layoutId="ageFilter"
+              className="absolute inset-0 bg-tuki-rot rounded-full"
+              transition={{ type: 'spring', stiffness: 500, damping: 30 }}
             />
           )}
           <span className={`relative z-10 ${selected === age.value ? 'text-white' : 'text-gray-500'}`}>
