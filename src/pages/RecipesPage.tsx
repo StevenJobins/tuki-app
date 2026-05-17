@@ -3,20 +3,22 @@ import { motion } from 'framer-motion'
 import Header from '../components/Header'
 import AgeFilter from '../components/AgeFilter'
 import RecipeCard from '../components/RecipeCard'
-import { recipes } from '../data/recipes'
+import { recipes, getTranslatedRecipe } from '../data/recipes'
 import { useApp } from '../context/AppContext'
-
-const difficultyFilter = [
-  { value: 'all', label: 'Alle' },
-  { value: 'leicht', label: '⚡ Leicht' },
-  { value: 'mittel', label: '🔥 Mittel' },
-  { value: 'fortgeschritten', label: '🌟 Pro' },
-]
+import { useTranslation } from '../i18n/useTranslation'
 
 export default function RecipesPage() {
   const { getChildAge, getActiveChild, children, activeChildId, setActiveChild } = useApp()
+  const { t, language } = useTranslation()
   const childAge = getChildAge()
   const activeChild = getActiveChild()
+
+  const difficultyFilter = [
+    { value: 'all', label: t.difficulty.filterAll },
+    { value: 'leicht', label: t.difficulty.filterEasy },
+    { value: 'mittel', label: t.difficulty.filterMedium },
+    { value: 'fortgeschritten', label: t.difficulty.filterPro },
+  ]
 
   // Auto-set age filter based on active child
   const autoAgeFilter = childAge !== null ? getAgeRange(childAge) : 'all'
@@ -39,7 +41,7 @@ export default function RecipesPage() {
 
   return (
     <div className="pb-24">
-      <Header title="Rezepte" />
+      <Header title={t.recipesPage.title} />
 
       {/* Child Switcher (if multiple children) */}
       {children.length > 1 && (
@@ -76,7 +78,7 @@ export default function RecipesPage() {
           </svg>
           <input
             type="text"
-            placeholder="Rezept suchen..."
+            placeholder={t.recipesPage.searchPlaceholder}
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 bg-white rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-tuki-mint focus:ring-2 focus:ring-tuki-mint/30"
@@ -109,13 +111,13 @@ export default function RecipesPage() {
       {/* Results count */}
       <div className="px-4 mb-3">
         <p className="text-xs text-gray-400">
-          {filtered.length === 1 ? "Rezept" : "Rezepte"} {activeChild ? `für ${activeChild.name} ` : ''}gefunden
+          {t.recipesPage.resultsCount(filtered.length, activeChild?.name)}
         </p>
       </div>
 
       {/* Recipe Grid */}
       <motion.div
-        className="grid grid-cols-2 gap-3 px-4 py-2"
+        className="grid grid-cols-2 gap-3 px-4"
         initial="hidden"
         animate="show"
         variants={{
@@ -128,16 +130,16 @@ export default function RecipesPage() {
             key={recipe.id}
             variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
           >
-            <RecipeCard recipe={recipe} />
+            <RecipeCard recipe={getTranslatedRecipe(recipe, language)} />
           </motion.div>
         ))}
       </motion.div>
 
       {filtered.length === 0 && (
         <div className="text-center py-12 px-4">
-          <span className="text-4xl block mb-3">🔍</span>
-          <p className="text-gray-500 text-sm">Keine Rezepte gefunden.</p>
-          <p className="text-gray-400 text-xs mt-1">Versuch einen anderen Filter!</p>
+          <span className="text-4xl block mb-3">ð</span>
+          <p className="text-gray-500 text-sm">{t.recipesPage.noResults}</p>
+          <p className="text-gray-400 text-xs mt-1">{t.common.tryOtherFilter}</p>
         </div>
       )}
     </div>
