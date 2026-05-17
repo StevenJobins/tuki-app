@@ -24,7 +24,7 @@ export default function SectionHeader({ title, emoji, linkTo, linkText }: Sectio
           onClick={() => navigate(linkTo)}
           className="text-xs font-medium text-tuki-rot"
         >
-          {defaultLinkText} â
+          {defaultLinkText} →
         </button>
       )}
     </div>
