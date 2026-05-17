@@ -15,25 +15,25 @@ interface Milestone {
 
 const milestones: Milestone[] = [
   // 12-18 Monate
-  { id: 'm1', title: 'Erste Schritte alleine', emoji: 'ð¶', ageMonths: [12, 18], category: 'Motorik', description: 'Dein Kind lÃ¤uft die ersten Schritte ohne Hilfe.' },
-  { id: 'm2', title: 'Turm aus 2-3 KlÃ¶tzen', emoji: 'ð§±', ageMonths: [12, 18], category: 'Feinmotorik', description: 'Kann BauklÃ¶tze stapeln und einen kleinen Turm bauen.' },
-  { id: 'm3', title: 'Erste WÃ¶rter (5-10)', emoji: 'ð¬', ageMonths: [12, 18], category: 'Sprache', description: 'Sagt bewusst erste WÃ¶rter wie Mama, Papa, Ball, Hund...' },
-  { id: 'm4', title: 'Aus Becher trinken', emoji: 'ð¥¤', ageMonths: [12, 18], category: 'SelbststÃ¤ndigkeit', description: 'Kann mit beiden HÃ¤nden aus einem offenen Becher trinken.' },
+  { id: 'm1', title: 'Erste Schritte alleine', emoji: '🚶', ageMonths: [12, 18], category: 'Motorik', description: 'Dein Kind läuft die ersten Schritte ohne Hilfe.' },
+  { id: 'm2', title: 'Turm aus 2-3 Klötzen', emoji: '🧱', ageMonths: [12, 18], category: 'Feinmotorik', description: 'Kann Bauklötze stapeln und einen kleinen Turm bauen.' },
+  { id: 'm3', title: 'Erste Wörter (5-10)', emoji: '💬', ageMonths: [12, 18], category: 'Sprache', description: 'Sagt bewusst erste Wörter wie Mama, Papa, Ball, Hund...' },
+  { id: 'm4', title: 'Aus Becher trinken', emoji: '🥤', ageMonths: [12, 18], category: 'Selbstständigkeit', description: 'Kann mit beiden Händen aus einem offenen Becher trinken.' },
   // 18-24 Monate
-  { id: 'm5', title: 'Treppe steigen (mit Hilfe)', emoji: 'ðª', ageMonths: [18, 24], category: 'Motorik', description: 'Geht Treppen hoch, hÃ¤lt sich dabei am GelÃ¤nder oder an der Hand.' },
-  { id: 'm6', title: '2-Wort-SÃ¤tze', emoji: 'ð£ï¸', ageMonths: [18, 24], category: 'Sprache', description: '"Mama da", "Ball haben", "Mehr Milch" â erste Zwei-Wort-Kombinationen.' },
-  { id: 'm7', title: 'Mit LÃ¶ffel essen', emoji: 'ð¥', ageMonths: [18, 24], category: 'SelbststÃ¤ndigkeit', description: 'Kann (meistens) selbst mit dem LÃ¶ffel essen â auch wenn es kleckert!' },
-  { id: 'm8', title: 'Kritzeln mit Stift', emoji: 'âï¸', ageMonths: [18, 24], category: 'Feinmotorik', description: 'HÃ¤lt einen Stift und macht bewusste Kritzelstriche auf Papier.' },
+  { id: 'm5', title: 'Treppe steigen (mit Hilfe)', emoji: '🪜', ageMonths: [18, 24], category: 'Motorik', description: 'Geht Treppen hoch, hält sich dabei am Geländer oder an der Hand.' },
+  { id: 'm6', title: '2-Wort-Sätze', emoji: '🗣️', ageMonths: [18, 24], category: 'Sprache', description: '"Mama da", "Ball haben", "Mehr Milch" — erste Zwei-Wort-Kombinationen.' },
+  { id: 'm7', title: 'Mit Löffel essen', emoji: '🥄', ageMonths: [18, 24], category: 'Selbstständigkeit', description: 'Kann (meistens) selbst mit dem Löffel essen — auch wenn es kleckert!' },
+  { id: 'm8', title: 'Kritzeln mit Stift', emoji: '✏️', ageMonths: [18, 24], category: 'Feinmotorik', description: 'Hält einen Stift und macht bewusste Kritzelstriche auf Papier.' },
   // 2-3 Jahre
-  { id: 'm9', title: 'Rennen & HÃ¼pfen', emoji: 'ð', ageMonths: [24, 36], category: 'Motorik', description: 'Kann rennen ohne hinzufallen und versucht zu hÃ¼pfen.' },
-  { id: 'm10', title: 'Farben benennen', emoji: 'ð¨', ageMonths: [24, 36], category: 'Kognition', description: 'Erkennt und benennt mindestens 3-4 Grundfarben.' },
-  { id: 'm11', title: 'Sich selbst anziehen (teilweise)', emoji: 'ð', ageMonths: [24, 36], category: 'SelbststÃ¤ndigkeit', description: 'Kann Schuhe, MÃ¼tze oder Jacke (teilweise) selbst an- und ausziehen.' },
-  { id: 'm12', title: 'Bis 10 zÃ¤hlen', emoji: 'ð¢', ageMonths: [24, 36], category: 'Kognition', description: 'ZÃ¤hlt (mit oder ohne Fehler) bis mindestens 10.' },
+  { id: 'm9', title: 'Rennen & Hüpfen', emoji: '🏃', ageMonths: [24, 36], category: 'Motorik', description: 'Kann rennen ohne hinzufallen und versucht zu hüpfen.' },
+  { id: 'm10', title: 'Farben benennen', emoji: '🎨', ageMonths: [24, 36], category: 'Kognition', description: 'Erkennt und benennt mindestens 3-4 Grundfarben.' },
+  { id: 'm11', title: 'Sich selbst anziehen (teilweise)', emoji: '👕', ageMonths: [24, 36], category: 'Selbstständigkeit', description: 'Kann Schuhe, Mütze oder Jacke (teilweise) selbst an- und ausziehen.' },
+  { id: 'm12', title: 'Bis 10 zählen', emoji: '🔢', ageMonths: [24, 36], category: 'Kognition', description: 'Zählt (mit oder ohne Fehler) bis mindestens 10.' },
   // 3-5 Jahre
-  { id: 'm13', title: 'Mit Schere schneiden', emoji: 'âï¸', ageMonths: [36, 60], category: 'Feinmotorik', description: 'Kann mit einer Kinderschere entlang einer Linie schneiden.' },
-  { id: 'm14', title: 'Eigenen Namen schreiben', emoji: 'ð', ageMonths: [36, 60], category: 'Kognition', description: 'Schreibt (vielleicht spiegelverkehrt) den eigenen Namen.' },
-  { id: 'm15', title: 'Freundschaften schliessen', emoji: 'ð¤', ageMonths: [36, 60], category: 'Sozial', description: 'Spielt gezielt mit bestimmten Kindern und nennt sie "Freund".' },
-  { id: 'm16', title: 'Geschichten nacherzÃ¤hlen', emoji: 'ð', ageMonths: [36, 60], category: 'Sprache', description: 'Kann eine einfache Geschichte in eigenen Worten nacherzÃ¤hlen.' },
+  { id: 'm13', title: 'Mit Schere schneiden', emoji: '✂️', ageMonths: [36, 60], category: 'Feinmotorik', description: 'Kann mit einer Kinderschere entlang einer Linie schneiden.' },
+  { id: 'm14', title: 'Eigenen Namen schreiben', emoji: '📝', ageMonths: [36, 60], category: 'Kognition', description: 'Schreibt (vielleicht spiegelverkehrt) den eigenen Namen.' },
+  { id: 'm15', title: 'Freundschaften schliessen', emoji: '🤝', ageMonths: [36, 60], category: 'Sozial', description: 'Spielt gezielt mit bestimmten Kindern und nennt sie "Freund".' },
+  { id: 'm16', title: 'Geschichten nacherzählen', emoji: '📖', ageMonths: [36, 60], category: 'Sprache', description: 'Kann eine einfache Geschichte in eigenen Worten nacherzählen.' },
 ]
 
 const ageGroups = [
@@ -47,7 +47,7 @@ const categoryLabels: Record<string, string> = {
   'Motorik': 'Motorik',
   'Feinmotorik': 'Feinmotorik',
   'Sprache': 'Sprache',
-  'SelbststÃ¤ndigkeit': 'SelbststÃ¤ndigkeit',
+  'Selbstständigkeit': 'Selbstständigkeit',
   'Kognition': 'Kognition',
   'Sozial': 'Sozial',
 }
@@ -159,7 +159,7 @@ export default function DevelopmentPage() {
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0 ${
                     done ? 'bg-green-100' : 'bg-gray-50'
                   }`}>
-                    {done ? 'â' : ms.emoji}
+                    {done ? '✅' : ms.emoji}
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
