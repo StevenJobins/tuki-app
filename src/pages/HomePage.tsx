@@ -19,10 +19,10 @@ function getGreeting(t: any): string {
 
 function getSeasonEmoji(): string {
   const month = new Date().getMonth()
-  if (month >= 2 && month <= 4) return 'ð¸'
-  if (month >= 5 && month <= 7) return 'âï¸'
-  if (month >= 8 && month <= 10) return 'ð'
-  return 'âï¸'
+  if (month >= 2 && month <= 4) return '🌸'
+  if (month >= 5 && month <= 7) return '☀️'
+  if (month >= 8 && month <= 10) return '🍂'
+  return '❄️'
 }
 
 function getSeasonName(t: any): string {
@@ -34,11 +34,11 @@ function getSeasonName(t: any): string {
 }
 
 function getPhaseInsight(age: number, t: any): { title: string; text: string; emoji: string } {
-  if (age < 1) return { emoji: 'ð±', title: t.phases.discovery.title, text: t.phases.discovery.text }
-  if (age < 2) return { emoji: 'ð¶', title: t.phases.littleSteps.title, text: t.phases.littleSteps.text }
-  if (age < 3) return { emoji: 'ð¨', title: t.phases.creative.title, text: t.phases.creative.text }
-  if (age < 5) return { emoji: 'ð§ª', title: t.phases.explorer.title, text: t.phases.explorer.text }
-  return { emoji: 'ð©âð³', title: t.phases.miniChef.title, text: t.phases.miniChef.text }
+  if (age < 1) return { emoji: '🌱', title: t.phases.discovery.title, text: t.phases.discovery.text }
+  if (age < 2) return { emoji: '🚶', title: t.phases.littleSteps.title, text: t.phases.littleSteps.text }
+  if (age < 3) return { emoji: '���', title: t.phases.creative.title, text: t.phases.creative.text }
+  if (age < 5) return { emoji: '🧪', title: t.phases.explorer.title, text: t.phases.explorer.text }
+  return { emoji: '👩‍🍳', title: t.phases.miniChef.title, text: t.phases.miniChef.text }
 }
 
 
@@ -111,7 +111,7 @@ export default function HomePage() {
         <div className="relative rounded-3xl overflow-hidden gradient-mint p-5">
           <div className="relative z-10">
             <p className="text-tuki-rot-dark text-sm font-medium">
-              {getGreeting(t)} {activeChild ? activeChild.avatarEmoji : 'ð'}
+              {getGreeting(t)} {activeChild ? activeChild.avatarEmoji : '👋'}
             </p>
             <h1 className="text-2xl font-bold text-gray-800 mt-1 leading-tight">
               {activeChild
@@ -121,14 +121,14 @@ export default function HomePage() {
             </h1>
             <div className="flex items-center gap-3 mt-4">
               <div className="bg-white/70 rounded-xl px-3 py-2 flex items-center gap-2">
-                <span>â­</span>
+                <span>⭐</span>
                 <div>
                   <p className="text-xs font-semibold text-gray-700">{tukiStars.total} {t.home.starsLabel}</p>
                   <p className="text-[10px] text-gray-500">{t.levels[tukiStars.level]}</p>
                 </div>
               </div>
               <div className="bg-white/70 rounded-xl px-3 py-2 flex items-center gap-2">
-                <span>â</span>
+                <span>✅</span>
                 <div>
                   <p className="text-xs font-semibold text-gray-700">{completedActivities.length + completedRecipes.length}</p>
                   <p className="text-[10px] text-gray-500">{t.home.completedLabel}</p>
@@ -141,7 +141,7 @@ export default function HomePage() {
         </div>
       </motion.div>
 
-      {/* Phase Insight â only when a child is active */}
+      {/* Phase Insight — only when a child is active */}
       {phase && activeChild && (
         <motion.div variants={item} className="px-4 mb-6">
           <div className="bg-white rounded-2xl p-4 shadow-sm border border-purple-100">
@@ -162,10 +162,10 @@ export default function HomePage() {
       <motion.div variants={item} className="px-4 mb-6">
         <div className="grid grid-cols-4 gap-2">
           {[
-            { emoji: 'ð³', label: t.home.quickActions.recipes, path: '/rezepte' },
-            { emoji: 'ð®', label: t.home.quickActions.activities, path: '/aktivitaeten' },
-            { emoji: 'ð', label: t.home.quickActions.development, path: '/entwicklung' },
-            { emoji: 'ð¨âð©âð§', label: t.home.quickActions.community, path: '/community' },
+            { emoji: '🍳', label: t.home.quickActions.recipes, path: '/rezepte' },
+            { emoji: '🎮', label: t.home.quickActions.activities, path: '/aktivitaeten' },
+            { emoji: '📊', label: t.home.quickActions.development, path: '/entwicklung' },
+            { emoji: '👨‍👩‍👧', label: t.home.quickActions.community, path: '/community' },
           ].map(action => (
             <button
               key={action.path}
@@ -207,7 +207,7 @@ export default function HomePage() {
       <motion.div variants={item}>
         <SectionHeader
           title={activeChild ? t.home.recipesFor(activeChild.name) : t.home.popularRecipes}
-          emoji="ð³"
+          emoji="🍳"
           linkTo="/rezepte"
         />
         <div className="flex gap-4 overflow-x-auto px-4 pb-2 no-scrollbar snap-x max-w-full">
@@ -221,7 +221,7 @@ export default function HomePage() {
       <motion.div variants={item} className="mt-6">
         <SectionHeader
           title={activeChild ? t.home.activitiesFor(activeChild.name) : t.home.activitiesToday}
-          emoji="ð¯"
+          emoji="🎯"
           linkTo="/aktivitaeten"
         />
         <div className="grid grid-cols-2 gap-3 px-4">
@@ -236,7 +236,7 @@ export default function HomePage() {
         <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
           <div className="flex items-start gap-3">
             <div className="w-10 h-10 rounded-xl gradient-rot flex items-center justify-center shrink-0">
-              <span className="text-white text-lg">ð¡</span>
+              <span className="text-white text-lg">💡</span>
             </div>
             <div>
               <h3 className="font-semibold text-sm text-gray-800">{t.home.tipOfDay}</h3>
@@ -250,7 +250,7 @@ export default function HomePage() {
       <motion.div variants={item} className="mt-6 px-4 mb-4">
         <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-4 border border-yellow-200/50">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-semibold text-sm text-gray-800">ð {t.levels[tukiStars.level]}</h3>
+            <h3 className="font-semibold text-sm text-gray-800">🏆 {t.levels[tukiStars.level]}</h3>
             <span className="text-xs text-gray-500">{t.home.levelProgress(tukiStars.level + 1)}</span>
           </div>
           <div className="w-full h-2 bg-yellow-100 rounded-full overflow-hidden">
@@ -275,7 +275,7 @@ export default function HomePage() {
             className="w-full bg-gradient-to-r from-tuki-mint to-green-50 rounded-2xl p-4 border border-green-200/50 text-left"
           >
             <div className="flex items-center gap-3">
-              <span className="text-2xl">ð¶</span>
+              <span className="text-2xl">👶</span>
               <div className="flex-1">
                 <h3 className="font-semibold text-sm text-gray-800">{t.home.addChild}</h3>
                 <p className="text-xs text-gray-500 mt-0.5">{t.home.addChildDesc}</p>
