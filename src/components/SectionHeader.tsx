@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from '../i18n/useTranslation'
 
 interface SectionHeaderProps {
   title: string
@@ -7,8 +8,10 @@ interface SectionHeaderProps {
   linkText?: string
 }
 
-export default function SectionHeader({ title, emoji, linkTo, linkText = 'Alle anzeigen' }: SectionHeaderProps) {
+export default function SectionHeader({ title, emoji, linkTo, linkText }: SectionHeaderProps) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
+  const defaultLinkText = linkText || t.common.showAll
 
   return (
     <div className="flex items-center justify-between px-4 mb-3">
@@ -21,7 +24,7 @@ export default function SectionHeader({ title, emoji, linkTo, linkText = 'Alle a
           onClick={() => navigate(linkTo)}
           className="text-xs font-medium text-tuki-rot"
         >
-          {linkText} →
+          {defaultLinkText} â
         </button>
       )}
     </div>
