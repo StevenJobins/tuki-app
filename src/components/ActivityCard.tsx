@@ -72,7 +72,7 @@ export default function ActivityCard({ activity, size = 'normal' }: ActivityCard
             {activity.ageRange[0]}-{activity.ageRange[1]} {t.common.yearsShort}
           </span>
           <span className="text-[11px] text-gray-400">
-            {'â­'.repeat(activity.stars)}
+            {'⭐'.repeat(activity.stars)}
           </span>
         </div>
       </div>
