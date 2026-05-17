@@ -192,7 +192,7 @@ export default function HomePage() {
 
       <motion.div variants={item} className="mt-6">
         <SectionHeader title={activeChild ? t.home.activitiesFor(activeChild.name) : t.home.activitiesToday} emoji="🎯" linkTo="/aktivitaeten" />
-        <div className="grid grid-cols-2 gap-3 px-4">
+        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 lg:gap-4 px-4">
           {displayActivities.map(activity => (
             <ActivityCard key={activity.id} activity={getTranslatedActivity(activity, language)} />
           ))}
