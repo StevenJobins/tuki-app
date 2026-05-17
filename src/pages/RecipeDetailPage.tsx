@@ -17,7 +17,7 @@ export default function RecipeDetailPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <span className="text-4xl block mb-3">ð¤</span>
+          <span className="text-4xl block mb-3">🤔</span>
           <p className="text-gray-500">{t.recipeDetail.notFound}</p>
           <button onClick={() => navigate('/rezepte')} className="text-tuki-rot text-sm mt-2">
             {t.recipeDetail.backToRecipes}
@@ -66,24 +66,24 @@ export default function RecipeDetailPage() {
       {/* Quick Info */}
       <div className="flex justify-around py-4 bg-white border-b border-gray-100">
         <div className="text-center">
-          <span className="text-lg">â±ï¸</span>
+          <span className="text-lg">⏱️</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5">{recipe.duration} {t.common.min}</p>
           <p className="text-[10px] text-gray-400">{t.recipeDetail.duration}</p>
         </div>
         <div className="text-center">
-          <span className="text-lg">ð¶</span>
+          <span className="text-lg">👶</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5">{recipe.ageRange[0]}-{recipe.ageRange[1]} {t.common.yearsShort}</p>
           <p className="text-[10px] text-gray-400">{t.recipeDetail.age}</p>
         </div>
         <div className="text-center">
-          <span className="text-lg">ð</span>
+          <span className="text-lg">📊</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5 capitalize">
             {recipe.difficulty === 'leicht' ? t.difficulty.leicht : recipe.difficulty === 'mittel' ? t.difficulty.mittel : t.difficulty.fortgeschritten}
           </p>
           <p className="text-[10px] text-gray-400">{t.recipeDetail.level}</p>
         </div>
         <div className="text-center">
-          <span className="text-lg">ð½ï¸</span>
+          <span className="text-lg">🍽️</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5">{recipe.servings}</p>
           <p className="text-[10px] text-gray-400">{t.recipeDetail.servings}</p>
         </div>
@@ -140,7 +140,7 @@ export default function RecipeDetailPage() {
                 <p className="text-sm text-gray-700 leading-relaxed">{step.text}</p>
                 {step.tip && (
                   <div className="mt-2 bg-yellow-50 rounded-lg p-2.5 border border-yellow-200/50">
-                    <p className="text-xs text-yellow-700">ð¡ {step.tip}</p>
+                    <p className="text-xs text-yellow-700">💡 {step.tip}</p>
                   </div>
                 )}
               </div>
@@ -162,7 +162,7 @@ export default function RecipeDetailPage() {
           }`}
         >
           {isCompleted ? (
-            <>â {t.recipeDetail.completed(recipe.stars)}</>
+            <>✅ {t.recipeDetail.completed(recipe.stars)}</>
           ) : (
             <>{t.recipeDetail.completeButton(recipe.stars)}</>
           )}
