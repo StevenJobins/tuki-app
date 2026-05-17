@@ -58,7 +58,7 @@ export default function Header({ title, showBack, transparent }: HeaderProps) {
         )}
         {/* Tuki Stars badge */}
         <div className="flex items-center gap-1 bg-yellow-50 px-2.5 py-1 rounded-full border border-yellow-200">
-          <span className="text-sm">â­</span>
+          <span className="text-sm">⭐</span>
           <span className="text-xs font-semibold text-yellow-700">{tukiStars.total}</span>
         </div>
       </div>
