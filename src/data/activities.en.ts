@@ -576,11 +576,11 @@ export const activitiesEn: Record<string, {
   },
 }
 
-export const categoryInfoEn: Record<string, { label: string }> = {
-  motorik: { label: 'Motor Skills' },
-  sensorik: { label: 'Sensory' },
-  kreativität: { label: 'Creativity' },
-  sprache: { label: 'Language' },
-  mathe: { label: 'Numbers & Logic' },
-  natur: { label: 'Nature & Science' },
+export const categoryInfoEn: Record<string, { label: string; emoji: string; color: string }> = {
+  motorik: { label: 'Motor Skills', emoji: '🏃', color: 'bg-orange-100 text-orange-700' },
+  sensorik: { label: 'Sensory', emoji: '👐', color: 'bg-purple-100 text-purple-700' },
+  kreativität: { label: 'Creativity', emoji: '🎨', color: 'bg-pink-100 text-pink-700' },
+  sprache: { label: 'Language', emoji: '💬', color: 'bg-blue-100 text-blue-700' },
+  mathe: { label: 'Numbers & Logic', emoji: '🔢', color: 'bg-green-100 text-green-700' },
+  natur: { label: 'Nature & Science', emoji: '🌿', color: 'bg-emerald-100 text-emerald-700' },
 }
