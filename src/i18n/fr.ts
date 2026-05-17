@@ -1,0 +1,2 @@
+// French translations
+export default {}
