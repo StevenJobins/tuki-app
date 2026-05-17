@@ -1,3 +1,6 @@
+import { activitiesFr, categoryInfoFr } from './activities.fr'
+import { activitiesEn, categoryInfoEn } from './activities.en'
+
 export interface Activity {
   id: string
   title: string
@@ -701,4 +704,20 @@ export function getActivitiesByCategory(cat: string): Activity[] {
 
 export function getActivitiesByAge(age: number): Activity[] {
   return activities.filter(a => age >= a.ageRange[0] && age <= a.ageRange[1])
+}
+
+
+const translationMap: Record<string, typeof activitiesFr> = { fr: activitiesFr, en: activitiesEn }
+const categoryInfoMap: Record<string, typeof categoryInfoFr> = { fr: categoryInfoFr, en: categoryInfoEn }
+
+export function getTranslatedActivity(activity: Activity, lang: string): Activity {
+  const tr = translationMap[lang]?.[activity.id]
+  if (!tr) return activity
+  return { ...activity, ...tr }
+}
+
+export function getTranslatedCategoryInfo(lang: string): typeof categoryInfo {
+  const map = categoryInfoMap[lang]
+  if (!map) return categoryInfo
+  return { ...categoryInfo, ...map }
 }

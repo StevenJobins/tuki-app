@@ -1,3 +1,6 @@
+import { recipesFr } from './recipes.fr'
+import { recipesEn } from './recipes.en'
+
 export interface Recipe {
   id: string
   title: string
@@ -1171,4 +1174,13 @@ export function getSeasonalRecipes(): Recipe[] {
   else if (month >= 8 && month <= 10) season = 'herbst'
   else season = 'winter'
   return recipes.filter(r => r.season.includes(season as any) || r.season.includes('ganzjährig'))
+}
+
+
+const translationMap: Record<string, typeof recipesFr> = { fr: recipesFr, en: recipesEn }
+
+export function getTranslatedRecipe(recipe: Recipe, lang: string): Recipe {
+  const tr = translationMap[lang]?.[recipe.id]
+  if (!tr) return recipe
+  return { ...recipe, ...tr }
 }
