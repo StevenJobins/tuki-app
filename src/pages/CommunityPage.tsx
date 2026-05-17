@@ -120,7 +120,6 @@ export default function CommunityPage() {
               variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
               className="bg-white rounded-2xl border border-gray-100 overflow-hidden"
             >
-              {/* Post Header */}
               <div className="flex items-center gap-3 p-4 pb-2">
                 <div className="w-10 h-10 rounded-full bg-tuki-mint-bg flex items-center justify-center text-lg">
                   {post.avatar}
@@ -135,23 +134,14 @@ export default function CommunityPage() {
                   <span className="text-[10px] text-gray-400">{post.timeAgo}</span>
                 </div>
               </div>
-
-              {/* Content */}
               <div className="px-4 pb-3">
                 <p className="text-sm text-gray-700 leading-relaxed">{post.content}</p>
               </div>
-
-              {/* Image */}
               {post.image && (
                 <img src={post.image} alt="" className="w-full h-48 object-cover" loading="lazy" />
               )}
-
-              {/* Actions */}
               <div className="flex items-center gap-4 px-4 py-3 border-t border-gray-50">
-                <button
-                  onClick={() => toggleLike(post.id)}
-                  className="flex items-center gap-1.5 text-xs"
-                >
+                <button onClick={() => toggleLike(post.id)} className="flex items-center gap-1.5 text-xs">
                   <span>{liked.includes(post.id) ? '❤️' : '🤍'}</span>
                   <span className="text-gray-500">{post.likes + (liked.includes(post.id) ? 1 : 0)}</span>
                 </button>
@@ -175,16 +165,14 @@ export default function CommunityPage() {
             <p className="text-white/80 text-sm mb-6 leading-relaxed">
               {t.community.clubDescription}
             </p>
-
             <div className="space-y-3 text-left mb-6">
-              {t.community.clubFeatures.map((feature, i) => (
+              {(t.community.clubFeatures as string[]).map((feature, i) => (
                 <div key={i} className="flex items-center gap-3 bg-white/10 rounded-xl px-4 py-3">
-                  <span className="text-lg">{feature.emoji}</span>
-                  <span className="text-white text-sm font-medium">{feature.text}</span>
+                  <span className="text-lg">{'✨'}</span>
+                  <span className="text-white text-sm font-medium">{feature}</span>
                 </div>
               ))}
             </div>
-
             <button className="w-full py-3.5 bg-white text-tuki-rot font-semibold rounded-xl text-sm shadow-lg">
               {t.community.joinFree}
             </button>
