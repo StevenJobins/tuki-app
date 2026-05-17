@@ -1,12 +1,17 @@
 import { useLocation, useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { useTranslation } from '../i18n/useTranslation'
 
-const navItems = [
-  { path: '/', label: 'Home', icon: 'home' },
-  { path: '/rezepte', label: 'Rezepte', icon: 'recipe' },
-  { path: '/aktivitaeten', label: 'Aktivitäten', icon: 'activity' },
-  { path: '/wochenplan', label: 'Wochenplan', icon: 'calendar' },
-  { path: '/profil', label: 'Profil', icon: 'profile' },
-]
+function BottomNav() {
+  const { t } = useTranslation()
+
+  const navItems = [
+    { path: '/', label: t.nav.home, icon: 'home' },
+    { path: '/rezepte', label: t.nav.recipes, icon: 'recipe' },
+    { path: '/aktivitaeten', label: t.nav.activities, icon: 'activity' },
+    { path: '/community', label: t.nav.community, icon: 'community' },
+    { path: '/profil', label: t.nav.profile, icon: 'profile' },
+  ]
 
 function NavIcon({ icon, active }: { icon: string; active: boolean }) {
   const color = active ? '#8F5652' : '#9CA3AF'
@@ -41,17 +46,6 @@ function NavIcon({ icon, active }: { icon: string; active: boolean }) {
         <path d="M16 3.13a4 4 0 010 7.75" />
       </svg>
     ),
-    calendar: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" fill={active ? '#8F565220' : 'none'} />
-        <line x1="16" y1="2" x2="16" y2="6" />
-        <line x1="8" y1="2" x2="8" y2="6" />
-        <line x1="3" y1="10" x2="21" y2="10" />
-        <line x1="8" y1="14" x2="8" y2="14.01" />
-        <line x1="12" y1="14" x2="12" y2="14.01" />
-        <line x1="16" y1="14" x2="16" y2="14.01" />
-      </svg>
-    ),
     profile: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
@@ -63,7 +57,6 @@ function NavIcon({ icon, active }: { icon: string; active: boolean }) {
   return icons[icon] || null
 }
 
-export default function BottomNav() {
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -72,7 +65,7 @@ export default function BottomNav() {
   if (hideOn.some(p => location.pathname.includes(p))) return null
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-gray-100 safe-bottom md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-gray-100 safe-bottom">
       <div className="max-w-lg mx-auto flex justify-around items-center h-16 px-2">
         {navItems.map(item => {
           const active = item.path === '/'
@@ -86,8 +79,10 @@ export default function BottomNav() {
               className="flex flex-col items-center gap-0.5 py-1 px-3 relative"
             >
               {active && (
-                <div
+                <motion.div
+                  layoutId="navIndicator"
                   className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-8 h-1 rounded-full bg-tuki-rot"
+                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                 />
               )}
               <NavIcon icon={item.icon} active={active} />
@@ -101,3 +96,5 @@ export default function BottomNav() {
     </nav>
   )
 }
+
+export default BottomNav
