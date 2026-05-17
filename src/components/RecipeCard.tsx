@@ -84,7 +84,7 @@ export default function RecipeCard({ recipe, size = 'normal' }: RecipeCardProps)
             {recipe.ageRange[0]}-{recipe.ageRange[1]} {t.common.years}
           </span>
           <span className="text-[11px] text-gray-400">
-            {'â­'.repeat(recipe.stars)}
+            {'⭐'.repeat(recipe.stars)}
           </span>
         </div>
       </div>
