@@ -7,12 +7,12 @@ import { recipes, getTranslatedRecipe } from '../data/recipes'
 import { activities, getTranslatedActivity } from '../data/activities'
 import { useTranslation } from '../i18n/useTranslation'
 
-const AVATAR_EMOJIS = ['ð¶', 'ð§', 'ð¦', 'ð§', 'ð¸', 'ð¤´', 'ð¦¸', 'ð§', 'ð£', 'ð', 'ð¦', 'ð»']
+const AVATAR_EMOJIS = ['👶', '👧', '👦', '🧒', '👸', '🤴', '🦸', '🧚', '🐣', '🌟', '🦋', '🐻']
 
 const LANGUAGE_OPTIONS: { code: 'de' | 'en' | 'fr'; label: string; flag: string }[] = [
-  { code: 'de', label: 'Deutsch', flag: 'ð©ðª' },
-  { code: 'en', label: 'English', flag: 'ð¬ð§' },
-  { code: 'fr', label: 'FranÃ§ais', flag: 'ð«ð·' },
+  { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
+  { code: 'en', label: 'English', flag: '🇬🇧' },
+  { code: 'fr', label: 'Français', flag: '🇫🇷' },
 ]
 
 function AddChildModal({ onClose, onSave, editChild, t }: {
@@ -23,7 +23,7 @@ function AddChildModal({ onClose, onSave, editChild, t }: {
 }) {
   const [name, setName] = useState(editChild?.name || '')
   const [birthDate, setBirthDate] = useState(editChild?.birthDate || '')
-  const [avatar, setAvatar] = useState(editChild?.avatarEmoji || 'ð¶')
+  const [avatar, setAvatar] = useState(editChild?.avatarEmoji || '👶')
 
   const handleSave = () => {
     if (!name.trim() || !birthDate) return
@@ -165,7 +165,7 @@ export default function ProfilePage() {
   const LEVELS = t.levels.map((name: string, i: number) => ({
     min: [0, 10, 25, 50, 100][i],
     name,
-    emoji: ['ð±', 'ð©âð³', 'ð³', 'â­', 'ð'][i],
+    emoji: ['🌱', '👩‍🍳', '🍳', '⭐', '🏆'][i],
   }))
 
   const activeChild = children.find(c => c.id === activeChildId) || null
@@ -193,7 +193,7 @@ export default function ProfilePage() {
       <div className="mx-4 mt-2 mb-6">
         <div className="bg-white rounded-3xl p-6 border border-gray-100 text-center">
           <div className="w-20 h-20 rounded-full gradient-mint flex items-center justify-center text-3xl mx-auto mb-3">
-            {activeChild ? activeChild.avatarEmoji : 'ð¨âð©âð§'}
+            {activeChild ? activeChild.avatarEmoji : '👨‍👩‍👧'}
           </div>
           <h2 className="font-bold text-lg text-gray-800">
             {activeChild ? activeChild.name : 'Tuki Family'}
@@ -225,7 +225,7 @@ export default function ProfilePage() {
       {/* Children Section */}
       <div className="mx-4 mb-6">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="font-semibold text-sm text-gray-800">ð¶ {t.profilePage.ourChildren}</h3>
+          <h3 className="font-semibold text-sm text-gray-800">👶 {t.profilePage.ourChildren}</h3>
           <button
             onClick={() => { setEditingChild(null); setShowAddChild(true) }}
             className="flex items-center gap-1 text-xs font-medium text-tuki-rot bg-red-50 px-3 py-1.5 rounded-full active:scale-95 transition-transform"
@@ -239,7 +239,7 @@ export default function ProfilePage() {
 
         {children.length === 0 ? (
           <div className="bg-white rounded-2xl p-6 border border-gray-100 text-center">
-            <span className="text-4xl block mb-3">ð¶</span>
+            <span className="text-4xl block mb-3">👶</span>
             <p className="text-sm text-gray-600 font-medium">{t.profilePage.addChild}</p>
             <button
               onClick={() => setShowAddChild(true)}
@@ -313,7 +313,7 @@ export default function ProfilePage() {
       {/* Level Progress */}
       <div className="mx-4 mb-6">
         <h3 className="font-semibold text-sm text-gray-800 mb-3">
-          ð {t.profilePage.explorerLevel} {activeChild ? `(${activeChild.name})` : ''}
+          🏆 {t.profilePage.explorerLevel} {activeChild ? `(${activeChild.name})` : ''}
         </h3>
         <div className="bg-white rounded-2xl p-4 border border-gray-100">
           <div className="space-y-3">
@@ -325,7 +325,7 @@ export default function ProfilePage() {
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg ${
                     isDone ? 'bg-green-100' : isActive ? 'bg-yellow-100' : 'bg-gray-50'
                   }`}>
-                    {isDone ? 'â' : level.emoji}
+                    {isDone ? '✅' : level.emoji}
                   </div>
                   <div className="flex-1">
                     <p className={`text-sm font-medium ${isActive ? 'text-tuki-rot' : isDone ? 'text-green-700' : 'text-gray-400'}`}>
@@ -349,7 +349,7 @@ export default function ProfilePage() {
       {totalFavorites > 0 && (
         <div className="mx-4 mb-6">
           <h3 className="font-semibold text-sm text-gray-800 mb-3">
-            â¤ï¸ {t.profilePage.myFavorites}
+            ❤️ {t.profilePage.myFavorites}
           </h3>
           <div className="space-y-2">
             {favoriteRecipes.map(r => (
@@ -362,7 +362,7 @@ export default function ProfilePage() {
                 <span className="text-xl">{r.emoji}</span>
                 <div className="flex-1">
                   <p className="text-sm font-medium text-gray-800">{r.title}</p>
-                  <p className="text-[10px] text-gray-400">{t.common.recipe} Â· {r.duration} {t.common.min}</p>
+                  <p className="text-[10px] text-gray-400">{t.common.recipe} · {r.duration} {t.common.min}</p>
                 </div>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
               </motion.div>
@@ -377,7 +377,7 @@ export default function ProfilePage() {
                 <span className="text-xl">{a.emoji}</span>
                 <div className="flex-1">
                   <p className="text-sm font-medium text-gray-800">{a.title}</p>
-                  <p className="text-[10px] text-gray-400">{t.common.activity} Â· {a.duration} {t.common.min}</p>
+                  <p className="text-[10px] text-gray-400">{t.common.activity} · {a.duration} {t.common.min}</p>
                 </div>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
               </motion.div>
@@ -395,16 +395,16 @@ export default function ProfilePage() {
             onClick={() => setShowLanguagePicker(true)}
             className="flex items-center gap-3 px-4 py-3.5 border-b border-gray-50 w-full text-left"
           >
-            <span className="text-lg">ð</span>
+            <span className="text-lg">🌐</span>
             <span className="text-sm text-gray-700 flex-1">{t.profilePage.language}</span>
             <span className="text-xs text-gray-400">{currentLangOption.flag} {currentLangOption.label}</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
           </button>
           {[
-            { emoji: 'ð', label: t.profilePage.notifications, value: t.profilePage.notificationsValue },
-            { emoji: 'ð¨', label: t.profilePage.appearance, value: t.profilePage.appearanceValue },
-            { emoji: 'ð±', label: t.profilePage.appVersion, value: '2.1.0' },
-            { emoji: 'ð', label: t.profilePage.visitWebsite, value: '' },
+            { emoji: '🔔', label: t.profilePage.notifications, value: t.profilePage.notificationsValue },
+            { emoji: '🎨', label: t.profilePage.appearance, value: t.profilePage.appearanceValue },
+            { emoji: '📱', label: t.profilePage.appVersion, value: '2.1.0' },
+            { emoji: '🔗', label: t.profilePage.visitWebsite, value: '' },
           ].map((item, i) => (
             <div
               key={i}
@@ -425,7 +425,7 @@ export default function ProfilePage() {
           <span className="text-white font-bold text-sm">T</span>
         </div>
         <p className="text-[10px] text-gray-400">Tuki Family App v2.1</p>
-        <p className="text-[10px] text-gray-300">mimodo AG Â· Schweiz</p>
+        <p className="text-[10px] text-gray-300">mimodo AG · Schweiz</p>
       </div>
 
       {/* Add/Edit Child Modal */}
@@ -474,7 +474,7 @@ export default function ProfilePage() {
                     <span className="text-2xl">{option.flag}</span>
                     <span className="text-sm font-medium text-gray-800 flex-1 text-left">{option.label}</span>
                     {language === option.code && (
-                      <span className="text-tuki-rot text-lg">â</span>
+                      <span className="text-tuki-rot text-lg">✓</span>
                     )}
                   </button>
                 ))}
