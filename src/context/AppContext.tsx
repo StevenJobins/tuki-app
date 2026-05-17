@@ -1,6 +1,4 @@
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
-import { getRecipeById } from '../data/recipes'
-import { getActivityById } from '../data/activities'
 
 export interface ChildProfile {
   id: string
@@ -11,7 +9,6 @@ export interface ChildProfile {
 
 interface TukiStars {
   total: number
-  spent: number
   level: number
   levelName: string
 }
@@ -22,8 +19,6 @@ interface PerChildData {
   completedRecipes: string[]
   weekPlan: Record<string, string[]>
   tukiStars: TukiStars
-  redeemedRewards: string[]
-  photoUploads: string[]
 }
 
 interface AppState {
@@ -33,8 +28,6 @@ interface AppState {
   completedRecipes: string[]
   weekPlan: Record<string, string[]>
   tukiStars: TukiStars
-  redeemedRewards: string[]
-  photoUploads: string[]
   // Multi-child
   children: ChildProfile[]
   activeChildId: string | null
@@ -47,8 +40,8 @@ interface AppState {
 interface AppContextType extends AppState {
   toggleFavorite: (id: string) => void
   isFavorite: (id: string) => boolean
-  completeActivity: (id: string, withPhoto?: boolean) => void
-  completeRecipe: (id: string, withPhoto?: boolean) => void
+  completeActivity: (id: string) => void
+  completeRecipe: (id: string) => void
   addToWeekPlan: (day: string, id: string) => void
   removeFromWeekPlan: (day: string, id: string) => void
   addChild: (child: ChildProfile) => void
@@ -56,31 +49,30 @@ interface AppContextType extends AppState {
   removeChild: (childId: string) => void
   setActiveChild: (childId: string) => void
   setOnboarded: () => void
+  setLanguage: (lang: 'de' | 'en' | 'fr') => void
   getActiveChild: () => ChildProfile | null
   getChildAge: (childId?: string) => number | null
-  starBalance: () => number
-  spendStars: (amount: number, rewardId: string) => boolean
 }
 
 const LEVELS = [
   { min: 0, name: 'Kleiner Entdecker' },
-  { min: 10, name: 'Kuechenhelfer' },
+  { min: 10, name: 'K\u00fcchenhelfer' },
   { min: 25, name: 'Nachwuchskoch' },
   { min: 50, name: 'Familien-Star' },
-  { min: 100, name: 'Kuechenchef' },
+  { min: 100, name: 'K\u00fcchenchef' },
 ]
 
-function getLevelInfo(total: number): { level: number; levelName: string } {
+function calculateStars(completed: number): TukiStars {
   let level = 0
   let levelName = LEVELS[0].name
   for (let i = LEVELS.length - 1; i >= 0; i--) {
-    if (total >= LEVELS[i].min) {
+    if (completed >= LEVELS[i].min) {
       level = i
       levelName = LEVELS[i].name
       break
     }
   }
-  return { level, levelName }
+  return { total: completed, level, levelName }
 }
 
 const defaultPerChild: PerChildData = {
@@ -88,9 +80,7 @@ const defaultPerChild: PerChildData = {
   completedActivities: [],
   completedRecipes: [],
   weekPlan: {},
-  tukiStars: { total: 0, spent: 0, level: 0, levelName: 'Kleiner Entdecker' },
-  redeemedRewards: [],
-  photoUploads: [],
+  tukiStars: { total: 0, level: 0, levelName: 'Kleiner Entdecker' },
 }
 
 const defaultState: AppState = {
@@ -98,9 +88,7 @@ const defaultState: AppState = {
   completedActivities: [],
   completedRecipes: [],
   weekPlan: {},
-  tukiStars: { total: 0, spent: 0, level: 0, levelName: 'Kleiner Entdecker' },
-  redeemedRewards: [],
-  photoUploads: [],
+  tukiStars: { total: 0, level: 0, levelName: 'Kleiner Entdecker' },
   children: [],
   activeChildId: null,
   childData: {},
@@ -117,22 +105,6 @@ function loadState(): AppState {
       if (parsed && !parsed.childData) {
         parsed.childData = {}
         parsed.activeChildId = parsed.activeChildId || null
-      }
-      // Migration: add spent field to tukiStars if missing
-      if (parsed.tukiStars && parsed.tukiStars.spent === undefined) {
-        parsed.tukiStars.spent = 0
-      }
-      // Migration: add redeemedRewards and photoUploads if missing
-      if (!parsed.redeemedRewards) parsed.redeemedRewards = []
-      if (!parsed.photoUploads) parsed.photoUploads = []
-      // Migrate childData entries too
-      if (parsed.childData) {
-        Object.keys(parsed.childData).forEach(key => {
-          const cd = parsed.childData[key]
-          if (cd.tukiStars && cd.tukiStars.spent === undefined) cd.tukiStars.spent = 0
-          if (!cd.redeemedRewards) cd.redeemedRewards = []
-          if (!cd.photoUploads) cd.photoUploads = []
-        })
       }
       // Auto-set active child if children exist but none is active
       if (parsed.children?.length > 0 && !parsed.activeChildId) {
@@ -166,8 +138,6 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
           completedRecipes: s.completedRecipes,
           weekPlan: s.weekPlan,
           tukiStars: s.tukiStars,
-          redeemedRewards: s.redeemedRewards,
-          photoUploads: s.photoUploads,
         },
       },
     }
@@ -184,39 +154,21 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
 
   const isFavorite = (id: string) => state.favorites.includes(id)
 
-  const completeActivity = (id: string, withPhoto?: boolean) => {
+  const completeActivity = (id: string) => {
     setState(s => {
       if (s.completedActivities.includes(id)) return s
       const completed = [...s.completedActivities, id]
-      const activity = getActivityById(id)
-      const baseStars = activity?.stars || 1
-      const earned = withPhoto ? baseStars + 2 : baseStars
-      const newTotal = s.tukiStars.total + earned
-      const newPhotos = withPhoto ? [...s.photoUploads, id] : s.photoUploads
-      return {
-        ...s,
-        completedActivities: completed,
-        photoUploads: newPhotos,
-        tukiStars: { ...s.tukiStars, total: newTotal, ...getLevelInfo(newTotal) },
-      }
+      const total = completed.length + s.completedRecipes.length
+      return { ...s, completedActivities: completed, tukiStars: calculateStars(total) }
     })
   }
 
-  const completeRecipe = (id: string, withPhoto?: boolean) => {
+  const completeRecipe = (id: string) => {
     setState(s => {
       if (s.completedRecipes.includes(id)) return s
       const completed = [...s.completedRecipes, id]
-      const recipe = getRecipeById(id)
-      const baseStars = recipe?.stars || 1
-      const earned = withPhoto ? baseStars + 2 : baseStars
-      const newTotal = s.tukiStars.total + earned
-      const newPhotos = withPhoto ? [...s.photoUploads, id] : s.photoUploads
-      return {
-        ...s,
-        completedRecipes: completed,
-        photoUploads: newPhotos,
-        tukiStars: { ...s.tukiStars, total: newTotal, ...getLevelInfo(newTotal) },
-      }
+      const total = s.completedActivities.length + completed.length
+      return { ...s, completedRecipes: completed, tukiStars: calculateStars(total) }
     })
   }
 
@@ -255,8 +207,6 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
             completedRecipes: s.completedRecipes,
             weekPlan: s.weekPlan,
             tukiStars: s.tukiStars,
-            redeemedRewards: s.redeemedRewards,
-            photoUploads: s.photoUploads,
           },
         }
         newState.activeChildId = child.id
@@ -290,10 +240,9 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
       let newCompletedRec = s.completedRecipes
       let newWeekPlan = s.weekPlan
       let newStars = s.tukiStars
-      let newRedeemed = s.redeemedRewards
-      let newPhotos = s.photoUploads
 
       if (s.activeChildId === childId) {
+        // Switch to another child or null
         if (newChildren.length > 0) {
           newActiveId = newChildren[0].id
           const data = restChildData[newActiveId] || defaultPerChild
@@ -302,17 +251,13 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
           newCompletedRec = data.completedRecipes
           newWeekPlan = data.weekPlan
           newStars = data.tukiStars
-          newRedeemed = data.redeemedRewards
-          newPhotos = data.photoUploads
         } else {
           newActiveId = null
           newFavorites = []
           newCompletedAct = []
           newCompletedRec = []
           newWeekPlan = {}
-          newStars = { total: 0, spent: 0, level: 0, levelName: 'Kleiner Entdecker' }
-          newRedeemed = []
-          newPhotos = []
+          newStars = { total: 0, level: 0, levelName: 'Kleiner Entdecker' }
         }
       }
 
@@ -326,8 +271,6 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
         completedRecipes: newCompletedRec,
         weekPlan: newWeekPlan,
         tukiStars: newStars,
-        redeemedRewards: newRedeemed,
-        photoUploads: newPhotos,
       }
     })
   }
@@ -335,7 +278,9 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
   const setActiveChild = (childId: string) => {
     setState(s => {
       if (s.activeChildId === childId) return s
+      // Save current child's data
       const saved = saveCurrentChildData(s)
+      // Load new child's data
       const data = saved.childData[childId] || defaultPerChild
       return {
         ...saved,
@@ -345,14 +290,16 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
         completedRecipes: data.completedRecipes,
         weekPlan: data.weekPlan,
         tukiStars: data.tukiStars,
-        redeemedRewards: data.redeemedRewards,
-        photoUploads: data.photoUploads,
       }
     })
   }
 
   const setOnboarded = () => {
     setState(s => ({ ...s, isOnboarded: true }))
+  }
+
+  const setLanguage = (lang: 'de' | 'en' | 'fr') => {
+    setState(s => ({ ...s, language: lang }))
   }
 
   const getActiveChild = (): ChildProfile | null => {
@@ -373,21 +320,6 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
     return Math.max(0, years)
   }
 
-  const starBalance = (): number => {
-    return state.tukiStars.total - state.tukiStars.spent
-  }
-
-  const spendStars = (amount: number, rewardId: string): boolean => {
-    const balance = state.tukiStars.total - state.tukiStars.spent
-    if (balance < amount) return false
-    setState(s => ({
-      ...s,
-      tukiStars: { ...s.tukiStars, spent: s.tukiStars.spent + amount },
-      redeemedRewards: [...s.redeemedRewards, rewardId],
-    }))
-    return true
-  }
-
   return (
     <AppContext.Provider
       value={{
@@ -403,10 +335,9 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
         removeChild,
         setActiveChild,
         setOnboarded,
+        setLanguage,
         getActiveChild,
         getChildAge,
-        starBalance,
-        spendStars,
       }}
     >
       {childNodes}
