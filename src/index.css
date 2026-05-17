@@ -29,69 +29,53 @@ body {
   flex-direction: column;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 4px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #AADBD7;
-  border-radius: 100px;
-}
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #AADBD7; border-radius: 100px; }
 
-/* Smooth page transitions */
-.page-enter {
-  opacity: 0;
-  transform: translateY(8px);
-}
-.page-enter-active {
-  opacity: 1;
-  transform: translateY(0);
-  transition: all 0.3s ease-out;
-}
+.page-enter { opacity: 0; transform: translateY(8px); }
+.page-enter-active { opacity: 1; transform: translateY(0); transition: all 0.3s ease-out; }
 
-/* Glass effect for cards */
 .glass {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
-/* Gradient overlays */
-.gradient-mint {
-  background: linear-gradient(135deg, #AADBD7 0%, #D4EFED 100%);
-}
-.gradient-rot {
-  background: linear-gradient(135deg, #8F5652 0%, #7A3E3A 100%);
-}
-.gradient-warm {
-  background: linear-gradient(180deg, #FAF8F5 0%, #FFF9F5 100%);
+.gradient-mint { background: linear-gradient(135deg, #AADBD7 0%, #D4EFED 100%); }
+.gradient-rot { background: linear-gradient(135deg, #8F5652 0%, #7A3E3A 100%); }
+.gradient-warm { background: linear-gradient(180deg, #FAF8F5 0%, #FFF9F5 100%); }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+.safe-bottom { padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px); }
+
+/* ── Responsive Layout ─────────────────────────────── */
+
+/* On desktop (lg+), remove bottom padding since no BottomNav */
+@media (min-width: 1024px) {
+  .pb-24 { padding-bottom: 2rem !important; }
 }
 
-/* Hide scrollbar for horizontal scroll */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-/* Safe area padding for mobile */
-.safe-bottom {
-  padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px);
-}
-
-/* Desktop: remove bottom padding since we use sidebar nav */
-@media (min-width: 768px) {
-  .pb-24 {
-    padding-bottom: 2rem !important;
+/* Desktop content area gets more breathing room */
+@media (min-width: 1024px) {
+  .desktop-content {
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 }
 
-/* Card lift hover effect – visible on desktop */
+@media (min-width: 1280px) {
+  .desktop-content {
+    max-width: 1080px;
+  }
+}
+
+/* ── Card Hover (desktop only) ─────────────────────── */
 .card-lift {
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
               box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -101,6 +85,4 @@ body {
   box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.15),
               0 8px 16px -4px rgba(0, 0, 0, 0.1);
 }
-.card-lift:active {
-  transform: translateY(-2px) scale(0.98);
-}
+.card-lift:active { transform: translateY(-2px) scale(0.98); }
