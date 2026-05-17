@@ -19,9 +19,9 @@ const posts: CommunityPost[] = [
   {
     id: '1',
     author: 'Alena Z.',
-    avatar: 'ð©âð¦°',
+    avatar: '👩‍🦰',
     timeAgo: 'vor 2 Std.',
-    content: 'Unser kleiner Chefkoch hat heute seine ersten Pancakes im Tuki gemacht! Er ist so stolz auf sich. Das Rezept aus der App war perfekt â nur 3 Zutaten und er konnte fast alles selbst machen.',
+    content: 'Unser kleiner Chefkoch hat heute seine ersten Pancakes im Tuki gemacht! Er ist so stolz auf sich. Das Rezept aus der App war perfekt — nur 3 Zutaten und er konnte fast alles selbst machen.',
     image: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&h=300&fit=crop',
     likes: 24,
     comments: 8,
@@ -30,9 +30,9 @@ const posts: CommunityPost[] = [
   {
     id: '2',
     author: 'Marco B.',
-    avatar: 'ð¨',
+    avatar: '👨',
     timeAgo: 'vor 5 Std.',
-    content: 'Tipp fÃ¼r alle Tuki-Eltern: Wir haben den Tuki ans Waschbecken gestellt und unsere Tochter (2) wÃ¤scht jetzt jeden Abend selbst ihre HÃ¤nde. Die SelbststÃ¤ndigkeit die das fÃ¶rdert ist unglaublich!',
+    content: 'Tipp für alle Tuki-Eltern: Wir haben den Tuki ans Waschbecken gestellt und unsere Tochter (2) wäscht jetzt jeden Abend selbst ihre Hände. Die Selbstständigkeit die das fördert ist unglaublich!',
     likes: 41,
     comments: 12,
     tag: 'Tipp',
@@ -40,9 +40,9 @@ const posts: CommunityPost[] = [
   {
     id: '3',
     author: 'Sarah K.',
-    avatar: 'ð©',
+    avatar: '👩',
     timeAgo: 'vor 1 Tag',
-    content: 'Wir haben gestern die Dattel-Energy-Balls aus der App gemacht. Mein Sohn (3) hat die Kugeln geformt und war so fokussiert dabei â 20 Minuten ruhiges, konzentriertes Arbeiten. Besser als jedes Spielzeug!',
+    content: 'Wir haben gestern die Dattel-Energy-Balls aus der App gemacht. Mein Sohn (3) hat die Kugeln geformt und war so fokussiert dabei — 20 Minuten ruhiges, konzentriertes Arbeiten. Besser als jedes Spielzeug!',
     image: 'https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=600&h=300&fit=crop',
     likes: 35,
     comments: 6,
@@ -51,9 +51,9 @@ const posts: CommunityPost[] = [
   {
     id: '4',
     author: 'Julia H.',
-    avatar: 'ð©âð¦±',
+    avatar: '👩‍🦱',
     timeAgo: 'vor 2 Tagen',
-    content: 'Frage an die Community: Welche HÃ¶henstufe nutzt ihr bei einem 18 Monate alten Kind? Unsere Kleine will unbedingt an die ArbeitsflÃ¤che aber ich bin unsicher welche Einstellung am besten passt.',
+    content: 'Frage an die Community: Welche Höhenstufe nutzt ihr bei einem 18 Monate alten Kind? Unsere Kleine will unbedingt an die Arbeitsfläche aber ich bin unsicher welche Einstellung am besten passt.',
     likes: 12,
     comments: 19,
     tag: 'Frage',
@@ -61,12 +61,12 @@ const posts: CommunityPost[] = [
   {
     id: '5',
     author: 'Thomas M.',
-    avatar: 'ð¨âð¦²',
+    avatar: '👨‍🦲',
     timeAgo: 'vor 3 Tagen',
-    content: 'HerbstblÃ¤tter-Kunstwerk mit unserer 4-JÃ¤hrigen gemacht. Sie hat im Tuki am KÃ¼chentisch die schÃ¶nsten BlÃ¤tter-Tiere geklebt. Dieses Kind hat mehr KreativitÃ¤t als ich jemals haben werde ð',
+    content: 'Herbstblätter-Kunstwerk mit unserer 4-Jährigen gemacht. Sie hat im Tuki am Küchentisch die schönsten Blätter-Tiere geklebt. Dieses Kind hat mehr Kreativität als ich jemals haben werde 😄',
     likes: 52,
     comments: 14,
-    tag: 'AktivitÃ¤t',
+    tag: 'Aktivität',
   },
 ]
 
@@ -74,7 +74,7 @@ const tagColors: Record<string, string> = {
   'Rezept': 'bg-orange-100 text-orange-700',
   'Tipp': 'bg-blue-100 text-blue-700',
   'Frage': 'bg-purple-100 text-purple-700',
-  'AktivitÃ¤t': 'bg-green-100 text-green-700',
+  'Aktivität': 'bg-green-100 text-green-700',
 }
 
 export default function CommunityPage() {
@@ -152,15 +152,15 @@ export default function CommunityPage() {
                   onClick={() => toggleLike(post.id)}
                   className="flex items-center gap-1.5 text-xs"
                 >
-                  <span>{liked.includes(post.id) ? 'â¤ï¸' : 'ð¤'}</span>
+                  <span>{liked.includes(post.id) ? '❤️' : '🤍'}</span>
                   <span className="text-gray-500">{post.likes + (liked.includes(post.id) ? 1 : 0)}</span>
                 </button>
                 <button className="flex items-center gap-1.5 text-xs">
-                  <span>ð¬</span>
+                  <span>💬</span>
                   <span className="text-gray-500">{post.comments}</span>
                 </button>
                 <button className="flex items-center gap-1.5 text-xs ml-auto">
-                  <span>ð</span>
+                  <span>🔗</span>
                   <span className="text-gray-500">{t.community.share}</span>
                 </button>
               </div>
@@ -170,7 +170,7 @@ export default function CommunityPage() {
       ) : (
         <div className="px-4">
           <div className="bg-gradient-to-br from-tuki-rot to-tuki-rot-dark rounded-3xl p-6 text-center">
-            <span className="text-5xl block mb-4">ð</span>
+            <span className="text-5xl block mb-4">🏆</span>
             <h2 className="text-xl font-bold text-white mb-2">{t.community.clubTitle}</h2>
             <p className="text-white/80 text-sm mb-6 leading-relaxed">
               {t.community.clubDescription}
