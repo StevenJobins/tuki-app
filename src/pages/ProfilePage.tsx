@@ -3,19 +3,27 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Header from '../components/Header'
 import { useApp, ChildProfile } from '../context/AppContext'
 import { useNavigate } from 'react-router-dom'
-import { recipes } from '../data/recipes'
-import { activities } from '../data/activities'
+import { recipes, getTranslatedRecipe } from '../data/recipes'
+import { activities, getTranslatedActivity } from '../data/activities'
+import { useTranslation } from '../i18n/useTranslation'
 
-const AVATAR_EMOJIS = ['👶', '👧', '👦', '🧒', '👸', '🤴', '🦸', '🧚', '🐣', '🌟', '🦋', '🐻']
+const AVATAR_EMOJIS = ['ð¶', 'ð§', 'ð¦', 'ð§', 'ð¸', 'ð¤´', 'ð¦¸', 'ð§', 'ð£', 'ð', 'ð¦', 'ð»']
 
-function AddChildModal({ onClose, onSave, editChild }: {
+const LANGUAGE_OPTIONS: { code: 'de' | 'en' | 'fr'; label: string; flag: string }[] = [
+  { code: 'de', label: 'Deutsch', flag: 'ð©ðª' },
+  { code: 'en', label: 'English', flag: 'ð¬ð§' },
+  { code: 'fr', label: 'FranÃ§ais', flag: 'ð«ð·' },
+]
+
+function AddChildModal({ onClose, onSave, editChild, t }: {
   onClose: () => void
   onSave: (child: ChildProfile) => void
   editChild?: ChildProfile | null
+  t: any
 }) {
   const [name, setName] = useState(editChild?.name || '')
   const [birthDate, setBirthDate] = useState(editChild?.birthDate || '')
-  const [avatar, setAvatar] = useState(editChild?.avatarEmoji || '👶')
+  const [avatar, setAvatar] = useState(editChild?.avatarEmoji || 'ð¶')
 
   const handleSave = () => {
     if (!name.trim() || !birthDate) return
@@ -52,12 +60,12 @@ function AddChildModal({ onClose, onSave, editChild }: {
       >
         <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-5" />
         <h2 className="font-bold text-lg text-gray-800 mb-5">
-          {editChild ? 'Kind bearbeiten' : 'Kind hinzufügen'}
+          {editChild ? t.profilePage.editChild : t.profilePage.addChild}
         </h2>
 
         {/* Avatar Selection */}
         <div className="mb-5">
-          <label className="text-xs font-medium text-gray-500 mb-2 block">Avatar wählen</label>
+          <label className="text-xs font-medium text-gray-500 mb-2 block">{t.profilePage.modal.chooseAvatar}</label>
           <div className="flex gap-2 flex-wrap">
             {AVATAR_EMOJIS.map(emoji => (
               <button
@@ -77,7 +85,7 @@ function AddChildModal({ onClose, onSave, editChild }: {
 
         {/* Name */}
         <div className="mb-4">
-          <label className="text-xs font-medium text-gray-500 mb-1.5 block">Name</label>
+          <label className="text-xs font-medium text-gray-500 mb-1.5 block">{t.profilePage.modal.name}</label>
           <input
             type="text"
             value={name}
@@ -89,7 +97,7 @@ function AddChildModal({ onClose, onSave, editChild }: {
 
         {/* Birth Date */}
         <div className="mb-6">
-          <label className="text-xs font-medium text-gray-500 mb-1.5 block">Geburtsdatum</label>
+          <label className="text-xs font-medium text-gray-500 mb-1.5 block">{t.profilePage.modal.birthDate}</label>
           <input
             type="date"
             value={birthDate}
@@ -106,14 +114,14 @@ function AddChildModal({ onClose, onSave, editChild }: {
             onClick={onClose}
             className="flex-1 py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-600"
           >
-            Abbrechen
+            {t.common.cancel}
           </button>
           <button
             onClick={handleSave}
             disabled={!name.trim() || !birthDate}
             className="flex-1 py-3 rounded-xl bg-tuki-rot text-white text-sm font-medium disabled:opacity-40 active:scale-95 transition-transform"
           >
-            {editChild ? 'Speichern' : 'Hinzufügen'}
+            {editChild ? t.common.save : t.common.add}
           </button>
         </div>
       </motion.div>
@@ -121,7 +129,7 @@ function AddChildModal({ onClose, onSave, editChild }: {
   )
 }
 
-function ChildAgeLabel({ birthDate }: { birthDate: string }) {
+function ChildAgeLabel({ birthDate, t }: { birthDate: string; t: any }) {
   const birth = new Date(birthDate)
   const now = new Date()
   let years = now.getFullYear() - birth.getFullYear()
@@ -129,12 +137,12 @@ function ChildAgeLabel({ birthDate }: { birthDate: string }) {
   if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) years--
   const months = (now.getFullYear() - birth.getFullYear()) * 12 + now.getMonth() - birth.getMonth()
 
-  if (years < 1) return <span>{months} Monate</span>
+  if (years < 1) return <span>{months} {t.profilePage.childAge.months}</span>
   if (years === 1) {
     const extraMonths = months - 12
-    return <span>1 Jahr{extraMonths > 0 ? `, ${extraMonths} Mon.` : ''}</span>
+    return <span>1 {t.profilePage.childAge.year}{extraMonths > 0 ? `, ${extraMonths} Mon.` : ''}</span>
   }
-  return <span>{years} Jahre</span>
+  return <span>{years} {t.profilePage.childAge.years}</span>
 }
 
 export default function ProfilePage() {
@@ -142,24 +150,26 @@ export default function ProfilePage() {
   const {
     tukiStars, completedActivities, completedRecipes, favorites, children,
     activeChildId, addChild, updateChild, removeChild, setActiveChild, getChildAge,
+    language, setLanguage,
   } = useApp()
+  const { t } = useTranslation()
   const [showAddChild, setShowAddChild] = useState(false)
   const [editingChild, setEditingChild] = useState<ChildProfile | null>(null)
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
+  const [showLanguagePicker, setShowLanguagePicker] = useState(false)
 
-  const favoriteRecipes = recipes.filter(r => favorites.includes(r.id))
-  const favoriteActivities = activities.filter(a => favorites.includes(a.id))
+  const favoriteRecipes = recipes.filter(r => favorites.includes(r.id)).map(r => getTranslatedRecipe(r, language))
+  const favoriteActivities = activities.filter(a => favorites.includes(a.id)).map(a => getTranslatedActivity(a, language))
   const totalFavorites = favoriteRecipes.length + favoriteActivities.length
 
-  const LEVELS = [
-    { min: 0, name: 'Kleiner Entdecker', emoji: '🌱' },
-    { min: 10, name: 'Küchenhelfer', emoji: '👩‍🍳' },
-    { min: 25, name: 'Nachwuchskoch', emoji: '🍳' },
-    { min: 50, name: 'Familien-Star', emoji: '⭐' },
-    { min: 100, name: 'Küchenchef', emoji: '🏆' },
-  ]
+  const LEVELS = t.levels.map((name: string, i: number) => ({
+    min: [0, 10, 25, 50, 100][i],
+    name,
+    emoji: ['ð±', 'ð©âð³', 'ð³', 'â­', 'ð'][i],
+  }))
 
   const activeChild = children.find(c => c.id === activeChildId) || null
+  const currentLangOption = LANGUAGE_OPTIONS.find(l => l.code === language) || LANGUAGE_OPTIONS[0]
 
   const handleSaveChild = (child: ChildProfile) => {
     if (editingChild) {
@@ -177,39 +187,36 @@ export default function ProfilePage() {
 
   return (
     <div className="pb-24">
-      <Header title="Profil" />
+      <Header title={t.profilePage.title} />
 
       {/* Family Card with Active Child */}
       <div className="mx-4 mt-2 mb-6">
         <div className="bg-white rounded-3xl p-6 border border-gray-100 text-center">
           <div className="w-20 h-20 rounded-full gradient-mint flex items-center justify-center text-3xl mx-auto mb-3">
-            {activeChild ? activeChild.avatarEmoji : '👨‍👩‍👧'}
+            {activeChild ? activeChild.avatarEmoji : 'ð¨âð©âð§'}
           </div>
           <h2 className="font-bold text-lg text-gray-800">
-            {activeChild ? activeChild.name : 'Unsere Tuki-Familie'}
+            {activeChild ? activeChild.name : 'Tuki Family'}
           </h2>
           {activeChild && (
             <p className="text-gray-500 text-sm mt-1">
-              <ChildAgeLabel birthDate={activeChild.birthDate} /> alt
+              <ChildAgeLabel birthDate={activeChild.birthDate} t={t} />
             </p>
-          )}
-          {!activeChild && (
-            <p className="text-gray-500 text-sm mt-1">Mitglied seit März 2026</p>
           )}
 
           {/* Stats Grid */}
           <div className="grid grid-cols-3 gap-3 mt-5">
             <div className="bg-yellow-50 rounded-xl p-3">
               <p className="text-xl font-bold text-yellow-600">{tukiStars.total}</p>
-              <p className="text-[10px] text-gray-500 mt-0.5">Tuki-Sterne</p>
+              <p className="text-[10px] text-gray-500 mt-0.5">{t.profilePage.tukiStars}</p>
             </div>
             <div className="bg-green-50 rounded-xl p-3">
               <p className="text-xl font-bold text-green-600">{completedActivities.length + completedRecipes.length}</p>
-              <p className="text-[10px] text-gray-500 mt-0.5">Abgeschlossen</p>
+              <p className="text-[10px] text-gray-500 mt-0.5">{t.profilePage.completed}</p>
             </div>
             <div className="bg-pink-50 rounded-xl p-3">
               <p className="text-xl font-bold text-pink-600">{totalFavorites}</p>
-              <p className="text-[10px] text-gray-500 mt-0.5">Favoriten</p>
+              <p className="text-[10px] text-gray-500 mt-0.5">{t.profilePage.favorites}</p>
             </div>
           </div>
         </div>
@@ -218,7 +225,7 @@ export default function ProfilePage() {
       {/* Children Section */}
       <div className="mx-4 mb-6">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="font-semibold text-sm text-gray-800">👶 Unsere Kinder</h3>
+          <h3 className="font-semibold text-sm text-gray-800">ð¶ {t.profilePage.ourChildren}</h3>
           <button
             onClick={() => { setEditingChild(null); setShowAddChild(true) }}
             className="flex items-center gap-1 text-xs font-medium text-tuki-rot bg-red-50 px-3 py-1.5 rounded-full active:scale-95 transition-transform"
@@ -226,20 +233,19 @@ export default function ProfilePage() {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
               <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
             </svg>
-            Kind hinzufügen
+            {t.profilePage.addChild}
           </button>
         </div>
 
         {children.length === 0 ? (
           <div className="bg-white rounded-2xl p-6 border border-gray-100 text-center">
-            <span className="text-4xl block mb-3">👶</span>
-            <p className="text-sm text-gray-600 font-medium">Noch keine Kinder hinzugefügt</p>
-            <p className="text-xs text-gray-400 mt-1">Füge dein erstes Kind hinzu, um personalisierte Inhalte zu erhalten!</p>
+            <span className="text-4xl block mb-3">ð¶</span>
+            <p className="text-sm text-gray-600 font-medium">{t.profilePage.addChild}</p>
             <button
               onClick={() => setShowAddChild(true)}
               className="mt-4 px-5 py-2.5 bg-tuki-rot text-white rounded-xl text-sm font-medium active:scale-95 transition-transform"
             >
-              Erstes Kind hinzufügen
+              {t.profilePage.addChild}
             </button>
           </div>
         ) : (
@@ -268,12 +274,12 @@ export default function ProfilePage() {
                         <p className="text-sm font-medium text-gray-800 truncate">{child.name}</p>
                         {isActive && (
                           <span className="text-[9px] bg-tuki-rot text-white px-1.5 py-0.5 rounded-full font-medium shrink-0">
-                            Aktiv
+                            {t.profilePage.active}
                           </span>
                         )}
                       </div>
                       <p className="text-[11px] text-gray-400">
-                        <ChildAgeLabel birthDate={child.birthDate} />
+                        <ChildAgeLabel birthDate={child.birthDate} t={t} />
                       </p>
                     </div>
                   </button>
@@ -307,11 +313,11 @@ export default function ProfilePage() {
       {/* Level Progress */}
       <div className="mx-4 mb-6">
         <h3 className="font-semibold text-sm text-gray-800 mb-3">
-          🏆 Entdecker-Level {activeChild ? `(${activeChild.name})` : ''}
+          ð {t.profilePage.explorerLevel} {activeChild ? `(${activeChild.name})` : ''}
         </h3>
         <div className="bg-white rounded-2xl p-4 border border-gray-100">
           <div className="space-y-3">
-            {LEVELS.map((level, i) => {
+            {LEVELS.map((level: any, i: number) => {
               const isActive = tukiStars.level === i
               const isDone = tukiStars.level > i
               return (
@@ -319,17 +325,17 @@ export default function ProfilePage() {
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg ${
                     isDone ? 'bg-green-100' : isActive ? 'bg-yellow-100' : 'bg-gray-50'
                   }`}>
-                    {isDone ? '✅' : level.emoji}
+                    {isDone ? 'â' : level.emoji}
                   </div>
                   <div className="flex-1">
                     <p className={`text-sm font-medium ${isActive ? 'text-tuki-rot' : isDone ? 'text-green-700' : 'text-gray-400'}`}>
                       {level.name}
                     </p>
-                    <p className="text-[10px] text-gray-400">{level.min} Sterne</p>
+                    <p className="text-[10px] text-gray-400">{level.min} {t.common.stars}</p>
                   </div>
                   {isActive && (
                     <span className="text-[10px] bg-tuki-rot text-white px-2 py-0.5 rounded-full font-medium">
-                      Aktuell
+                      {t.profilePage.current}
                     </span>
                   )}
                 </div>
@@ -343,7 +349,7 @@ export default function ProfilePage() {
       {totalFavorites > 0 && (
         <div className="mx-4 mb-6">
           <h3 className="font-semibold text-sm text-gray-800 mb-3">
-            ❤️ {activeChild ? `${activeChild.name}s Favoriten` : 'Meine Favoriten'}
+            â¤ï¸ {t.profilePage.myFavorites}
           </h3>
           <div className="space-y-2">
             {favoriteRecipes.map(r => (
@@ -356,7 +362,7 @@ export default function ProfilePage() {
                 <span className="text-xl">{r.emoji}</span>
                 <div className="flex-1">
                   <p className="text-sm font-medium text-gray-800">{r.title}</p>
-                  <p className="text-[10px] text-gray-400">Rezept · {r.duration} Min.</p>
+                  <p className="text-[10px] text-gray-400">{t.common.recipe} Â· {r.duration} {t.common.min}</p>
                 </div>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
               </motion.div>
@@ -371,7 +377,7 @@ export default function ProfilePage() {
                 <span className="text-xl">{a.emoji}</span>
                 <div className="flex-1">
                   <p className="text-sm font-medium text-gray-800">{a.title}</p>
-                  <p className="text-[10px] text-gray-400">Aktivität · {a.duration} Min.</p>
+                  <p className="text-[10px] text-gray-400">{t.common.activity} Â· {a.duration} {t.common.min}</p>
                 </div>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
               </motion.div>
@@ -382,18 +388,27 @@ export default function ProfilePage() {
 
       {/* Settings */}
       <div className="mx-4">
-        <h3 className="font-semibold text-sm text-gray-800 mb-3">Einstellungen</h3>
+        <h3 className="font-semibold text-sm text-gray-800 mb-3">{t.profilePage.settings}</h3>
         <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+          {/* Language Switcher */}
+          <button
+            onClick={() => setShowLanguagePicker(true)}
+            className="flex items-center gap-3 px-4 py-3.5 border-b border-gray-50 w-full text-left"
+          >
+            <span className="text-lg">ð</span>
+            <span className="text-sm text-gray-700 flex-1">{t.profilePage.language}</span>
+            <span className="text-xs text-gray-400">{currentLangOption.flag} {currentLangOption.label}</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
+          </button>
           {[
-            { emoji: '🌐', label: 'Sprache', value: 'Deutsch' },
-            { emoji: '🔔', label: 'Benachrichtigungen', value: 'An' },
-            { emoji: '🎨', label: 'Erscheinungsbild', value: 'Hell' },
-            { emoji: '📱', label: 'App-Version', value: '2.1.0' },
-            { emoji: '🔗', label: 'tuki.ch besuchen', value: '' },
+            { emoji: 'ð', label: t.profilePage.notifications, value: t.profilePage.notificationsValue },
+            { emoji: 'ð¨', label: t.profilePage.appearance, value: t.profilePage.appearanceValue },
+            { emoji: 'ð±', label: t.profilePage.appVersion, value: '2.1.0' },
+            { emoji: 'ð', label: t.profilePage.visitWebsite, value: '' },
           ].map((item, i) => (
             <div
               key={i}
-              className={`flex items-center gap-3 px-4 py-3.5 ${i < 4 ? 'border-b border-gray-50' : ''}`}
+              className={`flex items-center gap-3 px-4 py-3.5 ${i < 3 ? 'border-b border-gray-50' : ''}`}
             >
               <span className="text-lg">{item.emoji}</span>
               <span className="text-sm text-gray-700 flex-1">{item.label}</span>
@@ -410,7 +425,7 @@ export default function ProfilePage() {
           <span className="text-white font-bold text-sm">T</span>
         </div>
         <p className="text-[10px] text-gray-400">Tuki Family App v2.1</p>
-        <p className="text-[10px] text-gray-300">mimodo AG · Schweiz</p>
+        <p className="text-[10px] text-gray-300">mimodo AG Â· Schweiz</p>
       </div>
 
       {/* Add/Edit Child Modal */}
@@ -420,7 +435,52 @@ export default function ProfilePage() {
             onClose={() => { setShowAddChild(false); setEditingChild(null) }}
             onSave={handleSaveChild}
             editChild={editingChild}
+            t={t}
           />
+        )}
+      </AnimatePresence>
+
+      {/* Language Picker Modal */}
+      <AnimatePresence>
+        {showLanguagePicker && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/40 flex items-end justify-center"
+            onClick={() => setShowLanguagePicker(false)}
+          >
+            <motion.div
+              initial={{ y: 200 }}
+              animate={{ y: 0 }}
+              exit={{ y: 200 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="bg-white rounded-t-3xl w-full max-w-lg p-6 pb-10"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-5" />
+              <h2 className="font-bold text-lg text-gray-800 mb-4">{t.profilePage.language}</h2>
+              <div className="space-y-2">
+                {LANGUAGE_OPTIONS.map(option => (
+                  <button
+                    key={option.code}
+                    onClick={() => { setLanguage(option.code); setShowLanguagePicker(false) }}
+                    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl border transition-all ${
+                      language === option.code
+                        ? 'border-tuki-rot bg-red-50/50'
+                        : 'border-gray-100 bg-white'
+                    }`}
+                  >
+                    <span className="text-2xl">{option.flag}</span>
+                    <span className="text-sm font-medium text-gray-800 flex-1 text-left">{option.label}</span>
+                    {language === option.code && (
+                      <span className="text-tuki-rot text-lg">â</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
 
@@ -441,22 +501,22 @@ export default function ProfilePage() {
               className="bg-white rounded-2xl p-6 w-full max-w-sm"
               onClick={e => e.stopPropagation()}
             >
-              <h3 className="font-bold text-gray-800 mb-2">Kind entfernen?</h3>
+              <h3 className="font-bold text-gray-800 mb-2">{t.profilePage.deleteConfirmTitle}</h3>
               <p className="text-sm text-gray-500 mb-5">
-                Alle Favoriten und Fortschritte dieses Kindes werden gelöscht.
+                {t.profilePage.deleteConfirmText}
               </p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setConfirmDelete(null)}
                   className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-600"
                 >
-                  Abbrechen
+                  {t.common.cancel}
                 </button>
                 <button
                   onClick={() => handleDeleteChild(confirmDelete)}
                   className="flex-1 py-2.5 rounded-xl bg-red-500 text-white text-sm font-medium active:scale-95 transition-transform"
                 >
-                  Entfernen
+                  {t.common.delete}
                 </button>
               </div>
             </motion.div>
