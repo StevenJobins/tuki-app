@@ -20,7 +20,7 @@ export const recipesEn: Record<string, {
       { amount: 'A little', item: 'Coconut oil for frying' },
     ],
     steps: [
-      { text: 'Put the bananas in a bowl and mash with a fork.', tip: 'Your child can do this really well â the riper the banana, the easier!' },
+      { text: 'Put the bananas in a bowl and mash with a fork.', tip: 'Your child can do this really well — the riper the banana, the easier!' },
       { text: 'Add the eggs and mix well.' },
       { text: 'Optionally stir in the oats and cinnamon.' },
       { text: 'Heat some coconut oil in a pan and cook small pancakes (2 min each side).' },
@@ -28,7 +28,7 @@ export const recipesEn: Record<string, {
     ],
     tukiTip: 'Perfect for little hands: your child stands in the Tuki and mashes the bananas themselves. Great for fine motor skills!',
   },
-  'gemÃ¼se-muffins': {
+  'gemüse-muffins': {
     title: 'Colourful veggie muffins',
     subtitle: 'Hidden vegetables that kids love',
     tags: ['Snack', 'Vegetables', 'Meal Prep'],
@@ -44,7 +44,7 @@ export const recipesEn: Record<string, {
       { amount: '1 pinch', item: 'Salt & pepper' },
     ],
     steps: [
-      { text: 'Preheat oven to 180Â°C. Prepare the muffin tin.' },
+      { text: 'Preheat oven to 180°C. Prepare the muffin tin.' },
       { text: 'Wash and grate the vegetables.', tip: 'From age 3, your child can help with a children\'s grater!' },
       { text: 'Mix the dry ingredients in a bowl.' },
       { text: 'Whisk the eggs, milk and oil and add.' },
@@ -66,10 +66,10 @@ export const recipesEn: Record<string, {
     ],
     steps: [
       { text: 'Put all ingredients in a bowl.' },
-      { text: 'Knead well with your hands until you get a sticky mixture.', tip: 'This is the highlight for kids â getting messy is allowed!' },
+      { text: 'Knead well with your hands until you get a sticky mixture.', tip: 'This is the highlight for kids — getting messy is allowed!' },
       { text: 'Roll into small balls (about 15 pieces).' },
       { text: 'Roll in desiccated coconut.' },
-      { text: 'Refrigerate for 30 min â done!' },
+      { text: 'Refrigerate for 30 min — done!' },
     ],
     tukiTip: 'Rolling balls is perfect fine motor skills training. Your child stands in the Tuki at working height and can really help.',
   },
@@ -84,10 +84,10 @@ export const recipesEn: Record<string, {
       { amount: 'Various', item: 'Vegetables for topping: olives, peppers, sweetcorn, cherry tomatoes' },
     ],
     steps: [
-      { text: 'Preheat oven to 220Â°C.' },
+      { text: 'Preheat oven to 220°C.' },
       { text: 'Shape the dough into 4 round bases.', tip: 'Children love pressing and shaping the dough!' },
       { text: 'Spread the tomato sauce.' },
-      { text: 'Now get creative: make funny faces with the vegetables!', tip: 'Olive eyes, pepper mouth, sweetcorn nose â the sky\'s the limit.' },
+      { text: 'Now get creative: make funny faces with the vegetables!', tip: 'Olive eyes, pepper mouth, sweetcorn nose — the sky\'s the limit.' },
       { text: 'Bake for 12-15 minutes until the cheese is golden brown.' },
     ],
     tukiTip: 'In the Tuki, your child can perfectly reach the worktop and create their own pizza face. It encourages creativity and independence!',
@@ -130,10 +130,10 @@ export const recipesEn: Record<string, {
       { text: 'Add egg and vanilla, knead into a smooth dough.' },
       { text: 'Wrap dough in cling film and chill for 30 min.' },
       { text: 'Roll out the dough and cut with cookie cutters.', tip: 'Every child\'s favourite moment! Stars, hearts, Christmas trees...' },
-      { text: 'Bake at 180Â°C for about 10-12 min (don\'t overbrown!).' },
+      { text: 'Bake at 180°C for about 10-12 min (don\'t overbrown!).' },
       { text: 'Let cool and decorate as you like.' },
     ],
-    tukiTip: 'Baking biscuits in the Tuki is a Swiss family tradition! Your child rolls, cuts and decorates â all at the perfect height.',
+    tukiTip: 'Baking biscuits in the Tuki is a Swiss family tradition! Your child rolls, cuts and decorates — all at the perfect height.',
   },
   'smoothie-bowl': {
     title: 'Berry smoothie bowl',
@@ -148,7 +148,7 @@ export const recipesEn: Record<string, {
     steps: [
       { text: 'Blend the frozen berries, banana and yoghurt in a blender.' },
       { text: 'Pour into two bowls.' },
-      { text: 'Now decorate! Granola, coconut flakes and fresh berries on top.', tip: 'Your child chooses the toppings and places them â like a little work of art!' },
+      { text: 'Now decorate! Granola, coconut flakes and fresh berries on top.', tip: 'Your child chooses the toppings and places them — like a little work of art!' },
     ],
     tukiTip: 'In the Tuki, your child has the perfect view of their bowl and can decorate creatively. Every bowl is unique!',
   },
@@ -170,10 +170,10 @@ export const recipesEn: Record<string, {
       { text: 'Dissolve the yeast in warm milk and leave for 10 min.' },
       { text: 'Mix flour, sugar, salt, egg and butter. Add the yeast milk and knead for 10 min.' },
       { text: 'Cover the dough and leave to rise for 1 hour.' },
-      { text: 'Divide dough into 4 pieces. Shape into bunnies: oval body, two long ears.', tip: 'Children love shaping â show them how to roll the ears!' },
+      { text: 'Divide dough into 4 pieces. Shape into bunnies: oval body, two long ears.', tip: 'Children love shaping — show them how to roll the ears!' },
       { text: 'Press in raisins for eyes. Brush with egg yolk.' },
-      { text: 'Bake at 180Â°C for 20-25 min until golden.' },
+      { text: 'Bake at 180°C for 20-25 min until golden.' },
     ],
-    tukiTip: 'Kneading dough, shaping bunnies, placing eyes â in the Tuki, your child joins in at eye level. An Easter experience to remember!',
+    tukiTip: 'Kneading dough, shaping bunnies, placing eyes — in the Tuki, your child joins in at eye level. An Easter experience to remember!',
   },
 }
