@@ -15,6 +15,7 @@ export default function Sidebar() {
     { path: '/rezepte', label: t.nav.recipes, emoji: '🍳' },
     { path: '/aktivitaeten', label: t.nav.activities, emoji: '🎮' },
     { path: '/community', label: t.nav.community, emoji: '👨‍👩‍👧' },
+    { path: '/favoriten', label: 'Favoriten', emoji: '❤️' },
   ]
 
   const extraItems = [
