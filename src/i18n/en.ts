@@ -8,6 +8,11 @@ const en: Translations = {
     activities: 'Activities',
     community: 'Community',
     profile: 'Profile',
+        favorites: 'Favorites',
+        weeklyPlan: 'Weekly Plan',
+        fridgeCheck: 'Fridge Check',
+        development: 'Development',
+        starShop: 'Star Shop',
   },
 
   // Common
