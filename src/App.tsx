@@ -22,7 +22,7 @@ export default function App() {
       <Sidebar />
 
       {/* Main Content */}
-      <main className="flex-1 min-h-screen max-w-lg lg:max-w-none mx-auto lg:mx-0 lg:px-8 xl:px-12 relative">
+      <main className="flex-1 min-h-screen max-w-lg lg:max-w-none mx-auto lg:mx-0 lg:ml-60 xl:ml-64 lg:px-8 xl:px-12 relative">
         <AnimatePresence mode="wait">
           <Routes>
             <Route path="/" element={<HomePage />} />
