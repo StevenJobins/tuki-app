@@ -277,6 +277,31 @@ const fr: Translations = {
       birthDate: 'Date de naissance',
     },
   },
+  starShop: {
+    title: 'Boutique étoiles',
+    balance: 'Votre solde',
+    stars: 'Étoiles',
+    earned: 'Gagnées',
+    spent: 'Dépensées',
+    howToEarn: 'Comment gagner des étoiles',
+    completeActivity: 'Terminer une activité',
+    withPhoto: 'Partager avec photo',
+    filterAll: 'Tout',
+    filterProducts: '🎁 Produits',
+    filterDiscounts: '🏷️ Réductions',
+    filterDigital: '📱 Numérique',
+    redeemedRewards: 'Récompenses échangées',
+    redeemed: 'Échangé',
+    redeem: 'Échanger',
+    rewards: {
+      stickerSet: { name: 'Set d\'autocollants Tuki', description: '12 adorables autocollants Tuki pour votre enfant' },
+      recipeBook: { name: 'Livre de recettes à télécharger', description: 'Livre de cuisine numérique avec 20 recettes pour enfants' },
+      freeShipping: { name: 'Livraison gratuite', description: 'Livraison gratuite pour votre prochaine commande' },
+      snackBox: { name: 'Boîte de snacks Tuki', description: 'Des snacks sains pour toute la famille' },
+      discount10: { name: '10% de réduction', description: 'Sur tous les produits Tuki dans la boutique' },
+      surprise: { name: 'Paquet surprise', description: 'Laissez-vous surprendre avec de super produits Tuki' },
+    },
+  },
 }
 
 export default fr
