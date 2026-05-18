@@ -3,12 +3,12 @@ const de = {
   nav: {
     home: 'Home',
     recipes: 'Rezepte',
-    activities: 'AktivitÃ¤ten',
+    activities: 'Aktivitäten',
     community: 'Community',
     profile: 'Profil',
         favorites: 'Favoriten',
         weeklyPlan: 'Wochenplan',
-        fridgeCheck: 'KÃ¼hlschrank-Check',
+        fridgeCheck: 'Kühlschrank-Check',
         development: 'Entwicklung',
         starShop: 'Sterne-Shop',
   },
@@ -16,11 +16,11 @@ const de = {
   // Common
   common: {
     all: 'Alle',
-    back: 'ZurÃ¼ck',
+    back: 'Zurück',
     cancel: 'Abbrechen',
     save: 'Speichern',
-    add: 'HinzufÃ¼gen',
-    delete: 'LÃ¶schen',
+    add: 'Hinzufügen',
+    delete: 'Löschen',
     share: 'Teilen',
     min: 'Min.',
     years: 'Jahre',
@@ -30,7 +30,7 @@ const de = {
     noResults: 'Keine Ergebnisse gefunden.',
     tryOtherFilter: 'Versuch einen anderen Filter!',
     recipe: 'Rezept',
-    activity: 'AktivitÃ¤t',
+    activity: 'Aktivität',
   },
 
   // Header
@@ -50,9 +50,9 @@ const de = {
     mittel: 'Mittel',
     fortgeschritten: 'Fortgeschritten',
     filterAll: 'Alle',
-    filterEasy: 'â¡ Leicht',
-    filterMedium: 'ð¥ Mittel',
-    filterPro: 'ð Pro',
+    filterEasy: '⚡ Leicht',
+    filterMedium: '🔥 Mittel',
+    filterPro: '🌟 Pro',
   },
 
   // Home Page
@@ -69,27 +69,27 @@ const de = {
     completedLabel: 'Abgeschlossen',
     quickActions: {
       recipes: 'Rezepte',
-      activities: 'AktivitÃ¤ten',
+      activities: 'Aktivitäten',
       development: 'Entwicklung',
       community: 'Community',
     },
     seasonalRecipes: (season: string) => `${season}s-Rezepte`,
-    seasonalIdeasFor: (count: number, name: string) => `${count} passende Ideen fÃ¼r ${name}`,
-    seasonalIdeasGeneric: (count: number) => `${count} saisonale Ideen fÃ¼r euch entdecken`,
-    recipesFor: (name: string) => `Rezepte fÃ¼r ${name}`,
+    seasonalIdeasFor: (count: number, name: string) => `${count} passende Ideen für ${name}`,
+    seasonalIdeasGeneric: (count: number) => `${count} saisonale Ideen für euch entdecken`,
+    recipesFor: (name: string) => `Rezepte für ${name}`,
     popularRecipes: 'Beliebte Rezepte',
-    activitiesFor: (name: string) => `AktivitÃ¤ten fÃ¼r ${name}`,
-    activitiesToday: 'AktivitÃ¤ten fÃ¼r heute',
+    activitiesFor: (name: string) => `Aktivitäten für ${name}`,
+    activitiesToday: 'Aktivitäten für heute',
     tipOfDay: 'Tuki-Tipp des Tages',
     levelProgress: (level: number) => `Level ${level}/5`,
-    starsToNext: (count: number) => `Noch ${count} Sterne bis zum nÃ¤chsten Level`,
-    addChild: 'Kind hinzufÃ¼gen',
-    addChildDesc: 'FÃ¼r personalisierte Inhalte & Altersempfehlungen',
+    starsToNext: (count: number) => `Noch ${count} Sterne bis zum nächsten Level`,
+    addChild: 'Kind hinzufügen',
+    addChildDesc: 'Für personalisierte Inhalte & Altersempfehlungen',
   },
 
   // Seasons
   seasons: {
-    spring: 'FrÃ¼hling',
+    spring: 'Frühling',
     summer: 'Sommer',
     autumn: 'Herbst',
     winter: 'Winter',
@@ -99,15 +99,15 @@ const de = {
   phases: {
     discovery: {
       title: 'Entdeckungsphase',
-      text: 'Dein Baby entdeckt die Welt mit allen Sinnen. Einfache Texturen und GeschmÃ¤cker sind jetzt perfekt!',
+      text: 'Dein Baby entdeckt die Welt mit allen Sinnen. Einfache Texturen und Geschmäcker sind jetzt perfekt!',
     },
     littleSteps: {
       title: 'Kleine Schritte, grosse Abenteuer',
-      text: 'Dein Kind wird immer selbststÃ¤ndiger. Lass es Zutaten anfassen und einfache Aufgaben Ã¼bernehmen.',
+      text: 'Dein Kind wird immer selbstständiger. Lass es Zutaten anfassen und einfache Aufgaben übernehmen.',
     },
     creative: {
       title: 'Kreative Entfaltung',
-      text: 'Die Fantasie blÃ¼ht! RÃ¼hren, kneten und dekorieren â dein Kind liebt es, aktiv mitzumachen.',
+      text: 'Die Fantasie blüht! Rühren, kneten und dekorieren — dein Kind liebt es, aktiv mitzumachen.',
     },
     explorer: {
       title: 'Kleine Forscher',
@@ -115,28 +115,28 @@ const de = {
     },
     miniChef: {
       title: 'Mini-Chef im Einsatz',
-      text: 'Dein Kind kann schon richtig mithelfen! Einfache Rezepte selbst zubereiten stÃ¤rkt das Selbstvertrauen.',
+      text: 'Dein Kind kann schon richtig mithelfen! Einfache Rezepte selbst zubereiten stärkt das Selbstvertrauen.',
     },
   },
 
   // Daily Tips
   dailyTips: [
-    'Lass dein Kind die Zutaten fÃ¼r das Abendessen aus dem KÃ¼hlschrank holen â im Tuki erreicht es alles auf AugenhÃ¶he.',
-    'Kinder lieben Rituale: Eine feste Koch-Zeit am Wochenende stÃ¤rkt die Familienbindung.',
-    'Tipp: Benenne Farben und Formen beim Kochen â so lernt dein Kind ganz nebenbei.',
-    'Lass dein Kind den Tisch decken â das fÃ¶rdert ZÃ¤hlen, Sortieren und Stolz auf die eigene Leistung.',
-    'Gemeinsam einkaufen gehen: Lass dein Kind Obst und GemÃ¼se auswÃ¤hlen und dabei die Sinne nutzen.',
+    'Lass dein Kind die Zutaten für das Abendessen aus dem Kühlschrank holen — im Tuki erreicht es alles auf Augenhöhe.',
+    'Kinder lieben Rituale: Eine feste Koch-Zeit am Wochenende stärkt die Familienbindung.',
+    'Tipp: Benenne Farben und Formen beim Kochen — so lernt dein Kind ganz nebenbei.',
+    'Lass dein Kind den Tisch decken — das fördert Zählen, Sortieren und Stolz auf die eigene Leistung.',
+    'Gemeinsam einkaufen gehen: Lass dein Kind Obst und Gemüse auswählen und dabei die Sinne nutzen.',
     'Heute mal ein Picknick im Wohnzimmer? Kinder lieben kreative Essorte!',
-    'Lass dein Kind mitbestimmen, was heute gekocht wird â das steigert die Freude am Essen.',
+    'Lass dein Kind mitbestimmen, was heute gekocht wird — das steigert die Freude am Essen.',
   ],
 
   // Levels
   levels: [
     'Kleiner Entdecker',
-    'KÃ¼chenhelfer',
+    'Küchenhelfer',
     'Nachwuchskoch',
     'Familien-Star',
-    'KÃ¼chenchef',
+    'Küchenchef',
   ],
 
   // Recipes Page
@@ -144,51 +144,51 @@ const de = {
     title: 'Rezepte',
     searchPlaceholder: 'Rezept suchen...',
     resultsCount: (count: number, name?: string) =>
-      `${count} Rezepte ${name ? `fÃ¼r ${name} ` : ''}gefunden`,
+      `${count} Rezepte ${name ? `für ${name} ` : ''}gefunden`,
     noResults: 'Keine Rezepte gefunden.',
   },
 
   // Recipe Detail
   recipeDetail: {
     notFound: 'Rezept nicht gefunden',
-    backToRecipes: 'ZurÃ¼ck zu Rezepten',
+    backToRecipes: 'Zurück zu Rezepten',
     duration: 'Dauer',
     age: 'Alter',
     level: 'Level',
     servings: 'Portionen',
     tukiTip: 'Tuki-Tipp',
-    ingredients: 'ð Zutaten',
-    preparation: 'ð©âð³ Zubereitung',
+    ingredients: '🛒 Zutaten',
+    preparation: '👩‍🍳 Zubereitung',
     completed: (stars: number) => `Geschafft! +${stars} Sterne verdient`,
-    completeButton: (stars: number) => `â­ Rezept geschafft â ${stars} Sterne verdienen`,
+    completeButton: (stars: number) => `⭐ Rezept geschafft — ${stars} Sterne verdienen`,
   },
 
   // Activities Page
   activitiesPage: {
-    title: 'AktivitÃ¤ten',
+    title: 'Aktivitäten',
     resultsCount: (count: number, name?: string) =>
-      `${count} AktivitÃ¤ten ${name ? `fÃ¼r ${name} ` : ''}gefunden`,
-    noResults: 'Keine AktivitÃ¤ten gefunden.',
+      `${count} Aktivitäten ${name ? `für ${name} ` : ''}gefunden`,
+    noResults: 'Keine Aktivitäten gefunden.',
   },
 
   // Activity Detail
   activityDetail: {
-    notFound: 'AktivitÃ¤t nicht gefunden',
-    backToActivities: 'ZurÃ¼ck zu AktivitÃ¤ten',
+    notFound: 'Aktivität nicht gefunden',
+    backToActivities: 'Zurück zu Aktivitäten',
     stars: 'Sterne',
     tukiTip: 'Tuki-Tipp',
-    learningGoals: 'ð Das lernt dein Kind',
-    materials: 'ð§° Das brauchst du',
-    steps: 'ð So geht\'s',
+    learningGoals: '🎓 Das lernt dein Kind',
+    materials: '🧰 Das brauchst du',
+    steps: '📋 So geht\'s',
     completed: (stars: number) => `Geschafft! +${stars} Sterne verdient`,
-    completeButton: (stars: number) => `â­ AktivitÃ¤t geschafft â ${stars} Sterne verdienen`,
+    completeButton: (stars: number) => `⭐ Aktivität geschafft — ${stars} Sterne verdienen`,
   },
 
   // Activity Categories
   categories: {
     motorik: 'Motorik',
     sensorik: 'Sensorik',
-    kreativitÃ¤t: 'KreativitÃ¤t',
+    kreativität: 'Kreativität',
     sprache: 'Sprache',
     mathe: 'Zahlen & Logik',
     natur: 'Natur & Wissen',
@@ -197,15 +197,15 @@ const de = {
   // Development Page
   development: {
     title: 'Entwicklung',
-    disclaimer: 'ð Jedes Kind entwickelt sich in seinem eigenen Tempo. Diese Meilensteine dienen als Orientierung â nicht als Checkliste. Bei Fragen sprecht mit eurer KinderÃ¤rztin.',
+    disclaimer: '📋 Jedes Kind entwickelt sich in seinem eigenen Tempo. Diese Meilensteine dienen als Orientierung — nicht als Checkliste. Bei Fragen sprecht mit eurer Kinderärztin.',
     achieved: (count: number, total: number) => `${count}/${total} erreicht`,
-    allAchieved: 'ð Alle Meilensteine dieser Phase erreicht!',
+    allAchieved: '🎉 Alle Meilensteine dieser Phase erreicht!',
     ageGroups: ['12-18 Mon.', '18-24 Mon.', '2-3 Jahre', '3-5 Jahre'],
     milestoneCategories: {
       motorik: 'Motorik',
       feinmotorik: 'Feinmotorik',
       sprache: 'Sprache',
-      selbststÃ¤ndigkeit: 'SelbststÃ¤ndigkeit',
+      selbstständigkeit: 'Selbstständigkeit',
       kognition: 'Kognition',
       sozial: 'Sozial',
     },
@@ -214,8 +214,8 @@ const de = {
   // Community Page
   community: {
     title: 'Community',
-    feedTab: 'ð± Feed',
-    clubTab: 'ð Tuki Club beitreten',
+    feedTab: '📱 Feed',
+    clubTab: '🔒 Tuki Club beitreten',
     timeAgo: {
       hours: (n: number) => `vor ${n} Std.`,
       days: (n: number) => n === 1 ? 'vor 1 Tag' : `vor ${n} Tagen`,
@@ -224,27 +224,27 @@ const de = {
       rezept: 'Rezept',
       tipp: 'Tipp',
       frage: 'Frage',
-      aktivitÃ¤t: 'AktivitÃ¤t',
+      aktivität: 'Aktivität',
     } as Record<string, string>,
     share: 'Teilen',
     clubTitle: 'Tuki Family Club',
-    clubDescription: 'Werde Teil unserer exklusiven Community! Tausche dich mit anderen Tuki-Familien aus, erhalte exklusive Rezepte, frÃ¼hzeitigen Zugang zu neuen Produkten und vieles mehr.',
+    clubDescription: 'Werde Teil unserer exklusiven Community! Tausche dich mit anderen Tuki-Familien aus, erhalte exklusive Rezepte, frühzeitigen Zugang zu neuen Produkten und vieles mehr.',
     clubFeatures: [
       'Private Eltern-Community',
       'Exklusive Premium-Rezepte',
-      'FrÃ¼hzeitiger Zugang zu neuen Produkten',
+      'Frühzeitiger Zugang zu neuen Produkten',
       'Direkte Linie zum Tuki-Team',
       'Monatliche Foto-Challenges',
     ],
     joinFree: 'Kostenlos beitreten',
-    joinNote: 'FÃ¼r alle Tuki-Besitzer kostenlos. Registrierung mit Kaufbeleg.',
+    joinNote: 'Für alle Tuki-Besitzer kostenlos. Registrierung mit Kaufbeleg.',
   },
 
   // Profile Page
   profilePage: {
     title: 'Profil',
     ourChildren: 'Unsere Kinder',
-    addChild: 'Kind hinzufÃ¼gen',
+    addChild: 'Kind hinzufügen',
     editChild: 'Kind bearbeiten',
     active: 'Aktiv',
     current: 'Aktuell',
@@ -263,14 +263,14 @@ const de = {
     appVersion: 'App-Version',
     visitWebsite: 'tuki.ch besuchen',
     deleteConfirmTitle: 'Kind entfernen?',
-    deleteConfirmText: 'Alle Favoriten und Fortschritte dieses Kindes werden gelÃ¶scht.',
+    deleteConfirmText: 'Alle Favoriten und Fortschritte dieses Kindes werden gelöscht.',
     childAge: {
       months: 'Monate',
       year: 'Jahr',
       years: 'Jahre',
     },
     modal: {
-      chooseAvatar: 'Avatar wÃ¤hlen',
+      chooseAvatar: 'Avatar wählen',
       name: 'Name',
       birthDate: 'Geburtsdatum',
     },
