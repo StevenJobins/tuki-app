@@ -17,7 +17,7 @@ import StarShopPage from './pages/StarShopPage'
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-tuki-cream flex">
+    <div className="min-h-screen bg-tuki-cream flex overflow-x-hidden w-full">
       {/* Desktop Sidebar */}
       <Sidebar />
 
