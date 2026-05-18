@@ -23,7 +23,7 @@ const REWARDS: Reward[] = [
 
 export default function StarShopPage() {
   const { tukiStars, redeemedRewards, starBalance, spendStars, getActiveChild } = useApp()
-  const t = useTranslation()
+  const { t } = useTranslation()
   const [selectedReward, setSelectedReward] = useState<Reward | null>(null)
   const [justRedeemed, setJustRedeemed] = useState<string | null>(null)
   const [filter, setFilter] = useState<string>('alle')
