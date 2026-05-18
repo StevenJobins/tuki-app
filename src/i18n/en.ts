@@ -277,6 +277,31 @@ const en: Translations = {
       birthDate: 'Date of birth',
     },
   },
+  starShop: {
+    title: 'Star Shop',
+    balance: 'Your Balance',
+    stars: 'Stars',
+    earned: 'Earned',
+    spent: 'Spent',
+    howToEarn: 'How to Earn Stars',
+    completeActivity: 'Complete an activity',
+    withPhoto: 'Share with photo',
+    filterAll: 'All',
+    filterProducts: '🎁 Products',
+    filterDiscounts: '🏷️ Discounts',
+    filterDigital: '📱 Digital',
+    redeemedRewards: 'Redeemed Rewards',
+    redeemed: 'Redeemed',
+    redeem: 'Redeem',
+    rewards: {
+      stickerSet: { name: 'Tuki Sticker Set', description: '12 cute Tuki stickers for your child' },
+      recipeBook: { name: 'Recipe Book Download', description: 'Digital cookbook with 20 kids recipes' },
+      freeShipping: { name: 'Free Shipping', description: 'Free shipping on your next order' },
+      snackBox: { name: 'Tuki Snack Box', description: 'Healthy snacks for the whole family' },
+      discount10: { name: '10% Discount', description: 'On all Tuki products in the shop' },
+      surprise: { name: 'Surprise Package', description: 'Get surprised with great Tuki products' },
+    },
+  },
 }
 
 export default en
