@@ -29,7 +29,7 @@ export default function Sidebar() {
     path === '/' ? location.pathname === '/' : location.pathname.startsWith(path)
 
   return (
-    <aside className="hidden lg:flex flex-col w-60 xl:w-64 h-screen sticky top-0 bg-white border-r border-gray-100 shrink-0">
+    <aside className="hidden lg:flex flex-col w-60 xl:w-64 h-screen fixed top-0 left-0 bg-white border-r border-gray-100 shrink-0 overflow-y-auto z-40">
       {/* Logo */}
       <div className="px-5 py-5 flex items-center gap-3">
         <div className="w-9 h-9 rounded-xl gradient-rot flex items-center justify-center">
