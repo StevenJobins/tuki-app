@@ -15,13 +15,14 @@ export default function Sidebar() {
     { path: '/rezepte', label: t.nav.recipes, emoji: '🍳' },
     { path: '/aktivitaeten', label: t.nav.activities, emoji: '🎮' },
     { path: '/community', label: t.nav.community, emoji: '👨‍👩‍👧' },
-    { path: '/favoriten', label: 'Favoriten', emoji: '❤️' },
+    { path: '/favoriten', label: t.nav.favorites, emoji: '❤️' },
   ]
 
   const extraItems = [
-    { path: '/wochenplan', label: 'Wochenplan', emoji: '📅' },
-    { path: '/zutaten-check', label: 'Kühlschrank-Check', emoji: '🧱' },
-    { path: '/entwicklung', label: 'Entwicklung', emoji: '📈' },
+    { path: '/wochenplan', label: t.nav.weeklyPlan, emoji: '📅' },
+    { path: '/zutaten-check', label: t.nav.fridgeCheck, emoji: '🧱' },
+    { path: '/entwicklung', label: t.nav.development, emoji: '📈' },
+    { path: '/sterne-shop', label: t.nav.starShop, emoji: '⭐' },
   ]
 
   const isActive = (path: string) =>
