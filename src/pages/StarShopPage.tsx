@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useApp } from '../context/AppContext'
-import { useTranslation } from '../i18n/LanguageContext'
+import { useTranslation } from '../i18n/useTranslation'
 import Header from '../components/Header'
 
 interface Reward {
