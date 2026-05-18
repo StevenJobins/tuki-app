@@ -15,6 +15,7 @@ function BottomNav() {
   ]
 
   const moreItems = [
+    { path: '/favoriten', label: 'Favoriten', emoji: '❤️' },
     { path: '/wochenplan', label: 'Wochenplan', emoji: '📅' },
     { path: '/zutaten-check', label: 'K\u00FChlschrank-Check', emoji: '🧊' },
     { path: '/entwicklung', label: 'Entwicklung', emoji: '📊' },
