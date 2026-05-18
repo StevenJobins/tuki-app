@@ -79,7 +79,7 @@ export default function StarShopPage() {
       </div>
       <div className="flex gap-2 px-4 mt-5 mb-3 overflow-x-auto no-scrollbar">
         {[{ key: 'alle', label: 'Alle' }, { key: 'produkt', label: '🎁 Produkte' }, { key: 'rabatt', label: '🏷️ Rabatte' }, { key: 'digital', label: '📱 Digital' }].map(f => (
-          <button key={f.key} onClick={() => setFilter(f.key)} className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${filter === f.key ? 'bg-tuki-brown text-white shadow-md' : 'bg-white text-gray-600 border border-gray-200'}`}>{f.label}</button>
+                    <button key={f.key} onClick={() => setFilter(f.key)} className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${filter === f.key ? 'bg-tuki-rot text-white shadow-md' : 'bg-white text-gray-600 border border-gray-200'}`}>{f.label}</button>
         ))}
       </div>
       <div className="px-4 grid grid-cols-2 gap-3">
