@@ -15,10 +15,11 @@ function BottomNav() {
   ]
 
   const moreItems = [
-    { path: '/favoriten', label: 'Favoriten', emoji: '❤️' },
-    { path: '/wochenplan', label: 'Wochenplan', emoji: '📅' },
-    { path: '/zutaten-check', label: 'K\u00FChlschrank-Check', emoji: '🧊' },
-    { path: '/entwicklung', label: 'Entwicklung', emoji: '📊' },
+    { path: '/favoriten', label: t.nav.favorites, emoji: '❤️' },
+    { path: '/wochenplan', label: t.nav.weeklyPlan, emoji: '📅' },
+    { path: '/zutaten-check', label: t.nav.fridgeCheck, emoji: '🧊' },
+    { path: '/entwicklung', label: t.nav.development, emoji: '📊' },
+    { path: '/sterne-shop', label: t.nav.starShop, emoji: '⭐' },
     { path: '/profil', label: t.nav.profile, emoji: '👤' },
   ]
 
