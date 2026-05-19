@@ -13,11 +13,11 @@ export default function FavoriteButton({ id }: { id: string }) {
         e.stopPropagation()
         toggleFavorite(id)
       }}
-      className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-sm"
+      className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-white/90 flex items-center justify-center shadow-sm"
     >
       <motion.svg
-        width="18"
-        height="18"
+        width="16"
+        height="16"
         viewBox="0 0 24 24"
         fill={fav ? '#8F5652' : 'none'}
         stroke={fav ? '#8F5652' : '#9CA3AF'}
