@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
+import { useApp } from './context/AppContext'
 import { AnimatePresence } from 'framer-motion'
 import BottomNav from './components/BottomNav'
 import Sidebar from './components/Sidebar'
@@ -14,8 +15,15 @@ import FavoritenPage from './pages/FavoritenPage'
 import WochenplanPage from './pages/WochenplanPage'
 import ZutatenCheckPage from './pages/ZutatenCheckPage'
 import StarShopPage from './pages/StarShopPage'
+import OnboardingPage from './pages/OnboardingPage'
 
 export default function App() {
+  const { isOnboarded } = useApp()
+
+  if (!isOnboarded) {
+    return <OnboardingPage />
+  }
+
   return (
     <div className="min-h-screen bg-tuki-cream flex overflow-x-hidden w-full">
       {/* Desktop Sidebar */}
