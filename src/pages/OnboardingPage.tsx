@@ -1,15 +1,14 @@
 import { useState } from 'react'
 import { useApp } from '../context/AppContext'
 
-const AVATAR_EMOJIS = ['👶', '👧', '👦', '🧒', '👸', '🤴', '🦁', '🐻', '⭐', '🦊', '🐰', '🦄']
+const AVATAR_EMOJIS = ['\u{1F476}', '\u{1F467}', '\u{1F466}', '\u{1F9D2}', '\u{1F478}', '\u{1F934}', '\u{1F981}', '\u{1F43B}', '\u2B50', '\u{1F98A}', '\u{1F430}', '\u{1F984}']
 
 export default function OnboardingPage() {
   const { addChild, setOnboarded } = useApp()
   const [step, setStep] = useState(0)
-  const [parentEmail, setParentEmail] = useState('')
   const [name, setName] = useState('')
   const [birthDate, setBirthDate] = useState('')
-  const [avatarEmoji, setAvatarEmoji] = useState('👶')
+  const [avatarEmoji, setAvatarEmoji] = useState('\u{1F476}')
   const [saving, setSaving] = useState(false)
 
   const handleFinish = async () => {
@@ -23,12 +22,6 @@ export default function OnboardingPage() {
         avatarEmoji,
       }
       await addChild(child)
-      // Save parent email to localStorage
-      if (parentEmail.trim()) {
-        const state = JSON.parse(localStorage.getItem('tuki-family-state') || '{}')
-        state.parentEmail = parentEmail.trim()
-        localStorage.setItem('tuki-family-state', JSON.stringify(state))
-      }
     } catch (e) {
       console.warn('addChild failed, continuing offline:', e)
     }
@@ -47,8 +40,6 @@ export default function OnboardingPage() {
       })()
     : ''
 
-  const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-
   return (
     <div className="min-h-screen bg-tuki-cream flex items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -57,13 +48,13 @@ export default function OnboardingPage() {
           <div className="w-16 h-16 rounded-2xl gradient-rot flex items-center justify-center mx-auto mb-3">
             <span className="text-white font-bold text-2xl">T</span>
           </div>
-          <h1 className="text-2xl font-bold text-gray-800">Willkommen bei Tuki!</h1>
-          <p className="text-sm text-gray-500 mt-1">Erstelle dein Profil, damit wir die besten Inhalte finden.</p>
+          <h1 className="text-2xl font-bold text-gray-800">Fast geschafft!</h1>
+          <p className="text-sm text-gray-500 mt-1">Erstelle ein Profil f\u00FCr dein Kind.</p>
         </div>
 
         {/* Progress dots */}
         <div className="flex justify-center gap-2 mb-8">
-          {[0, 1, 2, 3].map(i => (
+          {[0, 1, 2].map(i => (
             <div
               key={i}
               className={`h-2 rounded-full transition-all duration-300 ${
@@ -73,37 +64,11 @@ export default function OnboardingPage() {
           ))}
         </div>
 
-        {/* Step 0: Parent Email */}
+        {/* Step 0: Child Name */}
         {step === 0 && (
           <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 animate-fadeIn">
             <div className="text-center mb-6">
-              <span className="text-4xl">📧</span>
-              <h2 className="text-lg font-bold text-gray-800 mt-3">Deine E-Mail-Adresse</h2>
-              <p className="text-xs text-gray-400 mt-1">Damit wir dir Tipps und Updates senden können</p>
-            </div>
-            <input
-              type="email"
-              value={parentEmail}
-              onChange={e => setParentEmail(e.target.value)}
-              placeholder="name@beispiel.ch"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 text-center text-lg focus:outline-none focus:ring-2 focus:ring-tuki-rot/30 focus:border-tuki-rot"
-              autoFocus
-            />
-            <button
-              onClick={() => isValidEmail(parentEmail) && setStep(1)}
-              disabled={!isValidEmail(parentEmail)}
-              className="w-full mt-6 py-3 rounded-xl font-semibold text-white gradient-rot disabled:opacity-40 transition-opacity"
-            >
-              Weiter
-            </button>
-          </div>
-        )}
-
-        {/* Step 1: Child Name */}
-        {step === 1 && (
-          <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 animate-fadeIn">
-            <div className="text-center mb-6">
-              <span className="text-4xl">👋</span>
+              <span className="text-4xl">\u{1F44B}</span>
               <h2 className="text-lg font-bold text-gray-800 mt-3">Wie heisst dein Kind?</h2>
             </div>
             <input
@@ -114,31 +79,23 @@ export default function OnboardingPage() {
               className="w-full px-4 py-3 rounded-xl border border-gray-200 text-center text-lg focus:outline-none focus:ring-2 focus:ring-tuki-rot/30 focus:border-tuki-rot"
               autoFocus
             />
-            <div className="flex gap-3 mt-6">
-              <button
-                onClick={() => setStep(0)}
-                className="flex-1 py-3 rounded-xl font-semibold text-gray-600 bg-gray-100"
-              >
-                Zurück
-              </button>
-              <button
-                onClick={() => name.trim() && setStep(2)}
-                disabled={!name.trim()}
-                className="flex-1 py-3 rounded-xl font-semibold text-white gradient-rot disabled:opacity-40 transition-opacity"
-              >
-                Weiter
-              </button>
-            </div>
+            <button
+              onClick={() => name.trim() && setStep(1)}
+              disabled={!name.trim()}
+              className="w-full mt-6 py-3 rounded-xl font-semibold text-white gradient-rot disabled:opacity-40 transition-opacity"
+            >
+              Weiter
+            </button>
           </div>
         )}
 
-        {/* Step 2: Birth date */}
-        {step === 2 && (
+        {/* Step 1: Birth date */}
+        {step === 1 && (
           <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 animate-fadeIn">
             <div className="text-center mb-6">
-              <span className="text-4xl">🎂</span>
+              <span className="text-4xl">\u{1F382}</span>
               <h2 className="text-lg font-bold text-gray-800 mt-3">Wann wurde {name} geboren?</h2>
-              <p className="text-xs text-gray-400 mt-1">So können wir altersgerechte Inhalte empfehlen</p>
+              <p className="text-xs text-gray-400 mt-1">So k\u00F6nnen wir altersgerechte Inhalte empfehlen</p>
             </div>
             <input
               type="date"
@@ -155,13 +112,13 @@ export default function OnboardingPage() {
             )}
             <div className="flex gap-3 mt-6">
               <button
-                onClick={() => setStep(1)}
+                onClick={() => setStep(0)}
                 className="flex-1 py-3 rounded-xl font-semibold text-gray-600 bg-gray-100"
               >
-                Zurück
+                Zur\u00FCck
               </button>
               <button
-                onClick={() => birthDate && setStep(3)}
+                onClick={() => birthDate && setStep(2)}
                 disabled={!birthDate}
                 className="flex-1 py-3 rounded-xl font-semibold text-white gradient-rot disabled:opacity-40 transition-opacity"
               >
@@ -171,12 +128,12 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* Step 3: Avatar */}
-        {step === 3 && (
+        {/* Step 2: Avatar */}
+        {step === 2 && (
           <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 animate-fadeIn">
             <div className="text-center mb-6">
               <span className="text-5xl">{avatarEmoji}</span>
-              <h2 className="text-lg font-bold text-gray-800 mt-3">Wähle ein Profilbild für {name}</h2>
+              <h2 className="text-lg font-bold text-gray-800 mt-3">W\u00E4hle ein Profilbild f\u00FCr {name}</h2>
             </div>
             <div className="grid grid-cols-4 gap-3">
               {AVATAR_EMOJIS.map(emoji => (
@@ -195,10 +152,10 @@ export default function OnboardingPage() {
             </div>
             <div className="flex gap-3 mt-6">
               <button
-                onClick={() => setStep(2)}
+                onClick={() => setStep(1)}
                 className="flex-1 py-3 rounded-xl font-semibold text-gray-600 bg-gray-100"
               >
-                Zurück
+                Zur\u00FCck
               </button>
               <button
                 onClick={handleFinish}
