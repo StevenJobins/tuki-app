@@ -9,14 +9,15 @@ export default function FavoriteButton({ id }: { id: string }) {
     <motion.button
       whileTap={{ scale: 0.8 }}
       onClick={(e) => {
+        e.preventDefault()
         e.stopPropagation()
         toggleFavorite(id)
       }}
-      className="w-8 h-8 rounded-full bg-white/90 flex items-center justify-center shadow-sm"
+      className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-sm"
     >
       <motion.svg
-        width="16"
-        height="16"
+        width="18"
+        height="18"
         viewBox="0 0 24 24"
         fill={fav ? '#8F5652' : 'none'}
         stroke={fav ? '#8F5652' : '#9CA3AF'}
