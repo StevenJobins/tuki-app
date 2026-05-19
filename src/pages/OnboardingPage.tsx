@@ -86,7 +86,7 @@ export default function OnboardingPage() {
             {[0, 1, 2].map(i => (
               <div
                 key={i}
-                className={'h-2 rounded-full transition-all duration-300 ' + (i === step ? 'w-8 bg-tuki-rot' : i < step ? 'w-2 bg-tuki-rot/50' : 'w-2 bg-gray-200')}}
+                className={'h-2 rounded-full transition-all duration-300 ' + (i === step ? 'w-8 bg-tuki-rot' : i < step ? 'w-2 bg-tuki-rot/50' : 'w-2 bg-gray-200')}
               />
             ))}
           </div>
@@ -180,7 +180,7 @@ export default function OnboardingPage() {
                 <button
                   key={emoji}
                   onClick={() => setAvatarEmoji(emoji)}
-                  className={'text-3xl p-3 rounded-2xl transition-all ' + (avatarEmoji === emoji ? 'bg-tuki-rot/10 ring-2 ring-tuki-rot scale-110' : 'bg-gray-50 hover:bg-gray-100')}}
+                  className={'text-3xl p-3 rounded-2xl transition-all ' + (avatarEmoji === emoji ? 'bg-tuki-rot/10 ring-2 ring-tuki-rot scale-110' : 'bg-gray-50 hover:bg-gray-100')}
                 >
                   {emoji}
                 </button>
