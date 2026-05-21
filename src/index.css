@@ -89,59 +89,96 @@ body {
 
 /* ── Dark Mode ─────────────────────────────────── */
 body.dark-mode {
-  background-color: #1a1a2e;
-  color: #e0e0e0;
+  background-color: #1e1e2e;
+  color: #cdd6f4;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Cards & Surfaces */
 body.dark-mode .bg-white {
-  background-color: #16213e !important;
+  background-color: #2a2a3e !important;
+  transition: background-color 0.3s ease;
 }
 
 body.dark-mode .bg-gray-50,
 body.dark-mode .bg-gray-100 {
-  background-color: #1a1a2e !important;
+  background-color: #232336 !important;
 }
 
+/* Borders */
 body.dark-mode .border-gray-100,
 body.dark-mode .border-gray-200,
 body.dark-mode .border-gray-50 {
-  border-color: #2a2a4a !important;
+  border-color: #3a3a52 !important;
 }
 
+/* Text – high contrast */
 body.dark-mode .text-gray-800,
 body.dark-mode .text-gray-700 {
-  color: #e0e0e0 !important;
+  color: #e4e4f0 !important;
 }
 
 body.dark-mode .text-gray-600,
 body.dark-mode .text-gray-500 {
-  color: #a0a0b0 !important;
+  color: #b4b4c8 !important;
 }
 
 body.dark-mode .text-gray-400,
 body.dark-mode .text-gray-300 {
-  color: #808090 !important;
+  color: #9494aa !important;
 }
 
-body.dark-mode .bg-yellow-50 { background-color: #2a2510 !important; }
-body.dark-mode .bg-green-50 { background-color: #102a15 !important; }
-body.dark-mode .bg-pink-50 { background-color: #2a1020 !important; }
-body.dark-mode .bg-red-50\/30 { background-color: rgba(40, 15, 15, 0.3) !important; }
-body.dark-mode .bg-red-50 { background-color: #2a1515 !important; }
+/* Stat boxes – muted but readable */
+body.dark-mode .bg-yellow-50 { background-color: #33301a !important; }
+body.dark-mode .bg-green-50 { background-color: #1a3320 !important; }
+body.dark-mode .bg-pink-50 { background-color: #331a28 !important; }
+body.dark-mode .bg-red-50\/30 { background-color: rgba(50, 20, 20, 0.4) !important; }
+body.dark-mode .bg-red-50 { background-color: #331a1a !important; }
 
+/* Stat text colors – brighter in dark mode */
+body.dark-mode .text-yellow-600 { color: #f0c040 !important; }
+body.dark-mode .text-green-600 { color: #50d070 !important; }
+body.dark-mode .text-green-700 { color: #50d070 !important; }
+body.dark-mode .text-pink-600 { color: #f07090 !important; }
+
+/* Glass & gradients */
 body.dark-mode .glass {
-  background: rgba(22, 33, 62, 0.85) !important;
+  background: rgba(42, 42, 62, 0.9) !important;
 }
 
-body.dark-mode .gradient-mint { background: linear-gradient(135deg, #1a5550 0%, #1a3a38 100%); }
-body.dark-mode .gradient-warm { background: linear-gradient(180deg, #1a1a2e 0%, #1e1a15 100%); }
+body.dark-mode .gradient-mint { background: linear-gradient(135deg, #1a4540 0%, #1a3530 100%); }
+body.dark-mode .gradient-warm { background: linear-gradient(180deg, #1e1e2e 0%, #252020 100%); }
 
+/* Form inputs */
 body.dark-mode input,
 body.dark-mode select,
 body.dark-mode textarea {
-  background-color: #1a1a2e !important;
-  color: #e0e0e0 !important;
-  border-color: #2a2a4a !important;
+  background-color: #232336 !important;
+  color: #e4e4f0 !important;
+  border-color: #3a3a52 !important;
 }
 
-body.dark-mode ::-webkit-scrollbar-thumb { background: #2a5550; }
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+  color: #6a6a80 !important;
+}
+
+/* Scrollbar */
+body.dark-mode ::-webkit-scrollbar-thumb { background: #3a5550; }
+body.dark-mode ::-webkit-scrollbar-track { background: #1e1e2e; }
+
+/* Tuki specific colors – keep brand accent readable */
+body.dark-mode .text-tuki-rot { color: #c07a76 !important; }
+body.dark-mode .bg-tuki-mint { background-color: #2a4a48 !important; }
+
+/* Active child badge, buttons */
+body.dark-mode .bg-gray-200 { background-color: #3a3a52 !important; }
+
+/* SVG strokes in settings */
+body.dark-mode svg[stroke="#D1D5DB"] { stroke: #6a6a80 !important; }
+body.dark-mode svg[stroke="#9CA3AF"] { stroke: #8a8aa0 !important; }
+
+/* Smooth transition for all children */
+body.dark-mode * {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
