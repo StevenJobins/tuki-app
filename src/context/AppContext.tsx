@@ -37,6 +37,7 @@ interface AppState {
   redeemedRewards: string[]
   // App
   language: 'de' | 'en' | 'fr'
+  darkMode: boolean
   isOnboarded: boolean
 }
 
@@ -53,6 +54,7 @@ interface AppContextType extends AppState {
   setActiveChild: (childId: string) => void
   setOnboarded: () => void
   setLanguage: (lang: 'de' | 'en' | 'fr') => void
+  toggleDarkMode: () => void
   starBalance: () => number
   spendStars: (amount: number, rewardId: string) => boolean
   getActiveChild: () => ChildProfile | null
@@ -99,6 +101,7 @@ const defaultState: AppState = {
   childData: {},
   redeemedRewards: [],
   language: 'de',
+  darkMode: false,
   isOnboarded: false,
 }
 
@@ -128,6 +131,10 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
   useEffect(() => {
     localStorage.setItem('tuki-family-state', JSON.stringify(state))
   }, [state])
+
+  useEffect(() => {
+    document.body.classList.toggle('dark-mode', state.darkMode)
+  }, [])
 
   const saveCurrentChildData = useCallback((s: AppState): AppState => {
     if (!s.activeChildId) return s
@@ -257,6 +264,14 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
     setState(s => ({ ...s, language: lang }))
   }
 
+  const toggleDarkMode = () => {
+    setState(s => {
+      const newDark = !s.darkMode
+      document.body.classList.toggle('dark-mode', newDark)
+      return { ...s, darkMode: newDark }
+    })
+  }
+
   const starBalance = (): number => {
     return state.tukiStars.total - state.tukiStars.spent
   }
@@ -295,7 +310,7 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
         ...state,
         toggleFavorite, isFavorite, completeActivity, completeRecipe,
         addToWeekPlan, removeFromWeekPlan, addChild, updateChild,
-        removeChild, setActiveChild, setOnboarded, setLanguage,
+        removeChild, setActiveChild, setOnboarded, setLanguage, toggleDarkMode,
         starBalance, spendStars, getActiveChild, getChildAge,
       }}
     >
