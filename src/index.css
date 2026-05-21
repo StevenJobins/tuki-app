@@ -119,8 +119,18 @@ body.dark-mode .bg-orange-100 { background-color: #252538 !important; }
 /* Opacity variants */
 body.dark-mode [class*="bg-red-50\\/"] { background-color: #252538 !important; }
 
-/* Tuki brand backgrounds */
+/* Tuki brand backgrounds - ALL variants */
 body.dark-mode [class*="bg-tuki-mint"] { background-color: #252538 !important; }
+body.dark-mode .bg-tuki-cream { background-color: #252538 !important; }
+body.dark-mode .bg-tuki-warm { background-color: #1e1e2e !important; }
+body.dark-mode [class*="bg-tuki-rot\/"] { background-color: rgba(143, 86, 82, 0.15) !important; }
+
+/* Gradient overrides for sidebar stars */
+body.dark-mode [class*="from-yellow-50"],
+body.dark-mode [class*="to-orange-50"] { background: #252538 !important; }
+body.dark-mode [class*="from-yellow-400"],
+body.dark-mode [class*="to-orange-400"] { background: linear-gradient(to right, #45475a, #585b70) !important; }
+body.dark-mode .bg-yellow-100 { background-color: #313145 !important; }
 
 /* ALL borders -> subtle dark */
 body.dark-mode .border-gray-50,
