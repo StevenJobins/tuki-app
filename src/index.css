@@ -29,36 +29,38 @@ body {
   flex-direction: column;
 }
 
+/* Custom scrollbar */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #AADBD7; border-radius: 100px; }
 
+/* Smooth page transitions */
 .page-enter { opacity: 0; transform: translateY(8px); }
 .page-enter-active { opacity: 1; transform: translateY(0); transition: all 0.3s ease-out; }
 
+/* Glass effect for cards */
 .glass {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
+/* Gradient overlays */
 .gradient-mint { background: linear-gradient(135deg, #AADBD7 0%, #D4EFED 100%); }
 .gradient-rot { background: linear-gradient(135deg, #8F5652 0%, #7A3E3A 100%); }
 .gradient-warm { background: linear-gradient(180deg, #FAF8F5 0%, #FFF9F5 100%); }
 
+/* Hide scrollbar for horizontal scroll */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+/* Safe area padding for mobile */
 .safe-bottom { padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px); }
 
-/* ── Responsive Layout ─────────────────────────────── */
-
-/* On desktop (lg+), remove bottom padding since no BottomNav */
+/* --- Responsive Layout --- */
 @media (min-width: 1024px) {
   .pb-24 { padding-bottom: 2rem !important; }
 }
-
-/* Desktop content area gets more breathing room */
 @media (min-width: 1024px) {
   .desktop-content {
     max-width: 960px;
@@ -68,117 +70,120 @@ body {
     padding-right: 2rem;
   }
 }
-
 @media (min-width: 1280px) {
-  .desktop-content {
-    max-width: 1080px;
+  .desktop-content { max-width: 1080px; }
+}
+
+/* Card Hover (desktop only) */
+@media (min-width: 1024px) {
+  .card-hover {
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
   }
 }
 
-/* ── Card Hover (desktop only) ─────────────────────── */
-.card-lift {
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.card-lift:hover {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.15),
-              0 8px 16px -4px rgba(0, 0, 0, 0.1);
-}
-.card-lift:active { transform: translateY(-2px) scale(0.98); }
+/* ================================================================
+   DARK MODE - Complete neutral override
+   All colored backgrounds -> neutral dark.
+   All colored text -> neutral light.
+   No green, blue, purple, orange, pink, yellow in dark mode.
+   ================================================================ */
 
-/* ── Dark Mode ─────────────────────────────────── */
 body.dark-mode {
-  background-color: #1e1e2e;
+  background-color: #181825;
   color: #cdd6f4;
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Cards & Surfaces */
-body.dark-mode .bg-white {
-  background-color: #2a2a3e !important;
-  transition: background-color 0.3s ease;
-}
+/* White backgrounds */
+body.dark-mode .bg-white { background-color: #1e1e2e !important; }
+body.dark-mode [class*="bg-white\/"] { background-color: rgba(30, 30, 46, 0.8) !important; }
 
+/* ALL light colored backgrounds -> same neutral dark */
 body.dark-mode .bg-gray-50,
-body.dark-mode .bg-gray-100 {
-  background-color: #232336 !important;
-}
+body.dark-mode .bg-gray-100 { background-color: #252538 !important; }
+body.dark-mode .bg-gray-200 { background-color: #313145 !important; }
 
-/* Borders */
+body.dark-mode .bg-yellow-50,
+body.dark-mode .bg-yellow-100,
+body.dark-mode .bg-green-50,
+body.dark-mode .bg-green-100,
+body.dark-mode .bg-pink-50,
+body.dark-mode .bg-red-50,
+body.dark-mode .bg-blue-50,
+body.dark-mode .bg-blue-100,
+body.dark-mode .bg-purple-50,
+body.dark-mode .bg-purple-100,
+body.dark-mode .bg-orange-100 { background-color: #252538 !important; }
+
+/* Opacity variants of red-50 */
+body.dark-mode [class*="bg-red-50\/"] { background-color: #252538 !important; }
+
+/* Tuki brand backgrounds */
+body.dark-mode [class*="bg-tuki-mint"] { background-color: #252538 !important; }
+
+/* ALL borders -> same subtle dark border */
+body.dark-mode .border-gray-50,
 body.dark-mode .border-gray-100,
 body.dark-mode .border-gray-200,
-body.dark-mode .border-gray-50 {
-  border-color: #3a3a52 !important;
-}
+body.dark-mode .border-green-100,
+body.dark-mode .border-green-200,
+body.dark-mode .border-blue-100,
+body.dark-mode .border-blue-200,
+body.dark-mode .border-yellow-200,
+body.dark-mode .border-purple-200,
+body.dark-mode .border-red-200 { border-color: #313145 !important; }
 
-/* Text – high contrast */
+/* Opacity border variants */
+body.dark-mode [class*="border-yellow-200\/"],
+body.dark-mode [class*="border-tuki-rot\/"] { border-color: #313145 !important; }
+
+/* Text: dark headings */
 body.dark-mode .text-gray-800,
-body.dark-mode .text-gray-700 {
-  color: #e4e4f0 !important;
-}
+body.dark-mode .text-gray-700 { color: #cdd6f4 !important; }
 
+/* Text: medium */
 body.dark-mode .text-gray-600,
-body.dark-mode .text-gray-500 {
-  color: #b4b4c8 !important;
-}
+body.dark-mode .text-gray-500 { color: #a6adc8 !important; }
 
+/* Text: light / muted */
 body.dark-mode .text-gray-400,
-body.dark-mode .text-gray-300 {
-  color: #9494aa !important;
-}
+body.dark-mode .text-gray-300 { color: #7f849c !important; }
 
-/* Stat boxes – muted but readable */
-body.dark-mode .bg-yellow-50 { background-color: #33301a !important; }
-body.dark-mode .bg-green-50 { background-color: #1a3320 !important; }
-body.dark-mode .bg-pink-50 { background-color: #331a28 !important; }
-body.dark-mode .bg-red-50\/30 { background-color: rgba(50, 20, 20, 0.4) !important; }
-body.dark-mode .bg-red-50 { background-color: #331a1a !important; }
+/* ALL colored text -> neutral light */
+body.dark-mode .text-yellow-600,
+body.dark-mode .text-yellow-700,
+body.dark-mode .text-green-600,
+body.dark-mode .text-green-700,
+body.dark-mode .text-pink-600,
+body.dark-mode .text-blue-700,
+body.dark-mode .text-purple-700,
+body.dark-mode .text-orange-700 { color: #cdd6f4 !important; }
 
-/* Stat text colors – brighter in dark mode */
-body.dark-mode .text-yellow-600 { color: #f0c040 !important; }
-body.dark-mode .text-green-600 { color: #50d070 !important; }
-body.dark-mode .text-green-700 { color: #50d070 !important; }
-body.dark-mode .text-pink-600 { color: #f07090 !important; }
+/* Glass effect */
+body.dark-mode .glass { background: rgba(30, 30, 46, 0.9) !important; }
 
-/* Glass & gradients */
-body.dark-mode .glass {
-  background: rgba(42, 42, 62, 0.9) !important;
-}
+/* Gradients */
+body.dark-mode .gradient-mint { background: linear-gradient(135deg, #252538 0%, #2a2a3e 100%); }
+body.dark-mode .gradient-warm { background: linear-gradient(180deg, #181825 0%, #1e1e2e 100%); }
 
-body.dark-mode .gradient-mint { background: linear-gradient(135deg, #1a4540 0%, #1a3530 100%); }
-body.dark-mode .gradient-warm { background: linear-gradient(180deg, #1e1e2e 0%, #252020 100%); }
-
-/* Form inputs */
+/* Forms */
 body.dark-mode input,
 body.dark-mode select,
 body.dark-mode textarea {
-  background-color: #232336 !important;
-  color: #e4e4f0 !important;
-  border-color: #3a3a52 !important;
+  background-color: #252538 !important;
+  color: #cdd6f4 !important;
+  border-color: #313145 !important;
 }
-
 body.dark-mode input::placeholder,
-body.dark-mode textarea::placeholder {
-  color: #6a6a80 !important;
-}
+body.dark-mode textarea::placeholder { color: #585b70 !important; }
 
 /* Scrollbar */
-body.dark-mode ::-webkit-scrollbar-thumb { background: #3a5550; }
-body.dark-mode ::-webkit-scrollbar-track { background: #1e1e2e; }
+body.dark-mode ::-webkit-scrollbar-thumb { background: #45475a; }
+body.dark-mode ::-webkit-scrollbar-track { background: #181825; }
 
-/* Tuki specific colors – keep brand accent readable */
-body.dark-mode .text-tuki-rot { color: #c07a76 !important; }
-body.dark-mode .bg-tuki-mint { background-color: #2a4a48 !important; }
-
-/* Active child badge, buttons */
-body.dark-mode .bg-gray-200 { background-color: #3a3a52 !important; }
-
-/* SVG strokes in settings */
-body.dark-mode svg[stroke="#D1D5DB"] { stroke: #6a6a80 !important; }
-body.dark-mode svg[stroke="#9CA3AF"] { stroke: #8a8aa0 !important; }
-
-/* Smooth transition for all children */
-body.dark-mode * {
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-}
+/* Shadow removal in dark mode */
+body.dark-mode [class*="shadow"] { box-shadow: none !important; }
