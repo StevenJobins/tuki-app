@@ -388,51 +388,43 @@ export default function ProfilePage() {
 
       {/* Settings */}
       <div className="mx-4">
-        <h3 className="font-semibold text-sm text-gray-800 mb-3">{t.profilePage.settings}</h3>
-        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+        <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200 mb-3">{t.profilePage.settings}</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+          {/* Account Settings */}
+          <button
+            onClick={() => navigate('/konto')}
+            className="flex items-center gap-3 px-4 py-3.5 border-b border-gray-50 dark:border-gray-700 w-full text-left"
+          >
+            <span className="text-lg">⚙️</span>
+            <span className="text-sm text-gray-700 dark:text-gray-300 flex-1">{t.accountSettings.title}</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
+          </button>
           {/* Language Switcher */}
           <button
             onClick={() => setShowLanguagePicker(true)}
-            className="flex items-center gap-3 px-4 py-3.5 border-b border-gray-50 w-full text-left"
+            className="flex items-center gap-3 px-4 py-3.5 border-b border-gray-50 dark:border-gray-700 w-full text-left"
           >
             <span className="text-lg">🌐</span>
-            <span className="text-sm text-gray-700 flex-1">{t.profilePage.language}</span>
-            <span className="text-xs text-gray-400">{currentLangOption.flag} {currentLangOption.label}</span>
+            <span className="text-sm text-gray-700 dark:text-gray-300 flex-1">{t.profilePage.language}</span>
+            <span className="text-xs text-gray-400 dark:text-gray-500">{currentLangOption.flag} {currentLangOption.label}</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
           </button>
-          {/* Notifications */}
-          <div className="flex items-center gap-3 px-4 py-3.5 border-b border-gray-50">
-            <span className="text-lg">🔔</span>
-            <span className="text-sm text-gray-700 flex-1">{t.profilePage.notifications}</span>
-            <span className="text-xs text-gray-400">{t.profilePage.notificationsValue}</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
-          </div>
-          {/* Dark Mode Toggle */}
-          <button
-            onClick={toggleDarkMode}
-            className="flex items-center gap-3 px-4 py-3.5 border-b border-gray-50 w-full text-left"
-          >
-            <span className="text-lg">{darkMode ? "🌙" : "🎨"}</span>
-            <span className="text-sm text-gray-700 flex-1">{t.profilePage.appearance}</span>
-            <div className={'relative w-11 h-6 rounded-full transition-colors ' + (darkMode ? 'bg-tuki-rot' : 'bg-gray-200')}>
-              <div className={'absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ' + (darkMode ? 'translate-x-5' : '')} />
+          {[
+            { emoji: '🔔', label: t.profilePage.notifications, value: t.profilePage.notificationsValue },
+            { emoji: '🎨', label: t.profilePage.appearance, value: t.profilePage.appearanceValue },
+            { emoji: '📱', label: t.profilePage.appVersion, value: '2.1.0' },
+            { emoji: '🔗', label: t.profilePage.visitWebsite, value: '' },
+          ].map((item, i) => (
+            <div
+              key={i}
+              className={`flex items-center gap-3 px-4 py-3.5 ${i < 3 ? 'border-b border-gray-50 dark:border-gray-700' : ''}`}
+            >
+              <span className="text-lg">{item.emoji}</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300 flex-1">{item.label}</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">{item.value}</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
             </div>
-          </button>
-          {/* App Version */}
-          <div className="flex items-center gap-3 px-4 py-3.5 border-b border-gray-50">
-            <span className="text-lg">📱</span>
-            <span className="text-sm text-gray-700 flex-1">{t.profilePage.appVersion}</span>
-            <span className="text-xs text-gray-400">2.1.0</span>
-          </div>
-          {/* Visit Website */}
-          <button
-            onClick={() => window.open("https://tuki.ch", "_blank")}
-            className="flex items-center gap-3 px-4 py-3.5 w-full text-left"
-          >
-            <span className="text-lg">🔗</span>
-            <span className="text-sm text-gray-700 flex-1">{t.profilePage.visitWebsite}</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
-          </button>
+          ))}
         </div>
       </div>
 
