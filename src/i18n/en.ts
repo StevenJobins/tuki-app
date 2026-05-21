@@ -240,6 +240,8 @@ const en: Translations = {
     ],
     joinFree: 'Join for free',
     joinNote: 'Free for all Tuki owners. Registration with proof of purchase.',
+    commentPlaceholder: 'Write a comment...',
+    commentJustNow: 'just now',
   },
 
   // Profile Page
