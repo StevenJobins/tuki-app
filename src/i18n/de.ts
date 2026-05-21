@@ -238,6 +238,8 @@ const de = {
     ],
     joinFree: 'Kostenlos beitreten',
     joinNote: 'Für alle Tuki-Besitzer kostenlos. Registrierung mit Kaufbeleg.',
+    commentPlaceholder: 'Kommentar schreiben...',
+    commentJustNow: 'gerade eben',
   },
 
   // Profile Page
