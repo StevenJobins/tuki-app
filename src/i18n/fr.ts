@@ -40,6 +40,14 @@ const fr: Translations = {
     title: 'Tuki Family',
   },
 
+  // Notifications
+  notifications: {
+    title: 'Notifications',
+    markAllRead: 'Tout marquer comme lu',
+    footer: 'Voici vos dernières mises à jour',
+    empty: 'Aucune nouvelle notification',
+  },
+
   // Age Filter
   ageFilter: {
     all: 'Tout',
