@@ -10,7 +10,7 @@ const AVATARS = ['🧒', '👧', '👦', '🧒🏽', '👧🏽', '👦🏽', '�
 export default function AccountSettingsPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { getActiveChild, children, setChildren, setActiveChildId } = useApp()
+  const { getActiveChild, updateChild } = useApp()
   const activeChild = getActiveChild()
 
   const [profileName, setProfileName] = useState(activeChild?.name || '')
@@ -30,10 +30,7 @@ export default function AccountSettingsPage() {
 
   const handleSaveProfile = () => {
     if (!activeChild || !profileName.trim()) return
-    const updated = children.map(c =>
-      c.id === activeChild.id ? { ...c, name: profileName.trim(), avatarEmoji: selectedAvatar } : c
-    )
-    setChildren(updated)
+    updateChild({ ...activeChild, name: profileName.trim(), avatarEmoji: selectedAvatar })
     setShowAvatarPicker(false)
   }
 
