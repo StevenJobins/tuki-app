@@ -87,10 +87,7 @@ body {
 }
 
 /* ================================================================
-   DARK MODE - Complete neutral override
-   All colored backgrounds -> neutral dark.
-   All colored text -> neutral light.
-   No green, blue, purple, orange, pink, yellow in dark mode.
+   DARK MODE
    ================================================================ */
 
 body.dark-mode {
@@ -100,7 +97,7 @@ body.dark-mode {
 
 /* White backgrounds */
 body.dark-mode .bg-white { background-color: #1e1e2e !important; }
-body.dark-mode [class*="bg-white\/"] { background-color: rgba(30, 30, 46, 0.8) !important; }
+body.dark-mode [class*="bg-white\\/"] { background-color: rgba(30, 30, 46, 0.8) !important; }
 
 /* ALL light colored backgrounds -> same neutral dark */
 body.dark-mode .bg-gray-50,
@@ -119,13 +116,13 @@ body.dark-mode .bg-purple-50,
 body.dark-mode .bg-purple-100,
 body.dark-mode .bg-orange-100 { background-color: #252538 !important; }
 
-/* Opacity variants of red-50 */
-body.dark-mode [class*="bg-red-50\/"] { background-color: #252538 !important; }
+/* Opacity variants */
+body.dark-mode [class*="bg-red-50\\/"] { background-color: #252538 !important; }
 
 /* Tuki brand backgrounds */
 body.dark-mode [class*="bg-tuki-mint"] { background-color: #252538 !important; }
 
-/* ALL borders -> same subtle dark border */
+/* ALL borders -> subtle dark */
 body.dark-mode .border-gray-50,
 body.dark-mode .border-gray-100,
 body.dark-mode .border-gray-200,
@@ -137,9 +134,9 @@ body.dark-mode .border-yellow-200,
 body.dark-mode .border-purple-200,
 body.dark-mode .border-red-200 { border-color: #313145 !important; }
 
-/* Opacity border variants */
-body.dark-mode [class*="border-yellow-200\/"],
-body.dark-mode [class*="border-tuki-rot\/"] { border-color: #313145 !important; }
+body.dark-mode [class*="border-yellow-200\\/"],
+body.dark-mode [class*="border-tuki-rot\\/"],
+body.dark-mode [class*="border-gray-100\\/"] { border-color: #313145 !important; }
 
 /* Text: dark headings */
 body.dark-mode .text-gray-800,
@@ -162,6 +159,19 @@ body.dark-mode .text-pink-600,
 body.dark-mode .text-blue-700,
 body.dark-mode .text-purple-700,
 body.dark-mode .text-orange-700 { color: #cdd6f4 !important; }
+
+/* Tuki brand text colors - lighten for dark backgrounds */
+body.dark-mode .text-tuki-rot { color: #d4a0a0 !important; }
+body.dark-mode .text-tuki-rot-dark { color: #cdd6f4 !important; }
+body.dark-mode .text-tuki-mint-dark { color: #a6adc8 !important; }
+
+/* Active filter/tab buttons: ensure text-white stays readable on bg-tuki-rot */
+/* bg-tuki-rot keeps its color (brand red) so text-white is fine on it */
+/* But on bg-tuki-mint (now dark), text-tuki-rot-dark is already lightened above */
+
+/* SVG strokes in dark mode */
+body.dark-mode svg[stroke="#2D2D2D"] { stroke: #cdd6f4; }
+body.dark-mode svg[stroke="#9CA3AF"] { stroke: #585b70; }
 
 /* Glass effect */
 body.dark-mode .glass { background: rgba(30, 30, 46, 0.9) !important; }
