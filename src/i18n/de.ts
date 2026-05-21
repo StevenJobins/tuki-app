@@ -38,6 +38,14 @@ const de = {
     title: 'Tuki Family',
   },
 
+  // Notifications
+  notifications: {
+    title: 'Benachrichtigungen',
+    markAllRead: 'Alle gelesen',
+    footer: 'Das sind deine neuesten Updates',
+    empty: 'Keine neuen Benachrichtigungen',
+  },
+
   // Age Filter
   ageFilter: {
     all: 'Alle',
