@@ -242,8 +242,6 @@ const fr: Translations = {
     joinNote: 'Gratuit pour tous les propriétaires de Tuki. Inscription avec preuve d\'achat.',
     commentPlaceholder: 'Écrire un commentaire...',
     commentJustNow: 'à l\'instant',
-    commentPlaceholder: 'Écrire un commentaire...',
-    commentJustNow: 'à l\'instant',
   },
 
   // Profile Page
