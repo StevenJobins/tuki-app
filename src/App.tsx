@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
+import { useAutoNotifications } from './hooks/useAutoNotifications'
 import BottomNav from './components/BottomNav'
 import HomePage from './pages/HomePage'
 import RecipesPage from './pages/RecipesPage'
@@ -12,6 +13,8 @@ import ProfilePage from './pages/ProfilePage'
 import AccountSettingsPage from './pages/AccountSettingsPage'
 
 export default function App() {
+  useAutoNotifications()
+
   return (
     <div className="max-w-lg mx-auto min-h-screen bg-tuki-cream relative">
       <AnimatePresence mode="wait">
