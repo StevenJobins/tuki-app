@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useApp } from '../context/AppContext'
+import { useNotifications } from '../context/NotificationContext'
 import { useTranslation } from '../i18n/useTranslation'
 
 interface HeaderProps {
@@ -10,76 +11,29 @@ interface HeaderProps {
   transparent?: boolean
 }
 
-interface Notification {
-  id: string
-  type: 'comment' | 'like' | 'tip' | 'milestone' | 'welcome'
-  icon: string
-  titleKey: string
-  message: string
-  timeAgo: string
-  read: boolean
+// Format relative time from ISO timestamp
+function formatTimeAgo(isoDate: string): string {
+  const diff = Date.now() - new Date(isoDate).getTime()
+  const minutes = Math.floor(diff / 60000)
+  if (minutes < 1) return 'jetzt'
+  if (minutes < 60) return `${minutes}m`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours}h`
+  const days = Math.floor(hours / 24)
+  return `${days}d`
 }
-
-const initialNotifications: Notification[] = [
-  {
-    id: 'n1',
-    type: 'comment',
-    icon: '💬',
-    titleKey: 'newComment',
-    message: 'Marco B. hat deinen Beitrag kommentiert',
-    timeAgo: '5m',
-    read: false,
-  },
-  {
-    id: 'n2',
-    type: 'like',
-    icon: '❤️',
-    titleKey: 'newLike',
-    message: 'Sarah K. gefällt dein Rezept-Beitrag',
-    timeAgo: '15m',
-    read: false,
-  },
-  {
-    id: 'n3',
-    type: 'tip',
-    icon: '💡',
-    titleKey: 'dailyTip',
-    message: 'Neuer Tuki-Tipp: Lass dein Kind heute die Zutaten aussuchen!',
-    timeAgo: '1h',
-    read: false,
-  },
-  {
-    id: 'n4',
-    type: 'milestone',
-    icon: '🌟',
-    titleKey: 'milestone',
-    message: 'Toll! Ihr habt schon 5 Rezepte gemeinsam gekocht!',
-    timeAgo: '2h',
-    read: true,
-  },
-  {
-    id: 'n5',
-    type: 'welcome',
-    icon: '👋',
-    titleKey: 'welcome',
-    message: 'Willkommen bei Tuki Family! Entdecke Rezepte und Aktivitäten.',
-    timeAgo: '1d',
-    read: true,
-  },
-]
 
 export default function Header({ title, showBack, transparent }: HeaderProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   const { tukiStars, getActiveChild } = useApp()
+  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications()
   const [showNotifications, setShowNotifications] = useState(false)
-  const [notifications, setNotifications] = useState<Notification[]>(initialNotifications)
   const panelRef = useRef<HTMLDivElement>(null)
 
   const isHome = location.pathname === '/'
   const activeChild = getActiveChild()
-  const unreadCount = notifications.filter(n => !n.read).length
 
   // Close panel when clicking outside
   useEffect(() => {
@@ -93,16 +47,6 @@ export default function Header({ title, showBack, transparent }: HeaderProps) {
     }
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [showNotifications])
-
-  const markAllRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })))
-  }
-
-  const markOneRead = (id: string) => {
-    setNotifications(prev =>
-      prev.map(n => n.id === id ? { ...n, read: true } : n)
-    )
-  }
 
   return (
     <header
@@ -179,7 +123,7 @@ export default function Header({ title, showBack, transparent }: HeaderProps) {
                   </h3>
                   {unreadCount > 0 && (
                     <button
-                      onClick={markAllRead}
+                      onClick={markAllAsRead}
                       className="text-[11px] text-tuki-rot font-medium hover:underline"
                     >
                       {t.notifications?.markAllRead || 'Alle gelesen'}
@@ -189,32 +133,40 @@ export default function Header({ title, showBack, transparent }: HeaderProps) {
 
                 {/* Notification list */}
                 <div className="overflow-y-auto max-h-72">
-                  {notifications.map(notif => (
-                    <button
-                      key={notif.id}
-                      onClick={() => markOneRead(notif.id)}
-                      className={`w-full text-left px-4 py-3 flex items-start gap-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors border-b border-gray-50 dark:border-gray-700/50 ${
-                        !notif.read ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''
-                      }`}
-                    >
-                      <span className="text-lg mt-0.5 flex-shrink-0">{notif.icon}</span>
-                      <div className="flex-1 min-w-0">
-                        <p className={`text-xs leading-relaxed ${
-                          !notif.read
-                            ? 'text-gray-800 dark:text-gray-100 font-medium'
-                            : 'text-gray-500 dark:text-gray-400'
-                        }`}>
-                          {notif.message}
-                        </p>
-                        <span className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 block">
-                          {notif.timeAgo}
-                        </span>
-                      </div>
-                      {!notif.read && (
-                        <span className="w-2 h-2 rounded-full bg-tuki-rot mt-1.5 flex-shrink-0" />
-                      )}
-                    </button>
-                  ))}
+                  {notifications.length === 0 ? (
+                    <div className="px-4 py-8 text-center">
+                      <p className="text-sm text-gray-400 dark:text-gray-500">
+                        {t.notifications?.empty || 'Keine neuen Benachrichtigungen'}
+                      </p>
+                    </div>
+                  ) : (
+                    notifications.map(notif => (
+                      <button
+                        key={notif.id}
+                        onClick={() => markAsRead(notif.id)}
+                        className={`w-full text-left px-4 py-3 flex items-start gap-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors border-b border-gray-50 dark:border-gray-700/50 ${
+                          !notif.read ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''
+                        }`}
+                      >
+                        <span className="text-lg mt-0.5 flex-shrink-0">{notif.icon}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-xs leading-relaxed ${
+                            !notif.read
+                              ? 'text-gray-800 dark:text-gray-100 font-medium'
+                              : 'text-gray-500 dark:text-gray-400'
+                          }`}>
+                            {notif.message}
+                          </p>
+                          <span className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 block">
+                            {formatTimeAgo(notif.createdAt)}
+                          </span>
+                        </div>
+                        {!notif.read && (
+                          <span className="w-2 h-2 rounded-full bg-tuki-rot mt-1.5 flex-shrink-0" />
+                        )}
+                      </button>
+                    ))
+                  )}
                 </div>
 
                 {/* Panel footer */}
