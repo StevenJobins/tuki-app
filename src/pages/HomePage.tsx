@@ -106,18 +106,18 @@ export default function HomePage() {
               {activeChild ? <>{t.home.heroQuestion(activeChild.name)}</> : <>{t.home.heroQuestionGeneric}</>}
             </h1>
             <div className="flex items-center gap-3 mt-4">
-              <div className="bg-white/70 rounded-xl px-3 py-2 flex items-center gap-2">
+              <div className="bg-white/70 dark:bg-white/10 rounded-xl px-3 py-2 flex items-center gap-2">
                 <span>⭐</span>
                 <div>
-                  <p className="text-xs font-semibold text-gray-700">{tukiStars.total} {t.home.starsLabel}</p>
-                  <p className="text-[10px] text-gray-500">{t.levels[tukiStars.level]}</p>
+                  <p className="text-xs font-semibold text-gray-700 dark:text-gray-100">{tukiStars.total} {t.home.starsLabel}</p>
+                  <p className="text-[10px] text-gray-500 dark:text-gray-400">{t.levels[tukiStars.level]}</p>
                 </div>
               </div>
-              <div className="bg-white/70 rounded-xl px-3 py-2 flex items-center gap-2">
+              <div className="bg-white/70 dark:bg-white/10 rounded-xl px-3 py-2 flex items-center gap-2">
                 <span>✅</span>
                 <div>
-                  <p className="text-xs font-semibold text-gray-700">{completedActivities.length + completedRecipes.length}</p>
-                  <p className="text-[10px] text-gray-500">{t.home.completedLabel}</p>
+                  <p className="text-xs font-semibold text-gray-700 dark:text-gray-100">{completedActivities.length + completedRecipes.length}</p>
+                  <p className="text-[10px] text-gray-500 dark:text-gray-400">{t.home.completedLabel}</p>
                 </div>
               </div>
             </div>
