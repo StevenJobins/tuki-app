@@ -1,157 +1,206 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import Header from '../components/Header'
 import { useApp } from '../context/AppContext'
 import { useTranslation } from '../i18n/useTranslation'
-import Header from '../components/Header'
 
 interface Reward {
   id: string
   emoji: string
-  key: 'stickerSet' | 'recipeBook' | 'freeShipping' | 'snackBox' | 'discount10' | 'surprise'
-  price: number
-  category: 'rabatt' | 'produkt' | 'digital'
+  cost: number
+  category: 'badge' | 'title' | 'activity'
 }
 
-const REWARDS: Reward[] = [
-  { id: 'sticker-set', emoji: '⭐', key: 'stickerSet', price: 8, category: 'produkt' },
-  { id: 'rezeptbuch', emoji: '📖', key: 'recipeBook', price: 10, category: 'digital' },
-  { id: 'gratis-versand', emoji: '🚚', key: 'freeShipping', price: 12, category: 'rabatt' },
-  { id: 'snack-box', emoji: '🎁', key: 'snackBox', price: 15, category: 'produkt' },
-  { id: 'rabatt-10', emoji: '🏷️', key: 'discount10', price: 20, category: 'rabatt' },
-  { id: 'ueberraschung', emoji: '🎉', key: 'surprise', price: 30, category: 'produkt' },
+const rewards: Reward[] = [
+  { id: 'badge-chef', emoji: '👨‍🍳', cost: 5, category: 'badge' },
+  { id: 'badge-star', emoji: '🌟', cost: 10, category: 'badge' },
+  { id: 'badge-rocket', emoji: '🚀', cost: 15, category: 'badge' },
+  { id: 'badge-crown', emoji: '👑', cost: 25, category: 'badge' },
+  { id: 'badge-rainbow', emoji: '🌈', cost: 8, category: 'badge' },
+  { id: 'badge-heart', emoji: '💖', cost: 12, category: 'badge' },
+  { id: 'title-explorer', emoji: '🗺️', cost: 20, category: 'title' },
+  { id: 'title-superchef', emoji: '🏅', cost: 30, category: 'title' },
+  { id: 'activity-baking', emoji: '🧁', cost: 15, category: 'activity' },
+  { id: 'activity-painting', emoji: '🎨', cost: 10, category: 'activity' },
+  { id: 'activity-garden', emoji: '🌱', cost: 20, category: 'activity' },
+  { id: 'activity-music', emoji: '🎵', cost: 12, category: 'activity' },
 ]
 
+const container = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.06 } },
+}
+const item = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0 },
+}
+
 export default function StarShopPage() {
-  const { tukiStars, redeemedRewards, starBalance, spendStars, getActiveChild } = useApp()
   const { t } = useTranslation()
-  const [selectedReward, setSelectedReward] = useState<Reward | null>(null)
-  const [justRedeemed, setJustRedeemed] = useState<string | null>(null)
-  const [filter, setFilter] = useState<string>('alle')
+  const { tukiStars, starBalance, spendStars, redeemedRewards } = useApp()
+  const [showSuccess, setShowSuccess] = useState<string | null>(null)
+  const [activeCategory, setActiveCategory] = useState<'all' | 'badge' | 'title' | 'activity'>('all')
 
   const balance = starBalance()
-  const child = getActiveChild()
 
   const handleRedeem = (reward: Reward) => {
     if (redeemedRewards.includes(reward.id)) return
-    if (balance < reward.price) return
-    setSelectedReward(reward)
-  }
+    if (balance < reward.cost) return
 
-  const confirmRedeem = () => {
-    if (!selectedReward) return
-    const success = spendStars(selectedReward.price, selectedReward.id)
-    if (success) {
-      setJustRedeemed(selectedReward.id)
-      setTimeout(() => setJustRedeemed(null), 2000)
+    const ok = spendStars(reward.cost, reward.id)
+    if (ok) {
+      setShowSuccess(reward.id)
+      setTimeout(() => setShowSuccess(null), 2000)
     }
-    setSelectedReward(null)
   }
 
-  const filtered = filter === 'alle' ? REWARDS : REWARDS.filter(r => r.category === filter)
+  const filteredRewards = activeCategory === 'all'
+    ? rewards
+    : rewards.filter(r => r.category === activeCategory)
+
+  const categories = [
+    { key: 'all' as const, label: t.starShop?.all ?? 'Alle' },
+    { key: 'badge' as const, label: t.starShop?.badges ?? 'Badges' },
+    { key: 'title' as const, label: t.starShop?.titles ?? 'Titel' },
+    { key: 'activity' as const, label: t.starShop?.activities ?? 'Aktivitäten' },
+  ]
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="pb-24 overflow-x-hidden">
-      <Header title={t.starShop.title} />
-      <div className="mx-4 mt-4 bg-gradient-to-br from-yellow-400 via-amber-400 to-orange-400 rounded-2xl p-6 text-white shadow-lg">
-        <div className="text-center">
-          <div className="text-4xl mb-2">{'⭐'}</div>
-          <div className="text-5xl font-bold mb-1">{balance}</div>
-          <div className="text-white/90 text-sm">{child ? child.name + 's ' + t.starShop.balance : t.starShop.balance}</div>
-          <div className="mt-3 flex items-center justify-center gap-4 text-xs text-white/80">
-            <span>{tukiStars.total} {t.starShop.earned}</span><span>{'·'}</span><span>{tukiStars.spent} {t.starShop.spent}</span>
+    <div className="pb-24">
+      <Header title={t.starShop?.title ?? 'Sterne-Shop'} />
+
+      {/* Balance Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mx-4 mt-2 mb-6"
+      >
+        <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-5 border border-yellow-200/50">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-500">{t.starShop?.yourBalance ?? 'Dein Guthaben'}</p>
+              <p className="text-3xl font-bold text-gray-800 mt-1">
+                ⭐ {balance}
+              </p>
+              <p className="text-xs text-gray-400 mt-1">
+                {t.starShop?.totalEarned ?? 'Insgesamt verdient'}: {tukiStars.total} | {t.starShop?.spent ?? 'Ausgegeben'}: {tukiStars.spent}
+              </p>
+            </div>
+            <div className="w-16 h-16 rounded-2xl bg-yellow-100 flex items-center justify-center">
+              <span className="text-3xl">🏪</span>
+            </div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="mx-4 mt-4 bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-        <div className="text-sm font-medium text-gray-700 mb-2">{t.starShop.howToEarn}</div>
-        <div className="space-y-2 text-sm text-gray-500">
-          <div className="flex items-center gap-2"><span className="text-tuki-rot font-bold">+3</span> {t.starShop.completeActivity}</div>
-          <div className="flex items-center gap-2"><span className="text-tuki-rot font-bold">+2</span> {t.starShop.withPhoto}</div>
-        </div>
-      </div>
-
-      <div className="mx-4 mt-6 flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-        {[
-          { key: 'alle', label: t.starShop.filterAll },
-          { key: 'produkt', label: t.starShop.filterProducts },
-          { key: 'rabatt', label: t.starShop.filterDiscounts },
-          { key: 'digital', label: t.starShop.filterDigital },
-        ].map(f => (
-          <button key={f.key} onClick={() => setFilter(f.key)}
-            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${filter === f.key ? 'bg-tuki-rot text-white shadow-md' : 'bg-white text-gray-600 border border-gray-200'}`}>
-            {f.label}
+      {/* Category Filter */}
+      <div className="flex gap-2 px-4 mb-4 overflow-x-auto no-scrollbar">
+        {categories.map(cat => (
+          <button
+            key={cat.key}
+            onClick={() => setActiveCategory(cat.key)}
+            className={`px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${
+              activeCategory === cat.key
+                ? 'bg-tuki-rot text-white'
+                : 'bg-white text-gray-600 border border-gray-200'
+            }`}
+          >
+            {cat.label}
           </button>
         ))}
       </div>
 
-      <div className="mx-4 mt-4 grid grid-cols-2 gap-3">
-        {filtered.map(reward => {
+      {/* Rewards Grid */}
+      <motion.div
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-2 gap-3 px-4"
+      >
+        {filteredRewards.map(reward => {
           const isRedeemed = redeemedRewards.includes(reward.id)
-          const canAfford = balance >= reward.price
-          const justGot = justRedeemed === reward.id
-          const rewardT = t.starShop.rewards[reward.key]
+          const canAfford = balance >= reward.cost
+          const justRedeemed = showSuccess === reward.id
+
           return (
-            <motion.div key={reward.id} layout whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-              onClick={() => handleRedeem(reward)}
-              className={`relative bg-white rounded-xl p-4 shadow-sm border transition-all ${isRedeemed ? 'opacity-60 border-green-200' : canAfford ? 'border-amber-200 cursor-pointer hover:shadow-md' : 'opacity-75 border-gray-100'}`}>
-              {justGot && <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute -top-2 -right-2 bg-green-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">{'✓'}</motion.div>}
-              <div className="text-3xl mb-2">{reward.emoji}</div>
-              <div className="font-medium text-sm text-gray-800 mb-1">{rewardT.name}</div>
-              <div className="text-xs text-gray-500 mb-3">{rewardT.description}</div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-bold text-amber-600">{'⭐'} {reward.price}</span>
-                {isRedeemed && <span className="text-xs text-green-600 font-medium">{t.starShop.redeemed}</span>}
+            <motion.div
+              key={reward.id}
+              variants={item}
+              className={`bg-white rounded-2xl p-4 border transition-all ${
+                isRedeemed
+                  ? 'border-green-200 bg-green-50/50'
+                  : canAfford
+                  ? 'border-gray-100 active:scale-95'
+                  : 'border-gray-100 opacity-60'
+              }`}
+            >
+              <div className="text-center">
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-3 ${
+                  isRedeemed ? 'bg-green-100' : 'bg-yellow-50'
+                }`}>
+                  <span className="text-3xl">{reward.emoji}</span>
+                </div>
+                <h3 className="font-semibold text-sm text-gray-800">
+                  {t.starShop?.rewards?.[reward.id]?.name ?? reward.id}
+                </h3>
+                <p className="text-[10px] text-gray-400 mt-0.5">
+                  {t.starShop?.rewards?.[reward.id]?.desc ?? ''}
+                </p>
+
+                <AnimatePresence mode="wait">
+                  {justRedeemed ? (
+                    <motion.div
+                      key="success"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      className="mt-3 py-2 bg-green-100 text-green-700 rounded-xl text-xs font-medium"
+                    >
+                      ✅ {t.starShop?.redeemed ?? 'Eingelöst!'}
+                    </motion.div>
+                  ) : isRedeemed ? (
+                    <div key="done" className="mt-3 py-2 bg-green-50 text-green-600 rounded-xl text-xs font-medium">
+                      ✅ {t.starShop?.owned ?? 'Erhalten'}
+                    </div>
+                  ) : (
+                    <button
+                      key="buy"
+                      onClick={() => handleRedeem(reward)}
+                      disabled={!canAfford}
+                      className={`mt-3 w-full py-2 rounded-xl text-xs font-semibold transition-colors ${
+                        canAfford
+                          ? 'bg-tuki-rot text-white active:bg-tuki-rot-dark'
+                          : 'bg-gray-100 text-gray-400'
+                      }`}
+                    >
+                      ⭐ {reward.cost} {t.common?.stars ?? 'Sterne'}
+                    </button>
+                  )}
+                </AnimatePresence>
               </div>
             </motion.div>
           )
         })}
-      </div>
+      </motion.div>
 
-      {redeemedRewards.length > 0 && (
-        <div className="mx-4 mt-8">
-          <h3 className="text-sm font-medium text-gray-500 mb-3">{t.starShop.redeemedRewards}</h3>
-          <div className="space-y-2">
-            {REWARDS.filter(r => redeemedRewards.includes(r.id)).map(r => {
-              const rT = t.starShop.rewards[r.key]
-              return (
-                <div key={r.id} className="flex items-center gap-3 bg-green-50 rounded-lg p-3">
-                  <span className="text-xl">{r.emoji}</span>
-                  <div>
-                    <div className="text-sm font-medium text-green-800">{rT.name}</div>
-                    <div className="text-xs text-green-600">{rT.description}</div>
-                  </div>
-                </div>
-              )
-            })}
+      {/* Empty state if no stars */}
+      {tukiStars.total === 0 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="px-4 mt-6"
+        >
+          <div className="bg-white rounded-2xl p-6 border border-gray-100 text-center">
+            <span className="text-4xl block mb-3">🌟</span>
+            <h3 className="font-semibold text-gray-800 mb-1">
+              {t.starShop?.noStarsTitle ?? 'Noch keine Sterne'}
+            </h3>
+            <p className="text-xs text-gray-500">
+              {t.starShop?.noStarsDesc ?? 'Schliesse Rezepte und Aktivitäten ab, um Sterne zu verdienen!'}
+            </p>
           </div>
-        </div>
+        </motion.div>
       )}
-
-      <AnimatePresence>
-        {selectedReward && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setSelectedReward(null)}>
-            <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}
-              className="bg-white rounded-2xl p-6 max-w-sm w-full" onClick={e => e.stopPropagation()}>
-              <div className="text-center">
-                <div className="text-5xl mb-4">{selectedReward.emoji}</div>
-                <h3 className="text-lg font-bold text-gray-800 mb-2">{t.starShop.rewards[selectedReward.key].name}</h3>
-                <p className="text-gray-500 text-sm mb-4">{t.starShop.rewards[selectedReward.key].description}</p>
-                <div className="text-2xl font-bold text-amber-600 mb-6">{'⭐'} {selectedReward.price} {t.starShop.stars}</div>
-                <div className="flex gap-3">
-                  <button onClick={() => setSelectedReward(null)} className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-600 font-medium">
-                    {t.common.cancel}
-                  </button>
-                  <button onClick={confirmRedeem} className="flex-1 py-3 rounded-xl bg-tuki-rot text-white font-medium shadow-md">
-                    {t.starShop.redeem}
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
+    </div>
   )
 }
