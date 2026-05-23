@@ -324,7 +324,10 @@ export default function CommunityPage() {
               ))}
             </div>
 
-            <button className="w-full py-3.5 bg-white text-tuki-rot font-semibold rounded-xl text-sm shadow-lg">
+            <button
+              onClick={() => setActiveTab('feed')}
+              className="w-full py-3.5 bg-white text-tuki-rot font-semibold rounded-xl text-sm shadow-lg active:scale-95 transition-transform"
+            >
               {t.community.joinFree}
             </button>
             <p className="text-white/50 text-[10px] mt-3">
