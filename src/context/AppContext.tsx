@@ -1,4 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
+import { recipes } from '../data/recipes'
+import { activities } from '../data/activities'
 
 export interface ChildProfile {
   id: string
@@ -69,17 +71,30 @@ const LEVELS = [
   { min: 100, name: 'Küchenchef' },
 ]
 
-function calculateStars(completed: number, currentSpent: number = 0): TukiStars {
+function sumStars(completedRecipeIds: string[], completedActivityIds: string[]): number {
+  let total = 0
+  for (const id of completedRecipeIds) {
+    const recipe = recipes.find(r => r.id === id)
+    total += recipe ? recipe.stars : 1
+  }
+  for (const id of completedActivityIds) {
+    const activity = activities.find(a => a.id === id)
+    total += activity ? activity.stars : 1
+  }
+  return total
+}
+
+function calculateStars(starTotal: number, currentSpent: number = 0): TukiStars {
   let level = 0
   let levelName = LEVELS[0].name
   for (let i = LEVELS.length - 1; i >= 0; i--) {
-    if (completed >= LEVELS[i].min) {
+    if (starTotal >= LEVELS[i].min) {
       level = i
       levelName = LEVELS[i].name
       break
     }
   }
-  return { total: completed, spent: currentSpent, level, levelName }
+  return { total: starTotal, spent: currentSpent, level, levelName }
 }
 
 const defaultPerChild: PerChildData = {
@@ -168,7 +183,7 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
     setState(s => {
       if (s.completedActivities.includes(id)) return s
       const completed = [...s.completedActivities, id]
-      const total = completed.length + s.completedRecipes.length
+      const total = sumStars(s.completedRecipes, completed)
       return { ...s, completedActivities: completed, tukiStars: calculateStars(total, s.tukiStars.spent) }
     })
   }
@@ -177,7 +192,7 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
     setState(s => {
       if (s.completedRecipes.includes(id)) return s
       const completed = [...s.completedRecipes, id]
-      const total = s.completedActivities.length + completed.length
+      const total = sumStars(completed, s.completedActivities)
       return { ...s, completedRecipes: completed, tukiStars: calculateStars(total, s.tukiStars.spent) }
     })
   }
