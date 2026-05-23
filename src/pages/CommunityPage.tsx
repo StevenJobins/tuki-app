@@ -358,6 +358,27 @@ export default function CommunityPage() {
           animate="show"
           variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}
         >
+          {/* Join hint for non-members */}
+          {!isClubMember && (
+            <motion.div
+              variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
+            >
+              <button
+                onClick={() => setActiveTab('join')}
+                className="w-full flex items-center gap-3 bg-gradient-to-r from-tuki-rot/5 to-tuki-rot/10 dark:from-tuki-rot/10 dark:to-tuki-rot/20 rounded-2xl border border-tuki-rot/20 p-4 text-left hover:border-tuki-rot/40 transition-colors"
+              >
+                <div className="w-10 h-10 rounded-full bg-tuki-rot/15 flex items-center justify-center text-lg shrink-0">
+                  {'\u{1F3C6}'}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-200 block">Tritt dem Tuki Club bei</span>
+                  <span className="text-xs text-gray-400 dark:text-gray-500">Schreibe eigene Beiträge und werde Teil der Community</span>
+                </div>
+                <span className="text-tuki-rot text-xs font-semibold shrink-0">Beitreten →</span>
+              </button>
+            </motion.div>
+          )}
+
           {/* New Post button for members */}
           {isClubMember && (
             <motion.div
