@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
+import { supabase } from '../lib/supabaseClient'
 
-// ─── Types ───────────────────────────────────────────────
+// âââ Types âââââââââââââââââââââââââââââââââââââââââââââââ
 export type NotificationType = 'comment' | 'like' | 'tip' | 'milestone' | 'welcome' | 'system'
 
 export interface AppNotification {
@@ -10,10 +11,9 @@ export interface AppNotification {
   message: string
   read: boolean
   createdAt: string // ISO timestamp
-  // Future Supabase fields (ready but not yet used):
-  // userId?: string
-  // relatedItemId?: string
-  // relatedItemType?: 'recipe' | 'activity' | 'comment' | 'post'
+  userId?: string
+  relatedItemId?: string
+  relatedItemType?: 'recipe' | 'activity' | 'comment' | 'post'
 }
 
 interface NotificationContextType {
@@ -24,22 +24,23 @@ interface NotificationContextType {
   addNotification: (notification: Omit<AppNotification, 'id' | 'createdAt'>) => void
   removeNotification: (id: string) => void
   clearAll: () => void
+  isSupabaseConnected: boolean
 }
 
-// ─── Default Notifications (Seed data for new users) ─────
+// âââ Default Notifications (Seed data for new users) âââââ
 const createSeedNotifications = (): AppNotification[] => [
   {
     id: 'seed-welcome',
     type: 'welcome',
-    icon: '👋',
-    message: 'Willkommen bei Tuki Family! Entdecke Rezepte und Aktivitäten.',
+    icon: '\u{1F44B}',
+    message: 'Willkommen bei Tuki Family! Entdecke Rezepte und AktivitÃ¤ten.',
     read: false,
     createdAt: new Date(Date.now() - 86400000).toISOString(),
   },
   {
     id: 'seed-tip',
     type: 'tip',
-    icon: '💡',
+    icon: '\u{1F4A1}',
     message: 'Tuki-Tipp: Lass dein Kind heute die Zutaten aussuchen!',
     read: false,
     createdAt: new Date(Date.now() - 3600000).toISOString(),
@@ -47,29 +48,27 @@ const createSeedNotifications = (): AppNotification[] => [
   {
     id: 'seed-milestone',
     type: 'milestone',
-    icon: '🌟',
+    icon: '\u{1F31F}',
     message: 'Starte dein erstes Rezept und verdiene Tuki-Sterne!',
     read: false,
     createdAt: new Date(Date.now() - 7200000).toISOString(),
   },
 ]
 
-// ─── Storage ─────────────────────────────────────────────
+// âââ LocalStorage Fallback ââââââââââââââââââââââââââââââ
 const STORAGE_KEY = 'tuki-notifications'
 
-function loadNotifications(): AppNotification[] {
+function loadFromLocalStorage(): AppNotification[] {
   try {
     const stored = localStorage.getItem(STORAGE_KEY)
-    if (stored) {
-      return JSON.parse(stored)
-    }
+    if (stored) return JSON.parse(stored)
   } catch (e) {
     console.warn('Failed to load notifications from localStorage', e)
   }
   return createSeedNotifications()
 }
 
-function saveNotifications(notifications: AppNotification[]) {
+function saveToLocalStorage(notifications: AppNotification[]) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(notifications))
   } catch (e) {
@@ -77,7 +76,22 @@ function saveNotifications(notifications: AppNotification[]) {
   }
 }
 
-// ─── Context ─────────────────────────────────────────────
+// âââ Supabase Helpers âââââââââââââââââââââââââââââââââââ
+function mapFromSupabase(row: Record<string, unknown>): AppNotification {
+  return {
+    id: row.id as string,
+    type: row.type as NotificationType,
+    icon: row.icon as string,
+    message: row.message as string,
+    read: row.read as boolean,
+    createdAt: row.created_at as string,
+    userId: row.user_id as string,
+    relatedItemId: row.related_item_id as string | undefined,
+    relatedItemType: row.related_item_type as AppNotification['relatedItemType'],
+  }
+}
+
+// âââ Context âââââââââââââââââââââââââââââââââââââââââââââ
 const NotificationContext = createContext<NotificationContextType | null>(null)
 
 export function useNotifications() {
@@ -86,70 +100,243 @@ export function useNotifications() {
   return ctx
 }
 
-// ─── Provider ────────────────────────────────────────────
+// âââ Provider ââââââââââââââââââââââââââââââââââââââââââââ
 export function NotificationProvider({ children }: { children: ReactNode }) {
-  const [notifications, setNotifications] = useState<AppNotification[]>(loadNotifications)
+  const [notifications, setNotifications] = useState<AppNotification[]>([])
+  const [userId, setUserId] = useState<string | null>(null)
+  const [isSupabaseConnected, setIsSupabaseConnected] = useState(false)
+  const [initialized, setInitialized] = useState(false)
 
-  // Persist to localStorage on change
+  // âââ Auth: detect logged-in user âââââââââââââââââââââ
   useEffect(() => {
-    saveNotifications(notifications)
-  }, [notifications])
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) {
+        setUserId(data.user.id)
+        setIsSupabaseConnected(true)
+      } else {
+        // No auth: use localStorage fallback
+        setNotifications(loadFromLocalStorage())
+        setInitialized(true)
+      }
+    })
 
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUserId(session.user.id)
+        setIsSupabaseConnected(true)
+      } else {
+        setUserId(null)
+        setIsSupabaseConnected(false)
+        setNotifications(loadFromLocalStorage())
+        setInitialized(true)
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  // âââ Load from Supabase when userId is available âââââ
+  useEffect(() => {
+    if (!userId) return
+
+    async function fetchNotifications() {
+      const { data, error } = await supabase
+        .from('notifications')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(50)
+
+      if (error) {
+        console.warn('Supabase fetch failed, falling back to localStorage:', error.message)
+        setNotifications(loadFromLocalStorage())
+        setIsSupabaseConnected(false)
+      } else if (data.length === 0) {
+        // New user: seed notifications in Supabase
+        const seeds = createSeedNotifications()
+        const seedRows = seeds.map(s => ({
+          user_id: userId,
+          type: s.type,
+          icon: s.icon,
+          message: s.message,
+          read: false,
+        }))
+        const { data: inserted, error: insertError } = await supabase
+          .from('notifications')
+          .insert(seedRows)
+          .select()
+
+        if (insertError) {
+          console.warn('Failed to seed notifications:', insertError.message)
+          setNotifications(seeds)
+        } else {
+          setNotifications((inserted || []).map(mapFromSupabase))
+        }
+      } else {
+        setNotifications(data.map(mapFromSupabase))
+      }
+      setInitialized(true)
+    }
+
+    fetchNotifications()
+  }, [userId])
+
+  // âââ Realtime subscription âââââââââââââââââââââââââââ
+  useEffect(() => {
+    if (!userId || !isSupabaseConnected) return
+
+    const channel = supabase
+      .channel(`notifications-${userId}`)
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'notifications',
+        filter: `user_id=eq.${userId}`,
+      }, (payload) => {
+        const newNotif = mapFromSupabase(payload.new as Record<string, unknown>)
+        setNotifications(prev => {
+          // Avoid duplicates
+          if (prev.some(n => n.id === newNotif.id)) return prev
+          return [newNotif, ...prev]
+        })
+      })
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'notifications',
+        filter: `user_id=eq.${userId}`,
+      }, (payload) => {
+        const updated = mapFromSupabase(payload.new as Record<string, unknown>)
+        setNotifications(prev =>
+          prev.map(n => n.id === updated.id ? updated : n)
+        )
+      })
+      .on('postgres_changes', {
+        event: 'DELETE',
+        schema: 'public',
+        table: 'notifications',
+        filter: `user_id=eq.${userId}`,
+      }, (payload) => {
+        const deletedId = (payload.old as Record<string, unknown>).id as string
+        setNotifications(prev => prev.filter(n => n.id !== deletedId))
+      })
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [userId, isSupabaseConnected])
+
+  // âââ Persist to localStorage when NOT connected ââââââ
+  useEffect(() => {
+    if (!isSupabaseConnected && initialized) {
+      saveToLocalStorage(notifications)
+    }
+  }, [notifications, isSupabaseConnected, initialized])
+
+  // âââ Computed ââââââââââââââââââââââââââââââââââââââââ
   const unreadCount = notifications.filter(n => !n.read).length
 
-  const markAsRead = useCallback((id: string) => {
+  // âââ Actions âââââââââââââââââââââââââââââââââââââââââ
+  const markAsRead = useCallback(async (id: string) => {
     setNotifications(prev =>
       prev.map(n => n.id === id ? { ...n, read: true } : n)
     )
-    // TODO: Supabase — update notification read status
-    // await supabase.from('notifications').update({ read: true }).eq('id', id)
-  }, [])
 
-  const markAllAsRead = useCallback(() => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })))
-    // TODO: Supabase — bulk update
-    // await supabase.from('notifications').update({ read: true }).eq('user_id', userId)
-  }, [])
+    if (isSupabaseConnected) {
+      const { error } = await supabase
+        .from('notifications')
+        .update({ read: true })
+        .eq('id', id)
 
-  const addNotification = useCallback((notif: Omit<AppNotification, 'id' | 'createdAt'>) => {
-    const newNotif: AppNotification = {
-      ...notif,
-      id: `notif-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-      createdAt: new Date().toISOString(),
+      if (error) console.warn('Failed to mark as read in Supabase:', error.message)
     }
-    setNotifications(prev => [newNotif, ...prev])
-    // TODO: Supabase — insert notification
-    // await supabase.from('notifications').insert(newNotif)
-  }, [])
+  }, [isSupabaseConnected])
 
-  const removeNotification = useCallback((id: string) => {
+  const markAllAsRead = useCallback(async () => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })))
+
+    if (isSupabaseConnected && userId) {
+      const { error } = await supabase
+        .from('notifications')
+        .update({ read: true })
+        .eq('user_id', userId)
+        .eq('read', false)
+
+      if (error) console.warn('Failed to mark all as read in Supabase:', error.message)
+    }
+  }, [isSupabaseConnected, userId])
+
+  const addNotification = useCallback(async (notif: Omit<AppNotification, 'id' | 'createdAt'>) => {
+    if (isSupabaseConnected && userId) {
+      // Insert into Supabase (realtime will update local state)
+      const { data, error } = await supabase
+        .from('notifications')
+        .insert({
+          user_id: userId,
+          type: notif.type,
+          icon: notif.icon,
+          message: notif.message,
+          read: notif.read,
+          related_item_id: notif.relatedItemId || null,
+          related_item_type: notif.relatedItemType || null,
+        })
+        .select()
+        .single()
+
+      if (error) {
+        console.warn('Failed to insert notification in Supabase:', error.message)
+        // Fallback: add locally
+        const localNotif: AppNotification = {
+          ...notif,
+          id: `notif-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+          createdAt: new Date().toISOString(),
+        }
+        setNotifications(prev => [localNotif, ...prev])
+      } else if (data) {
+        // Realtime might not have fired yet, add optimistically
+        const mapped = mapFromSupabase(data as Record<string, unknown>)
+        setNotifications(prev => {
+          if (prev.some(n => n.id === mapped.id)) return prev
+          return [mapped, ...prev]
+        })
+      }
+    } else {
+      // localStorage mode
+      const newNotif: AppNotification = {
+        ...notif,
+        id: `notif-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+        createdAt: new Date().toISOString(),
+      }
+      setNotifications(prev => [newNotif, ...prev])
+    }
+  }, [isSupabaseConnected, userId])
+
+  const removeNotification = useCallback(async (id: string) => {
     setNotifications(prev => prev.filter(n => n.id !== id))
-    // TODO: Supabase — delete notification
-    // await supabase.from('notifications').delete().eq('id', id)
-  }, [])
 
-  const clearAll = useCallback(() => {
+    if (isSupabaseConnected) {
+      const { error } = await supabase
+        .from('notifications')
+        .delete()
+        .eq('id', id)
+
+      if (error) console.warn('Failed to delete notification in Supabase:', error.message)
+    }
+  }, [isSupabaseConnected])
+
+  const clearAll = useCallback(async () => {
     setNotifications([])
-    // TODO: Supabase — delete all for user
-    // await supabase.from('notifications').delete().eq('user_id', userId)
-  }, [])
 
-  // TODO: Supabase Realtime subscription
-  // useEffect(() => {
-  //   const channel = supabase
-  //     .channel('notifications')
-  //     .on('postgres_changes', {
-  //       event: 'INSERT',
-  //       schema: 'public',
-  //       table: 'notifications',
-  //       filter: `user_id=eq.${userId}`,
-  //     }, (payload) => {
-  //       setNotifications(prev => [payload.new as AppNotification, ...prev])
-  //     })
-  //     .subscribe()
-  //
-  //   return () => { supabase.removeChannel(channel) }
-  // }, [userId])
+    if (isSupabaseConnected && userId) {
+      const { error } = await supabase
+        .from('notifications')
+        .delete()
+        .eq('user_id', userId)
+
+      if (error) console.warn('Failed to clear notifications in Supabase:', error.message)
+    }
+  }, [isSupabaseConnected, userId])
 
   return (
     <NotificationContext.Provider value={{
@@ -160,47 +347,9 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       addNotification,
       removeNotification,
       clearAll,
+      isSupabaseConnected,
     }}>
       {children}
     </NotificationContext.Provider>
   )
 }
-
-// ─── Supabase Schema Reference ───────────────────────────
-// When connecting to Supabase, create this table:
-//
-// CREATE TABLE public.notifications (
-//   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-//   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-//   type TEXT NOT NULL CHECK (type IN ('comment','like','tip','milestone','welcome','system')),
-//   icon TEXT NOT NULL DEFAULT '💬',
-//   message TEXT NOT NULL,
-//   read BOOLEAN NOT NULL DEFAULT false,
-//   related_item_id TEXT,
-//   related_item_type TEXT CHECK (related_item_type IN ('recipe','activity','comment','post')),
-//   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-//   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
-// );
-//
-// -- RLS Policies
-// ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
-//
-// CREATE POLICY "Users can read own notifications"
-//   ON public.notifications FOR SELECT
-//   USING (auth.uid() = user_id);
-//
-// CREATE POLICY "Users can update own notifications"
-//   ON public.notifications FOR UPDATE
-//   USING (auth.uid() = user_id);
-//
-// CREATE POLICY "Users can delete own notifications"
-//   ON public.notifications FOR DELETE
-//   USING (auth.uid() = user_id);
-//
-// -- Only server/service role can insert notifications
-// CREATE POLICY "Service can insert notifications"
-//   ON public.notifications FOR INSERT
-//   WITH CHECK (true);
-//
-// -- Realtime
-// ALTER PUBLICATION supabase_realtime ADD TABLE public.notifications;
