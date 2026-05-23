@@ -331,7 +331,14 @@ export default function ProfilePage() {
                     <p className={`text-sm font-medium ${isActive ? 'text-tuki-rot' : isDone ? 'text-green-700' : 'text-gray-400'}`}>
                       {level.name}
                     </p>
-                    <p className="text-[10px] text-gray-400">{level.min} {t.common.stars}</p>
+                    <p className="text-[10px] text-gray-400">
+                      {isActive
+                        ? `${tukiStars.total} / ${LEVELS[i + 1]?.min ?? '∞'} ${t.common.stars}`
+                        : isDone
+                        ? `✓ ${level.min} ${t.common.stars}`
+                        : `${level.min} ${t.common.stars}`
+                      }
+                    </p>
                   </div>
                   {isActive && (
                     <span className="text-[10px] bg-tuki-rot text-white px-2 py-0.5 rounded-full font-medium">
