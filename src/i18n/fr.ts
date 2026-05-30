@@ -335,6 +335,36 @@ const fr: Translations = {
     deleteConfirmWord: 'SUPPRIMER',
     deleteForever: 'Supprimer définitivement',
   },
+
+  // Star Shop
+  starShop: {
+    title: 'Boutique étoiles',
+    all: 'Tout',
+    badges: 'Badges',
+    titles: 'Titres',
+    activities: 'Activités',
+    yourBalance: 'Ton solde',
+    totalEarned: 'Total gagné',
+    spent: 'Dépensé',
+    redeemed: 'Échangé !',
+    owned: 'Obtenu',
+    noStarsTitle: 'Pas encore d’étoiles',
+    noStarsDesc: 'Complète des recettes et activités pour gagner des étoiles !',
+    rewards: {
+      'badge-chef': { name: 'Badge Chef', desc: 'Montre ton talent culinaire' },
+      'badge-star': { name: 'Badge Superstar', desc: 'Tu es une superstar' },
+      'badge-rocket': { name: 'Badge Fusée', desc: 'Direction les étoiles' },
+      'badge-crown': { name: 'Badge Couronne', desc: 'Roi de la cuisine' },
+      'badge-rainbow': { name: 'Badge Arc-en-ciel', desc: 'Cuisiner en couleurs' },
+      'badge-heart': { name: 'Badge Cœur', desc: 'Cuisiné avec amour' },
+      'title-explorer': { name: 'Titre Explorateur', desc: 'Nouveau titre pour ton profil' },
+      'title-superchef': { name: 'Titre Superchef', desc: 'Le titre ultime' },
+      'activity-baking': { name: 'Aventure Pâtisserie', desc: 'Débloquer une activité bonus' },
+      'activity-painting': { name: 'Aventure Peinture', desc: 'Deviens créatif' },
+      'activity-garden': { name: 'Aventure Jardin', desc: 'Découvrir les plantes' },
+      'activity-music': { name: 'Aventure Musique', desc: 'Vivre le rythme' },
+    } as Record<string, { name: string; desc: string }>,
+  },
 }
 
 export default fr
