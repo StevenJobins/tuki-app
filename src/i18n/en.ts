@@ -335,6 +335,36 @@ const en: Translations = {
     deleteConfirmWord: 'DELETE',
     deleteForever: 'Delete forever',
   },
+
+  // Star Shop
+  starShop: {
+    title: 'Star Shop',
+    all: 'All',
+    badges: 'Badges',
+    titles: 'Titles',
+    activities: 'Activities',
+    yourBalance: 'Your Balance',
+    totalEarned: 'Total earned',
+    spent: 'Spent',
+    redeemed: 'Redeemed!',
+    owned: 'Owned',
+    noStarsTitle: 'No stars yet',
+    noStarsDesc: 'Complete recipes and activities to earn stars!',
+    rewards: {
+      'badge-chef': { name: 'Chef Badge', desc: 'Show your cooking talent' },
+      'badge-star': { name: 'Superstar Badge', desc: 'You are a superstar' },
+      'badge-rocket': { name: 'Rocket Badge', desc: 'Reach for the stars' },
+      'badge-crown': { name: 'Crown Badge', desc: 'King of the kitchen' },
+      'badge-rainbow': { name: 'Rainbow Badge', desc: 'Colourful cooking' },
+      'badge-heart': { name: 'Heart Badge', desc: 'Cooked with love' },
+      'title-explorer': { name: 'Explorer Title', desc: 'New title for your profile' },
+      'title-superchef': { name: 'Superchef Title', desc: 'The ultimate title' },
+      'activity-baking': { name: 'Baking Adventure', desc: 'Unlock bonus activity' },
+      'activity-painting': { name: 'Painting Adventure', desc: 'Get creative' },
+      'activity-garden': { name: 'Garden Adventure', desc: 'Discover plants' },
+      'activity-music': { name: 'Music Adventure', desc: 'Experience rhythm' },
+    } as Record<string, { name: string; desc: string }>,
+  },
 }
 
 export default en
