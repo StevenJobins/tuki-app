@@ -69,9 +69,9 @@ const en: Translations = {
     mittel: 'Medium',
     fortgeschritten: 'Advanced',
     filterAll: 'All',
-    filterEasy: 'â¡ Easy',
-    filterMedium: 'ð¥ Medium',
-    filterPro: 'ð Pro',
+    filterEasy: '⚡ Easy',
+    filterMedium: '🔥 Medium',
+    filterPro: '🌟 Pro',
   },
 
   // Home Page
@@ -126,7 +126,7 @@ const en: Translations = {
     },
     creative: {
       title: 'Creative expression',
-      text: 'Imagination is blooming! Stirring, kneading and decorating â your child loves to actively join in.',
+      text: 'Imagination is blooming! Stirring, kneading and decorating — your child loves to actively join in.',
     },
     explorer: {
       title: 'Little explorers',
@@ -140,13 +140,13 @@ const en: Translations = {
 
   // Daily Tips
   dailyTips: [
-    'Let your child fetch dinner ingredients from the fridge â in the Tuki they can reach everything at eye level.',
+    'Let your child fetch dinner ingredients from the fridge — in the Tuki they can reach everything at eye level.',
     'Children love rituals: a regular cooking time at weekends strengthens family bonds.',
-    'Tip: Name colours and shapes while cooking â your child learns naturally along the way.',
-    'Let your child set the table â it encourages counting, sorting and pride in their own achievement.',
+    'Tip: Name colours and shapes while cooking — your child learns naturally along the way.',
+    'Let your child set the table — it encourages counting, sorting and pride in their own achievement.',
     'Go grocery shopping together: let your child choose fruits and vegetables and use their senses.',
     'How about a picnic in the living room today? Children love creative eating spots!',
-    'Let your child help decide what to cook today â it increases the joy of eating.',
+    'Let your child help decide what to cook today — it increases the joy of eating.',
   ],
 
   // Levels
@@ -176,10 +176,10 @@ const en: Translations = {
     level: 'Level',
     servings: 'Servings',
     tukiTip: 'Tuki Tip',
-    ingredients: 'ð Ingredients',
-    preparation: 'ð©âð³ Preparation',
+    ingredients: '🛒 Ingredients',
+    preparation: '👩‍🍳 Preparation',
     completed: (stars: number) => `Done! +${stars} stars earned`,
-    completeButton: (stars: number) => `â­ Recipe done â earn ${stars} stars`,
+    completeButton: (stars: number) => `⭐ Recipe done — earn ${stars} stars`,
   },
 
   // Activities Page
@@ -196,18 +196,18 @@ const en: Translations = {
     backToActivities: 'Back to activities',
     stars: 'stars',
     tukiTip: 'Tuki Tip',
-    learningGoals: 'ð What your child learns',
-    materials: 'ð§° What you need',
-    steps: 'ð How to do it',
+    learningGoals: '🎓 What your child learns',
+    materials: '🧰 What you need',
+    steps: '📋 How to do it',
     completed: (stars: number) => `Done! +${stars} stars earned`,
-    completeButton: (stars: number) => `â­ Activity done â earn ${stars} stars`,
+    completeButton: (stars: number) => `⭐ Activity done — earn ${stars} stars`,
   },
 
   // Activity Categories
   categories: {
     motorik: 'Motor Skills',
     sensorik: 'Sensory',
-    kreativitÃ¤t: 'Creativity',
+    kreativität: 'Creativity',
     sprache: 'Language',
     mathe: 'Numbers & Logic',
     natur: 'Nature & Knowledge',
@@ -216,15 +216,15 @@ const en: Translations = {
   // Development Page
   development: {
     title: 'Development',
-    disclaimer: 'ð Every child develops at their own pace. These milestones serve as a guide â not a checklist. If you have questions, talk to your paediatrician.',
+    disclaimer: '📋 Every child develops at their own pace. These milestones serve as a guide — not a checklist. If you have questions, talk to your paediatrician.',
     achieved: (count: number, total: number) => `${count}/${total} achieved`,
-    allAchieved: 'ð All milestones of this phase achieved!',
+    allAchieved: '🎉 All milestones of this phase achieved!',
     ageGroups: ['12-18 mo.', '18-24 mo.', '2-3 years', '3-5 years'],
     milestoneCategories: {
       motorik: 'Motor Skills',
       feinmotorik: 'Fine Motor Skills',
       sprache: 'Language',
-      selbststÃ¤ndigkeit: 'Independence',
+      selbstständigkeit: 'Independence',
       kognition: 'Cognition',
       sozial: 'Social',
     },
@@ -233,8 +233,8 @@ const en: Translations = {
   // Community Page
   community: {
     title: 'Community',
-    feedTab: 'ð± Feed',
-    clubTab: 'ð Join Tuki Club',
+    feedTab: '📱 Feed',
+    clubTab: '🔒 Join Tuki Club',
     timeAgo: {
       hours: (n: number) => `${n}h ago`,
       days: (n: number) => n === 1 ? '1 day ago' : `${n} days ago`,
@@ -243,7 +243,7 @@ const en: Translations = {
       rezept: 'Recipe',
       tipp: 'Tip',
       frage: 'Question',
-      aktivitÃ¤t: 'Activity',
+      aktivität: 'Activity',
     } as Record<string, string>,
     share: 'Share',
     clubTitle: 'Tuki Family Club',
