@@ -20,6 +20,11 @@ const de = {
     activities: 'Aktivitäten',
     community: 'Community',
     profile: 'Profil',
+    favorites: 'Favoriten',
+    weeklyPlan: 'Wochenplan',
+    fridgeCheck: 'Zutaten-Check',
+    development: 'Entwicklung',
+    starShop: 'Sterne-Shop',
   },
 
   // Common
