@@ -1,6 +1,20 @@
 import type { Translations } from './de'
 
 const en: Translations = {
+  // Step-by-Step Mode
+  stepMode: {
+    startCooking: 'Start cooking mode',
+    startActivity: 'Start activity',
+    step: 'Step',
+    next: 'Next',
+    back: 'Back',
+    done: 'Done',
+    stepDone: 'Completed',
+    stepsCompleted: 'steps completed',
+    finish: (stars: number) => `Done! Earn +${stars} stars`,
+    alreadyCompleted: 'Already completed',
+  },
+
   // Navigation
   nav: {
     home: 'Home',
@@ -8,11 +22,6 @@ const en: Translations = {
     activities: 'Activities',
     community: 'Community',
     profile: 'Profile',
-        favorites: 'Favorites',
-        weeklyPlan: 'Weekly Plan',
-        fridgeCheck: 'Fridge Check',
-        development: 'Development',
-        starShop: 'Star Shop',
   },
 
   // Common
@@ -60,9 +69,9 @@ const en: Translations = {
     mittel: 'Medium',
     fortgeschritten: 'Advanced',
     filterAll: 'All',
-    filterEasy: '⚡ Easy',
-    filterMedium: '🔥 Medium',
-    filterPro: '🌟 Pro',
+    filterEasy: 'â¡ Easy',
+    filterMedium: 'ð¥ Medium',
+    filterPro: 'ð Pro',
   },
 
   // Home Page
@@ -117,7 +126,7 @@ const en: Translations = {
     },
     creative: {
       title: 'Creative expression',
-      text: 'Imagination is blooming! Stirring, kneading and decorating — your child loves to actively join in.',
+      text: 'Imagination is blooming! Stirring, kneading and decorating â your child loves to actively join in.',
     },
     explorer: {
       title: 'Little explorers',
@@ -131,13 +140,13 @@ const en: Translations = {
 
   // Daily Tips
   dailyTips: [
-    'Let your child fetch dinner ingredients from the fridge — in the Tuki they can reach everything at eye level.',
+    'Let your child fetch dinner ingredients from the fridge â in the Tuki they can reach everything at eye level.',
     'Children love rituals: a regular cooking time at weekends strengthens family bonds.',
-    'Tip: Name colours and shapes while cooking — your child learns naturally along the way.',
-    'Let your child set the table — it encourages counting, sorting and pride in their own achievement.',
+    'Tip: Name colours and shapes while cooking â your child learns naturally along the way.',
+    'Let your child set the table â it encourages counting, sorting and pride in their own achievement.',
     'Go grocery shopping together: let your child choose fruits and vegetables and use their senses.',
     'How about a picnic in the living room today? Children love creative eating spots!',
-    'Let your child help decide what to cook today — it increases the joy of eating.',
+    'Let your child help decide what to cook today â it increases the joy of eating.',
   ],
 
   // Levels
@@ -167,10 +176,10 @@ const en: Translations = {
     level: 'Level',
     servings: 'Servings',
     tukiTip: 'Tuki Tip',
-    ingredients: '🛒 Ingredients',
-    preparation: '👩‍🍳 Preparation',
+    ingredients: 'ð Ingredients',
+    preparation: 'ð©âð³ Preparation',
     completed: (stars: number) => `Done! +${stars} stars earned`,
-    completeButton: (stars: number) => `⭐ Recipe done — earn ${stars} stars`,
+    completeButton: (stars: number) => `â­ Recipe done â earn ${stars} stars`,
   },
 
   // Activities Page
@@ -187,18 +196,18 @@ const en: Translations = {
     backToActivities: 'Back to activities',
     stars: 'stars',
     tukiTip: 'Tuki Tip',
-    learningGoals: '🎓 What your child learns',
-    materials: '🧰 What you need',
-    steps: '📋 How to do it',
+    learningGoals: 'ð What your child learns',
+    materials: 'ð§° What you need',
+    steps: 'ð How to do it',
     completed: (stars: number) => `Done! +${stars} stars earned`,
-    completeButton: (stars: number) => `⭐ Activity done — earn ${stars} stars`,
+    completeButton: (stars: number) => `â­ Activity done â earn ${stars} stars`,
   },
 
   // Activity Categories
   categories: {
     motorik: 'Motor Skills',
     sensorik: 'Sensory',
-    kreativität: 'Creativity',
+    kreativitÃ¤t: 'Creativity',
     sprache: 'Language',
     mathe: 'Numbers & Logic',
     natur: 'Nature & Knowledge',
@@ -207,15 +216,15 @@ const en: Translations = {
   // Development Page
   development: {
     title: 'Development',
-    disclaimer: '📋 Every child develops at their own pace. These milestones serve as a guide — not a checklist. If you have questions, talk to your paediatrician.',
+    disclaimer: 'ð Every child develops at their own pace. These milestones serve as a guide â not a checklist. If you have questions, talk to your paediatrician.',
     achieved: (count: number, total: number) => `${count}/${total} achieved`,
-    allAchieved: '🎉 All milestones of this phase achieved!',
+    allAchieved: 'ð All milestones of this phase achieved!',
     ageGroups: ['12-18 mo.', '18-24 mo.', '2-3 years', '3-5 years'],
     milestoneCategories: {
       motorik: 'Motor Skills',
       feinmotorik: 'Fine Motor Skills',
       sprache: 'Language',
-      selbstständigkeit: 'Independence',
+      selbststÃ¤ndigkeit: 'Independence',
       kognition: 'Cognition',
       sozial: 'Social',
     },
@@ -224,8 +233,8 @@ const en: Translations = {
   // Community Page
   community: {
     title: 'Community',
-    feedTab: '📱 Feed',
-    clubTab: '🔒 Join Tuki Club',
+    feedTab: 'ð± Feed',
+    clubTab: 'ð Join Tuki Club',
     timeAgo: {
       hours: (n: number) => `${n}h ago`,
       days: (n: number) => n === 1 ? '1 day ago' : `${n} days ago`,
@@ -234,7 +243,7 @@ const en: Translations = {
       rezept: 'Recipe',
       tipp: 'Tip',
       frage: 'Question',
-      aktivität: 'Activity',
+      aktivitÃ¤t: 'Activity',
     } as Record<string, string>,
     share: 'Share',
     clubTitle: 'Tuki Family Club',
@@ -287,68 +296,39 @@ const en: Translations = {
       birthDate: 'Date of birth',
     },
   },
+
   // Account Settings
   accountSettings: {
     title: 'Account Settings',
     profileSection: 'Profile',
-    changeAvatar: 'Change Avatar',
-    tapToChange: 'Tap to Change',
-    displayName: 'Display Name',
+    changeAvatar: 'Change avatar',
+    tapToChange: 'Tap to change',
+    displayName: 'Display name',
     namePlaceholder: 'Enter name',
-    saveProfile: 'Save Profile',
-    emailSection: 'Email Address',
-    currentEmail: 'Current Email',
-    newEmail: 'New Email',
+    saveProfile: 'Save profile',
+    emailSection: 'Email address',
+    currentEmail: 'Current email',
+    newEmail: 'New email',
     newEmailPlaceholder: 'new@email.com',
-    changeEmail: 'Change Email',
+    changeEmail: 'Change email',
     emailSuccess: 'Confirmation email sent! Please check your inbox.',
     passwordSection: 'Password',
-    currentPassword: 'Current Password',
-    newPassword: 'New Password',
+    currentPassword: 'Current password',
+    newPassword: 'New password',
     newPasswordPlaceholder: 'Min. 6 characters',
-    confirmPassword: 'Confirm Password',
+    confirmPassword: 'Confirm password',
     confirmPasswordPlaceholder: 'Enter again',
-    changePassword: 'Change Password',
+    changePassword: 'Change password',
     passwordSuccess: 'Password changed successfully!',
     passwordTooShort: 'Password must be at least 6 characters.',
     passwordMismatch: 'Passwords do not match.',
-    logout: 'Sign Out',
-    dangerZone: 'Danger Zone',
-    deleteWarning: 'Deleting your account will permanently remove all your data, favorites, and progress.',
-    deleteAccount: 'Delete Account',
+    logout: 'Log out',
+    dangerZone: 'Danger zone',
+    deleteWarning: 'Deleting your account will permanently remove all your data, favourites and progress.',
+    deleteAccount: 'Delete account',
     deleteConfirmPrompt: 'Type "{word}" to confirm:',
     deleteConfirmWord: 'DELETE',
-    deleteForever: 'Delete Forever',
-  },
-
-  // Star Shop
-  starShop: {
-    title: 'Star Shop',
-    all: 'All',
-    badges: 'Badges',
-    titles: 'Titles',
-    activities: 'Activities',
-    yourBalance: 'Your Balance',
-    totalEarned: 'Total earned',
-    spent: 'Spent',
-    redeemed: 'Redeemed!',
-    owned: 'Owned',
-    noStarsTitle: 'No stars yet',
-    noStarsDesc: 'Complete recipes and activities to earn stars!',
-    rewards: {
-      'badge-chef': { name: 'Chef Badge', desc: 'Show your cooking talent' },
-      'badge-star': { name: 'Superstar Badge', desc: 'You are a superstar' },
-      'badge-rocket': { name: 'Rocket Badge', desc: 'To the stars' },
-      'badge-crown': { name: 'Crown Badge', desc: 'King of the kitchen' },
-      'badge-rainbow': { name: 'Rainbow Badge', desc: 'Colorful cooking' },
-      'badge-heart': { name: 'Heart Badge', desc: 'Cooked with love' },
-      'title-explorer': { name: 'Explorer Title', desc: 'New title for your profile' },
-      'title-superchef': { name: 'Superchef Title', desc: 'The ultimate title' },
-      'activity-baking': { name: 'Baking Adventure', desc: 'Unlock bonus activity' },
-      'activity-painting': { name: 'Painting Adventure', desc: 'Get creative' },
-      'activity-garden': { name: 'Garden Adventure', desc: 'Discover plants' },
-      'activity-music': { name: 'Music Adventure', desc: 'Experience rhythm' },
-    } as Record<string, { name: string; desc: string }>,
+    deleteForever: 'Delete forever',
   },
 }
 
