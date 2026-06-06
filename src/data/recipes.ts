@@ -303,6 +303,7 @@ export const recipes: Recipe[] = [
     season: ['ganzjährig'],
     servings: 4,
     tags: ['Snack', 'Gesund', 'Gemüse'],
+    diet: 'vegan',
     ingredients: [
       { amount: '2', item: 'Karotten' },
       { amount: '1', item: 'Gurke' },
