@@ -158,7 +158,7 @@ export default function StepByStepMode({
             {step.tip && (
               <div className="w-full max-w-md mt-6 bg-yellow-50 dark:bg-yellow-900/20 rounded-2xl p-4 border border-yellow-200/50 dark:border-yellow-700/30">
                 <p className="text-sm text-yellow-700 dark:text-yellow-300 text-center">
-                  ð¡ {step.tip}
+                  💡 {step.tip}
                 </p>
               </div>
             )}
@@ -170,7 +170,7 @@ export default function StepByStepMode({
                 animate={{ scale: 1 }}
                 className="mt-6 flex items-center gap-2 text-green-600"
               >
-                <span className="text-xl">â</span>
+                <span className="text-xl">✅</span>
                 <span className="text-sm font-medium">{t.stepMode.stepDone}</span>
               </motion.div>
             )}
@@ -195,9 +195,9 @@ export default function StepByStepMode({
             }`}
           >
             {isCompleted ? (
-              <>ð {t.stepMode.alreadyCompleted}</>
+              <>🎉 {t.stepMode.alreadyCompleted}</>
             ) : (
-              <>ð {t.stepMode.finish(stars)}</>
+              <>🎉 {t.stepMode.finish(stars)}</>
             )}
           </motion.button>
         ) : (
@@ -212,13 +212,13 @@ export default function StepByStepMode({
                   : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'
               }`}
             >
-              â {t.stepMode.back}
+              ← {t.stepMode.back}
             </button>
             <button
               onClick={goNext}
               className={`flex-[2] py-4 rounded-2xl font-semibold text-sm text-white ${gradientClass} shadow-lg`}
             >
-              {isLastStep ? t.stepMode.done + ' â' : t.stepMode.next + ' â'}
+              {isLastStep ? t.stepMode.done + ' ✓' : t.stepMode.next + ' →'}
             </button>
           </div>
         )}
