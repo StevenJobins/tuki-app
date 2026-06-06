@@ -113,7 +113,7 @@ export default function RecipesPage() {
       {/* Diet Filter */}
       <div className="flex gap-2 px-4 mb-4 overflow-x-auto no-scrollbar">
         {[
-          { value: 'all', label: t.recipesPage.filterAll },
+          { value: 'all', label: t.difficulty.filterAll },
           { value: 'vegetarisch', label: '🥚 Vegetarisch' },
           { value: 'vegan', label: '🌱 Vegan' },
         ].map(d => (
