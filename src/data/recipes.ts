@@ -1624,7 +1624,7 @@ export const recipes: Recipe[] = [
     title: 'Zucchini-Puffer',
     subtitle: 'Knusprig goldbraun mit Kräuterquark',
     emoji: '🥒',
-    image: 'https://images.unsplash.com/photo-1691948105877-766dd9604d57?w=600&h=400&fit=crop',
+    image: 'https://images.unsplash.com/photo-1607095591644-9f97a2099c92?w=600&h=400&fit=crop',
     duration: 25,
     difficulty: 'leicht',
     ageRange: [2, 7],
