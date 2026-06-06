@@ -30,6 +30,13 @@ export default function RecipeCard({ recipe, size = 'normal' }: RecipeCardProps)
         <div className="absolute top-3 right-3">
           <FavoriteButton id={recipe.id} />
         </div>
+        <div className="absolute top-3 left-3 flex gap-1">
+          {recipe.diet && (
+            <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${recipe.diet === 'vegan' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+              {recipe.diet === 'vegan' ? '🌱 Vegan' : '🥚 Vegetarisch'}
+            </span>
+          )}
+        </div>
         <div className="absolute bottom-0 left-0 right-0 p-4">
           <div className="flex items-center gap-2 mb-1">
             <span className="text-xl">{recipe.emoji}</span>
@@ -66,6 +73,11 @@ export default function RecipeCard({ recipe, size = 'normal' }: RecipeCardProps)
               {tag}
             </span>
           ))}
+          {recipe.diet && (
+            <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${recipe.diet === 'vegan' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+              {recipe.diet === 'vegan' ? '🌱 Vegan' : '🥚 Vegetarisch'}
+            </span>
+          )}
         </div>
       </div>
       <div className="p-3">
