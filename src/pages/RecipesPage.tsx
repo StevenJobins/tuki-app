@@ -24,6 +24,7 @@ export default function RecipesPage() {
   const autoAgeFilter = childAge !== null ? getAgeRange(childAge) : 'all'
   const [ageFilter, setAgeFilter] = useState(autoAgeFilter)
   const [diffFilter, setDiffFilter] = useState('all')
+  const [dietFilter, setDietFilter] = useState('all')
   const [search, setSearch] = useState('')
 
   const filtered = recipes.filter(r => {
@@ -32,6 +33,7 @@ export default function RecipesPage() {
       if (r.ageRange[0] > max || r.ageRange[1] < min) return false
     }
     if (diffFilter !== 'all' && r.difficulty !== diffFilter) return false
+    if (dietFilter !== 'all' && r.diet !== dietFilter) return false
     if (search) {
       const s = search.toLowerCase()
       return r.title.toLowerCase().includes(s) || r.tags.some(t => t.toLowerCase().includes(s))
@@ -101,6 +103,27 @@ export default function RecipesPage() {
               diffFilter === d.value
                 ? 'bg-tuki-mint text-tuki-rot-dark'
                 : 'bg-gray-100 text-gray-500'
+            }`}
+          >
+            {d.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Diet Filter */}
+      <div className="flex gap-2 px-4 mb-4 overflow-x-auto no-scrollbar">
+        {[
+          { value: 'all', label: t.recipesPage.filterAll },
+          { value: 'vegetarisch', label: '🥚 Vegetarisch' },
+          { value: 'vegan', label: '🌱 Vegan' },
+        ].map(d => (
+          <button
+            key={d.value}
+            onClick={() => setDietFilter(d.value)}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${
+              dietFilter === d.value
+                ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300'
+                : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400'
             }`}
           >
             {d.label}
