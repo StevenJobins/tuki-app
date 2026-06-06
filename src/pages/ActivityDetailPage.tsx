@@ -20,7 +20,7 @@ export default function ActivityDetailPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <span className="text-4xl block mb-3">ð¤</span>
+          <span className="text-4xl block mb-3">🤔</span>
           <p className="text-gray-500">{t.activityDetail.notFound}</p>
           <button onClick={() => navigate('/aktivitaeten')} className="text-tuki-rot text-sm mt-2">
             {t.activityDetail.backToActivities}
@@ -63,19 +63,19 @@ export default function ActivityDetailPage() {
       {/* Quick Info */}
       <div className="flex justify-around py-4 bg-white border-b border-gray-100">
         <div className="text-center">
-          <span className="text-lg">â±ï¸</span>
+          <span className="text-lg">⏱️</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5">{activity.duration} {t.common.min}</p>
         </div>
         <div className="text-center">
-          <span className="text-lg">ð¶</span>
+          <span className="text-lg">👶</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5">{activity.ageRange[0]}-{activity.ageRange[1]} J.</p>
         </div>
         <div className="text-center">
-          <span className="text-lg">ð</span>
+          <span className="text-lg">📊</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5 capitalize">{t.difficulty[activity.difficulty]}</p>
         </div>
         <div className="text-center">
-          <span className="text-lg">â­</span>
+          <span className="text-lg">⭐</span>
           <p className="text-xs font-semibold text-gray-700 mt-0.5">{activity.stars} {t.activityDetail.stars}</p>
         </div>
       </div>
@@ -99,7 +99,7 @@ export default function ActivityDetailPage() {
         <div className="flex flex-wrap gap-2">
           {activity.learningGoals.map((goal, i) => (
             <span key={i} className="bg-green-50 text-green-700 text-xs font-medium px-3 py-1.5 rounded-full border border-green-100">
-              â {goal}
+              ✓ {goal}
             </span>
           ))}
         </div>
@@ -114,7 +114,7 @@ export default function ActivityDetailPage() {
               key={i}
               className={`flex items-center gap-3 px-4 py-3 ${i < activity.materials.length - 1 ? 'border-b border-gray-50' : ''}`}
             >
-              <span className="text-tuki-mint-dark">â</span>
+              <span className="text-tuki-mint-dark">●</span>
               <span className="text-sm text-gray-600">{mat}</span>
             </div>
           ))}
@@ -128,7 +128,7 @@ export default function ActivityDetailPage() {
           onClick={() => setShowActivityMode(true)}
           className="w-full py-3.5 rounded-2xl font-semibold text-sm gradient-mint text-tuki-rot-dark shadow-lg flex items-center justify-center gap-2"
         >
-          ð {t.stepMode.startActivity}
+          🚀 {t.stepMode.startActivity}
         </motion.button>
       </div>
 
@@ -151,7 +151,7 @@ export default function ActivityDetailPage() {
                 <p className="text-sm text-gray-700 leading-relaxed">{step.text}</p>
                 {step.tip && (
                   <div className="mt-2 bg-yellow-50 rounded-lg p-2.5 border border-yellow-200/50">
-                    <p className="text-xs text-yellow-700">ð¡ {step.tip}</p>
+                    <p className="text-xs text-yellow-700">💡 {step.tip}</p>
                   </div>
                 )}
               </div>
@@ -173,9 +173,9 @@ export default function ActivityDetailPage() {
           }`}
         >
           {isCompleted ? (
-            <>â {t.activityDetail.completed(activity.stars)}</>
+            <>✅ {t.activityDetail.completed(activity.stars)}</>
           ) : (
-            <>â­ {t.activityDetail.completeButton(activity.stars)}</>
+            <>⭐ {t.activityDetail.completeButton(activity.stars)}</>
           )}
         </motion.button>
       </div>
