@@ -1,7 +1,8 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Header from '../components/Header'
 import { useTranslation } from '../i18n/useTranslation'
+import { supabase } from '../lib/supabaseClient'
 
 interface Comment {
   id: string
@@ -21,11 +22,40 @@ interface CommunityPost {
   likes: number
   comments: Comment[]
   tag: string
+  profileId?: string
 }
 
-const posts: CommunityPost[] = [
+// ─── Helpers ────────────────────────────────────────────────
+function formatTimeAgo(dateStr: string): string {
+  const date = new Date(dateStr)
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffMin = Math.floor(diffMs / 60000)
+  const diffHr = Math.floor(diffMs / 3600000)
+  const diffDay = Math.floor(diffMs / 86400000)
+
+  if (diffMin < 1) return 'gerade eben'
+  if (diffMin < 60) return `vor ${diffMin} Min.`
+  if (diffHr === 1) return 'vor 1 Std.'
+  if (diffHr < 24) return `vor ${diffHr} Std.`
+  if (diffDay === 1) return 'vor 1 Tag'
+  if (diffDay < 7) return `vor ${diffDay} Tagen`
+  if (diffDay < 30) {
+    const weeks = Math.floor(diffDay / 7)
+    return weeks === 1 ? 'vor 1 Woche' : `vor ${weeks} Wochen`
+  }
+  return date.toLocaleDateString('de-CH')
+}
+
+function isDbPost(id: string): boolean {
+  // DB posts have UUID format (contains multiple dashes, length ~36)
+  return id.length > 10 && id.split('-').length >= 4
+}
+
+// ─── Seed Posts (Demo Content) ──────────────────────────────
+const seedPosts: CommunityPost[] = [
   {
-    id: '1',
+    id: 'seed-1',
     author: 'Alena Z.',
     avatar: '\u{1F469}‍\u{1F9B0}',
     timeAgo: 'vor 2 Std.',
@@ -40,7 +70,7 @@ const posts: CommunityPost[] = [
     tag: 'Rezept',
   },
   {
-    id: '2',
+    id: 'seed-2',
     author: 'Marco B.',
     avatar: '\u{1F468}',
     timeAgo: 'vor 5 Std.',
@@ -55,7 +85,7 @@ const posts: CommunityPost[] = [
     tag: 'Tipp',
   },
   {
-    id: '3',
+    id: 'seed-3',
     author: 'Sarah K.',
     avatar: '\u{1F469}',
     timeAgo: 'vor 1 Tag',
@@ -69,7 +99,7 @@ const posts: CommunityPost[] = [
     tag: 'Rezept',
   },
   {
-    id: '4',
+    id: 'seed-4',
     author: 'Julia H.',
     avatar: '\u{1F469}‍\u{1F9B1}',
     timeAgo: 'vor 2 Tagen',
@@ -85,7 +115,7 @@ const posts: CommunityPost[] = [
     tag: 'Frage',
   },
   {
-    id: '5',
+    id: 'seed-5',
     author: 'Thomas M.',
     avatar: '\u{1F468}‍\u{1F9B2}',
     timeAgo: 'vor 3 Tagen',
@@ -142,12 +172,138 @@ export default function CommunityPage() {
   const [isClubMember, setIsClubMember] = useState(loadClubMembership)
   const [showWelcome, setShowWelcome] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
-  // New post state
   const [showNewPost, setShowNewPost] = useState(false)
   const [newPostText, setNewPostText] = useState('')
   const [newPostTag, setNewPostTag] = useState('Tipp')
-  const [userPosts, setUserPosts] = useState<CommunityPost[]>([])
 
+  // ─── Supabase State ─────────────────────────────────────
+  const [dbPosts, setDbPosts] = useState<CommunityPost[]>([])
+  const [userId, setUserId] = useState<string | null>(null)
+  const [userDisplayName, setUserDisplayName] = useState('Meine Familie')
+  const [userAvatar, setUserAvatar] = useState('\u{1F9D1}')
+  const [dbLikedPostIds, setDbLikedPostIds] = useState<string[]>([])
+
+  // ─── Fetch from Supabase on mount ───────────────────────
+  useEffect(() => {
+    let cancelled = false
+
+    async function init() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user || cancelled) return
+      setUserId(user.id)
+
+      // Fetch profile
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('display_name, avatar_emoji')
+        .eq('id', user.id)
+        .single()
+
+      if (profile && !cancelled) {
+        setUserDisplayName(profile.display_name || 'Meine Familie')
+        setUserAvatar(profile.avatar_emoji || '\u{1F9D1}')
+      }
+
+      // Fetch all community posts
+      const { data: posts, error: postsError } = await supabase
+        .from('community_posts')
+        .select('id, profile_id, content, image_url, tag, created_at')
+        .order('created_at', { ascending: false })
+
+      if (postsError || !posts || cancelled) return
+
+      // Fetch author profiles for all posts
+      const profileIds = [...new Set(posts.map(p => p.profile_id))]
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, display_name, avatar_emoji')
+        .in('id', profileIds)
+
+      const profileMap = new Map(
+        (profiles || []).map(p => [p.id, p])
+      )
+
+      // Fetch all comments for these posts
+      const postIds = posts.map(p => p.id)
+      const { data: comments } = postIds.length > 0
+        ? await supabase
+            .from('post_comments')
+            .select('id, post_id, profile_id, content, created_at')
+            .in('post_id', postIds)
+            .order('created_at', { ascending: true })
+        : { data: [] }
+
+      // Fetch comment author profiles
+      const commentProfileIds = [...new Set((comments || []).map(c => c.profile_id))]
+      const newProfileIds = commentProfileIds.filter(id => !profileMap.has(id))
+      if (newProfileIds.length > 0) {
+        const { data: commentProfiles } = await supabase
+          .from('profiles')
+          .select('id, display_name, avatar_emoji')
+          .in('id', newProfileIds)
+        ;(commentProfiles || []).forEach(p => profileMap.set(p.id, p))
+      }
+
+      // Fetch like counts per post
+      const { data: allLikes } = postIds.length > 0
+        ? await supabase.from('post_likes').select('post_id').in('post_id', postIds)
+        : { data: [] }
+
+      const likeCounts = new Map<string, number>()
+      ;(allLikes || []).forEach(l => {
+        likeCounts.set(l.post_id, (likeCounts.get(l.post_id) || 0) + 1)
+      })
+
+      // Fetch user's own likes
+      const { data: myLikes } = await supabase
+        .from('post_likes')
+        .select('post_id')
+        .eq('profile_id', user.id)
+
+      if (!cancelled) {
+        setDbLikedPostIds((myLikes || []).map(l => l.post_id))
+
+        // Map posts to CommunityPost format
+        const mapped: CommunityPost[] = posts.map(p => {
+          const authorProfile = profileMap.get(p.profile_id)
+          const isOwnPost = p.profile_id === user.id
+          const postComments = (comments || [])
+            .filter(c => c.post_id === p.id)
+            .map(c => {
+              const commentProfile = profileMap.get(c.profile_id)
+              const isOwnComment = c.profile_id === user.id
+              return {
+                id: c.id,
+                author: isOwnComment ? 'Du' : (commentProfile?.display_name || 'Tuki Familie'),
+                avatar: commentProfile?.avatar_emoji || '\u{1F9D1}',
+                timeAgo: formatTimeAgo(c.created_at),
+                text: c.content,
+              }
+            })
+
+          return {
+            id: p.id,
+            author: isOwnPost ? 'Du' : (authorProfile?.display_name || 'Tuki Familie'),
+            avatar: authorProfile?.avatar_emoji || '\u{1F9D1}',
+            timeAgo: formatTimeAgo(p.created_at),
+            content: p.content,
+            image: p.image_url || undefined,
+            likes: likeCounts.get(p.id) || 0,
+            comments: postComments,
+            tag: p.tag,
+            profileId: p.profile_id,
+          }
+        })
+
+        setDbPosts(mapped)
+      }
+    }
+
+    init()
+    return () => { cancelled = true }
+  }, [])
+
+  // ─── Club ───────────────────────────────────────────────
   const handleJoinClub = () => {
     setIsClubMember(true)
     saveClubMembership(true)
@@ -161,10 +317,37 @@ export default function CommunityPage() {
     setActiveTab('feed')
   }
 
-  const toggleLike = (id: string) => {
-    setLiked(l => l.includes(id) ? l.filter(x => x !== id) : [...l, id])
-  }
+  // ─── Like ───────────────────────────────────────────────
+  const toggleLike = useCallback(async (id: string) => {
+    const isCurrentlyLiked = liked.includes(id) || dbLikedPostIds.includes(id)
 
+    if (isDbPost(id) && userId) {
+      // Optimistic update
+      if (isCurrentlyLiked) {
+        setDbLikedPostIds(prev => prev.filter(x => x !== id))
+        setDbPosts(prev => prev.map(p =>
+          p.id === id ? { ...p, likes: Math.max(0, p.likes - 1) } : p
+        ))
+        // Delete from Supabase
+        await supabase.from('post_likes').delete()
+          .eq('post_id', id).eq('profile_id', userId)
+      } else {
+        setDbLikedPostIds(prev => [...prev, id])
+        setDbPosts(prev => prev.map(p =>
+          p.id === id ? { ...p, likes: p.likes + 1 } : p
+        ))
+        // Insert into Supabase
+        await supabase.from('post_likes').insert({
+          post_id: id, profile_id: userId,
+        })
+      }
+    } else {
+      // Seed post: local only
+      setLiked(l => l.includes(id) ? l.filter(x => x !== id) : [...l, id])
+    }
+  }, [liked, dbLikedPostIds, userId])
+
+  // ─── Comments ───────────────────────────────────────────
   const toggleComments = (id: string) => {
     setExpandedComments(prev =>
       prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
@@ -174,47 +357,136 @@ export default function CommunityPage() {
     }, 300)
   }
 
-  const handleAddComment = (postId: string) => {
+  const handleAddComment = useCallback(async (postId: string) => {
     const text = (commentText[postId] || '').trim()
     if (!text) return
 
     const comment: Comment = {
       id: `new-${Date.now()}`,
       author: 'Du',
-      avatar: '\u{1F9D1}',
-      timeAgo: t.community.commentJustNow,
+      avatar: userAvatar,
+      timeAgo: 'gerade eben',
       text,
     }
 
-    setNewComments(prev => ({
-      ...prev,
-      [postId]: [...(prev[postId] || []), comment],
-    }))
-    setCommentText(prev => ({ ...prev, [postId]: '' }))
-  }
+    if (isDbPost(postId) && userId) {
+      // Optimistic local update
+      setDbPosts(prev => prev.map(p =>
+        p.id === postId
+          ? { ...p, comments: [...p.comments, comment] }
+          : p
+      ))
+      setCommentText(prev => ({ ...prev, [postId]: '' }))
 
-  const handleNewPost = () => {
-    if (!newPostText.trim()) return
-    const post: CommunityPost = {
-      id: `user-${Date.now()}`,
-      author: 'Du',
-      avatar: '\u{1F9D1}',
-      timeAgo: t.community.commentJustNow,
-      content: newPostText.trim(),
-      likes: 0,
-      comments: [],
-      tag: newPostTag,
+      // Save to Supabase
+      const { data, error } = await supabase.from('post_comments').insert({
+        post_id: postId,
+        profile_id: userId,
+        content: text,
+      }).select('id').single()
+
+      // Update local comment with real ID
+      if (data && !error) {
+        setDbPosts(prev => prev.map(p =>
+          p.id === postId
+            ? {
+                ...p,
+                comments: p.comments.map(c =>
+                  c.id === comment.id ? { ...c, id: data.id } : c
+                ),
+              }
+            : p
+        ))
+      }
+    } else {
+      // Seed post: local only
+      setNewComments(prev => ({
+        ...prev,
+        [postId]: [...(prev[postId] || []), comment],
+      }))
+      setCommentText(prev => ({ ...prev, [postId]: '' }))
     }
-    setUserPosts(prev => [post, ...prev])
-    setNewPostText('')
-    setShowNewPost(false)
-  }
+  }, [commentText, userId, userAvatar])
 
+  // ─── New Post ───────────────────────────────────────────
+  const handleNewPost = useCallback(async () => {
+    if (!newPostText.trim()) return
+
+    if (userId) {
+      // Optimistic local add
+      const tempId = `temp-${Date.now()}`
+      const post: CommunityPost = {
+        id: tempId,
+        author: 'Du',
+        avatar: userAvatar,
+        timeAgo: 'gerade eben',
+        content: newPostText.trim(),
+        likes: 0,
+        comments: [],
+        tag: newPostTag,
+        profileId: userId,
+      }
+      setDbPosts(prev => [post, ...prev])
+      setNewPostText('')
+      setShowNewPost(false)
+
+      // Save to Supabase
+      const { data, error } = await supabase.from('community_posts').insert({
+        profile_id: userId,
+        content: newPostText.trim(),
+        tag: newPostTag,
+      }).select('id, created_at').single()
+
+      // Update local post with real ID
+      if (data && !error) {
+        setDbPosts(prev => prev.map(p =>
+          p.id === tempId ? { ...p, id: data.id, timeAgo: formatTimeAgo(data.created_at) } : p
+        ))
+      } else if (error) {
+        console.warn('Failed to save post to Supabase:', error.message)
+      }
+    } else {
+      // No auth: local only (shouldn't happen in normal flow)
+      const post: CommunityPost = {
+        id: `local-${Date.now()}`,
+        author: 'Du',
+        avatar: '\u{1F9D1}',
+        timeAgo: 'gerade eben',
+        content: newPostText.trim(),
+        likes: 0,
+        comments: [],
+        tag: newPostTag,
+      }
+      setDbPosts(prev => [post, ...prev])
+      setNewPostText('')
+      setShowNewPost(false)
+    }
+  }, [newPostText, newPostTag, userId, userAvatar])
+
+  // ─── Computed ───────────────────────────────────────────
   const getAllComments = (post: CommunityPost): Comment[] => {
+    // For DB posts, comments are already in the post object
+    if (isDbPost(post.id) || post.id.startsWith('temp-') || post.id.startsWith('local-')) {
+      return post.comments
+    }
+    // For seed posts, merge hardcoded + local comments
     return [...post.comments, ...(newComments[post.id] || [])]
   }
 
-  const allPosts = [...userPosts, ...posts]
+  const isPostLiked = (id: string): boolean => {
+    return liked.includes(id) || dbLikedPostIds.includes(id)
+  }
+
+  const getPostLikeCount = (post: CommunityPost): number => {
+    if (isDbPost(post.id) || post.id.startsWith('temp-') || post.id.startsWith('local-')) {
+      // DB post: likes count is already adjusted by toggleLike
+      return post.likes + (dbLikedPostIds.includes(post.id) ? 0 : 0)
+    }
+    // Seed post: base count + local like
+    return post.likes + (liked.includes(post.id) ? 1 : 0)
+  }
+
+  const allPosts = [...dbPosts, ...seedPosts]
 
   // Confetti particles
   const confettiColors = ['#8F5652', '#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD']
@@ -297,7 +569,7 @@ export default function CommunityPage() {
               </motion.p>
               <motion.div
                 initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
+                   animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.5 }}
                 className="space-y-2 mb-6"
               >
@@ -391,7 +663,7 @@ export default function CommunityPage() {
                   className="w-full flex items-center gap-3 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-4 text-left hover:border-tuki-rot/30 transition-colors"
                 >
                   <div className="w-10 h-10 rounded-full bg-tuki-rot/10 flex items-center justify-center text-lg shrink-0">
-                    {'\u{1F9D1}'}
+                    {userAvatar}
                   </div>
                   <span className="text-sm text-gray-400 dark:text-gray-500">Was möchtest du teilen?</span>
                   <span className="ml-auto text-tuki-rot text-xl">+</span>
@@ -400,9 +672,9 @@ export default function CommunityPage() {
                 <div className="bg-white dark:bg-gray-800 rounded-2xl border border-tuki-rot/30 p-4 space-y-3">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-tuki-rot/10 flex items-center justify-center text-lg shrink-0">
-                      {'\u{1F9D1}'}
+                      {userAvatar}
                     </div>
-                    <span className="font-semibold text-sm text-gray-800 dark:text-white">Du</span>
+                    <span className="font-semibold text-sm text-gray-800 dark:text-white">{userDisplayName}</span>
                     <div className="ml-auto flex gap-1.5">
                       {postTagOptions.map(tag => (
                         <button
@@ -453,6 +725,8 @@ export default function CommunityPage() {
           {allPosts.map(post => {
             const allComments = getAllComments(post)
             const isExpanded = expandedComments.includes(post.id)
+            const postLiked = isPostLiked(post.id)
+            const likeCount = getPostLikeCount(post)
 
             return (
               <motion.div
@@ -492,8 +766,8 @@ export default function CommunityPage() {
                     onClick={() => toggleLike(post.id)}
                     className="flex items-center gap-1.5 text-xs"
                   >
-                    <span>{liked.includes(post.id) ? '❤️' : '\u{1F90D}'}</span>
-                    <span className="text-gray-500 dark:text-gray-400">{post.likes + (liked.includes(post.id) ? 1 : 0)}</span>
+                    <span>{postLiked ? '❤️' : '\u{1F90D}'}</span>
+                    <span className="text-gray-500 dark:text-gray-400">{likeCount}</span>
                   </button>
                   <button
                     onClick={() => toggleComments(post.id)}
@@ -540,7 +814,7 @@ export default function CommunityPage() {
                         {/* Comment input */}
                         <div className="flex items-center gap-2 px-4 py-3 mt-1">
                           <div className="w-7 h-7 rounded-full bg-tuki-rot/10 flex items-center justify-center text-sm shrink-0">
-                            {'\u{1F9D1}'}
+                            {userAvatar}
                           </div>
                           <div className="flex-1 flex items-center gap-2 bg-white dark:bg-gray-800 rounded-full border border-gray-200 dark:border-gray-600 pl-3 pr-1 py-1">
                             <input
