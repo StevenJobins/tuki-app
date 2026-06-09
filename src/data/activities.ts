@@ -8,14 +8,14 @@ export interface Activity {
   image: string
   duration: number
   ageRange: [number, number]
-  category: 'motorik' | 'sensorik' | 'kreativität' | 'sprache' | 'mathe' | 'natur'
+  category: string
   difficulty: 'leicht' | 'mittel' | 'fortgeschritten'
   capabilities: Capability[]
   materials: string[]
   steps: { text: string; tip?: string }[]
   learningGoals: string[]
   tukiTip: string
-  season: ('frühling' | 'sommer' | 'herbst' | 'winter' | 'ganzjährig')[]
+  season: string[]
   stars: number
 }
 
