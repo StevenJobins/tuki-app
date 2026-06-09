@@ -207,3 +207,25 @@ body.dark-mode ::-webkit-scrollbar-track { background: #181825; }
 
 /* Shadow removal in dark mode */
 body.dark-mode [class*="shadow"] { box-shadow: none !important; }
+
+/* ---- Print / PDF export (used by Tagesmengen) ---- */
+.print-only { display: none; }
+@media print {
+  nav, header, .no-print { display: none !important; }
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+  }
+  html, body { background: #ffffff !important; }
+  .print-only { display: block !important; }
+  .print-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  @page { margin: 14mm; }
+}
