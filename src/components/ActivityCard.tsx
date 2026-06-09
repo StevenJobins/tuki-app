@@ -45,11 +45,13 @@ export default function ActivityCard({ activity, size = 'normal' }: ActivityCard
       className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer"
     >
       <div className="relative h-36">
+        <div className="absolute inset-0 bg-tuki-mint-bg flex items-center justify-center text-5xl">{activity.emoji}</div>
         <img
           src={activity.image}
           alt={activity.title}
-          className="w-full h-full object-cover"
+          className="relative w-full h-full object-cover"
           loading="lazy"
+          onError={(e) => { e.currentTarget.style.display = 'none' }}
         />
         <div className="absolute top-2 right-2">
           <FavoriteButton id={activity.id} />

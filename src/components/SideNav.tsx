@@ -8,6 +8,8 @@ const navItems = [
   { path: '/favoriten', label: 'Favoriten', emoji: '❤️' },
   { path: '/wochenplan', label: 'Wochenplan', emoji: '📅' },
   { path: '/zutaten-check', label: 'Kühlschrank', emoji: '🧱' },
+  { path: '/lebensmittel', label: 'Lebensmittel', emoji: '🥕' },
+  { path: '/mengen', label: 'Tagesmengen', emoji: '🍼' },
   { path: '/entwicklung', label: 'Entwicklung', emoji: '📈' },
   { path: '/community', label: 'Community', emoji: '👨‍👩‍👧' },
   { path: '/sterne-shop', label: 'Sterne-Shop', emoji: '⭐' },
