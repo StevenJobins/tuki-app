@@ -36,7 +36,6 @@ function AddChildModal({ onClose, onSave, editChild, t }: {
     onClose()
   }
 
-  // Calculate max date (today) and min date (10 years ago)
   const today = new Date().toISOString().split('T')[0]
   const minDate = new Date()
   minDate.setFullYear(minDate.getFullYear() - 10)
@@ -63,7 +62,6 @@ function AddChildModal({ onClose, onSave, editChild, t }: {
           {editChild ? t.profilePage.editChild : t.profilePage.addChild}
         </h2>
 
-        {/* Avatar Selection */}
         <div className="mb-5">
           <label className="text-xs font-medium text-gray-500 mb-2 block">{t.profilePage.modal.chooseAvatar}</label>
           <div className="flex gap-2 flex-wrap">
@@ -83,7 +81,6 @@ function AddChildModal({ onClose, onSave, editChild, t }: {
           </div>
         </div>
 
-        {/* Name */}
         <div className="mb-4">
           <label className="text-xs font-medium text-gray-500 mb-1.5 block">{t.profilePage.modal.name}</label>
           <input
@@ -95,7 +92,6 @@ function AddChildModal({ onClose, onSave, editChild, t }: {
           />
         </div>
 
-        {/* Birth Date */}
         <div className="mb-6">
           <label className="text-xs font-medium text-gray-500 mb-1.5 block">{t.profilePage.modal.birthDate}</label>
           <input
@@ -108,7 +104,6 @@ function AddChildModal({ onClose, onSave, editChild, t }: {
           />
         </div>
 
-        {/* Buttons */}
         <div className="flex gap-3">
           <button
             onClick={onClose}
@@ -204,7 +199,6 @@ export default function ProfilePage() {
             </p>
           )}
 
-          {/* Stats Grid */}
           <div className="grid grid-cols-3 gap-3 mt-5">
             <div className="bg-yellow-50 rounded-xl p-3">
               <p className="text-xl font-bold text-yellow-600">{tukiStars.total}</p>
@@ -416,22 +410,37 @@ export default function ProfilePage() {
             <span className="text-xs text-gray-400 dark:text-gray-500">{currentLangOption.flag} {currentLangOption.label}</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
           </button>
-          {[
-            { emoji: '🔔', label: t.profilePage.notifications, value: t.profilePage.notificationsValue },
-            { emoji: '🎨', label: t.profilePage.appearance, value: t.profilePage.appearanceValue },
-            { emoji: '📱', label: t.profilePage.appVersion, value: '2.1.0' },
-            { emoji: '🔗', label: t.profilePage.visitWebsite, value: '' },
-          ].map((item, i) => (
-            <div
-              key={i}
-              className={`flex items-center gap-3 px-4 py-3.5 ${i < 3 ? 'border-b border-gray-50 dark:border-gray-700' : ''}`}
-            >
-              <span className="text-lg">{item.emoji}</span>
-              <span className="text-sm text-gray-700 dark:text-gray-300 flex-1">{item.label}</span>
-              <span className="text-xs text-gray-400 dark:text-gray-500">{item.value}</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
+          {/* Dark Mode Toggle */}
+          <button
+            onClick={toggleDarkMode}
+            className="flex items-center gap-3 px-4 py-3.5 border-b border-gray-50 dark:border-gray-700 w-full text-left"
+          >
+            <span className="text-lg">{darkMode ? '🌙' : '☀️'}</span>
+            <span className="text-sm text-gray-700 dark:text-gray-300 flex-1">{t.profilePage.appearance}</span>
+            <div className={`w-11 h-6 rounded-full relative transition-colors duration-200 ${darkMode ? 'bg-tuki-rot' : 'bg-gray-300'}`}>
+              <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200 ${darkMode ? 'translate-x-5' : 'translate-x-0'}`} />
             </div>
-          ))}
+          </button>
+          {/* Notifications */}
+          <div className="flex items-center gap-3 px-4 py-3.5 border-b border-gray-50 dark:border-gray-700">
+            <span className="text-lg">🔔</span>
+            <span className="text-sm text-gray-700 dark:text-gray-300 flex-1">{t.profilePage.notifications}</span>
+            <span className="text-xs text-gray-400 dark:text-gray-500">{t.profilePage.notificationsValue}</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
+          </div>
+          {/* App Version */}
+          <div className="flex items-center gap-3 px-4 py-3.5 border-b border-gray-50 dark:border-gray-700">
+            <span className="text-lg">📱</span>
+            <span className="text-sm text-gray-700 dark:text-gray-300 flex-1">{t.profilePage.appVersion}</span>
+            <span className="text-xs text-gray-400 dark:text-gray-500">2.1.0</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
+          </div>
+          {/* Visit Website */}
+          <div className="flex items-center gap-3 px-4 py-3.5">
+            <span className="text-lg">🔗</span>
+            <span className="text-sm text-gray-700 dark:text-gray-300 flex-1">{t.profilePage.visitWebsite}</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
+          </div>
         </div>
       </div>
 
