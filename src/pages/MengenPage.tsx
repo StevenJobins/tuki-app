@@ -38,6 +38,7 @@ const labels: Record<Lang, {
   waterLabel: string
   yourChild: string
   disclaimer: string
+  printBtn: string
   stageTitles: Record<string, string>
   stages: Record<string, StageText>
 }> = {
@@ -49,6 +50,7 @@ const labels: Record<Lang, {
     waterLabel: 'Wasser',
     yourChild: 'Aktuelle Stufe',
     disclaimer: 'Alle Angaben sind unverbindliche Richtwerte, keine medizinische Beratung. Jedes Kind isst unterschiedlich. Folge dem Hunger- und Sättigungsgefühl deines Kindes und besprich Unsicherheiten mit Kinderarzt:in oder Still-/Ernährungsberatung. Für Säuglingsmilch gilt immer die Dosierung auf der Verpackung.',
+    printBtn: 'Als PDF speichern',
     stageTitles: {
       milk_only: 'Nur Milch',
       start: 'Beikoststart',
@@ -102,6 +104,7 @@ const labels: Record<Lang, {
     waterLabel: 'Eau',
     yourChild: 'Étape actuelle',
     disclaimer: "Toutes les valeurs sont indicatives et ne remplacent pas un avis médical. Chaque enfant mange différemment. Suis les signaux de faim et de satiété de ton enfant et parle de tes doutes avec le/la pédiatre ou une conseillère en allaitement/nutrition. Pour le lait infantile, respecte toujours le dosage sur l'emballage.",
+    printBtn: 'Enregistrer en PDF',
     stageTitles: {
       milk_only: 'Lait uniquement',
       start: 'Début de la diversification',
@@ -155,6 +158,7 @@ const labels: Record<Lang, {
     waterLabel: 'Water',
     yourChild: 'Current stage',
     disclaimer: 'All values are orientation ranges, not medical advice. Every child eats differently. Follow your child’s hunger and fullness cues and discuss any concerns with your paediatrician or a breastfeeding/nutrition counsellor. For infant formula, always follow the dosage on the packaging.',
+    printBtn: 'Save as PDF',
     stageTitles: {
       milk_only: 'Milk only',
       start: 'Starting solids',
@@ -224,12 +228,41 @@ export default function MengenPage() {
     ? null
     : (stages.find(s => months >= s.minM && months < s.maxM)?.id ?? null)
 
+  const dateLocale = lang === 'en' ? 'en-GB' : lang === 'fr' ? 'fr-CH' : 'de-CH'
+
+  const handlePrint = () => {
+    const wasDark = document.body.classList.contains('dark-mode')
+    if (wasDark) {
+      document.body.classList.remove('dark-mode')
+      const restore = () => {
+        document.body.classList.add('dark-mode')
+        window.removeEventListener('afterprint', restore)
+      }
+      window.addEventListener('afterprint', restore)
+    }
+    window.print()
+  }
+
   return (
     <div className="pb-24">
       <Header title={l.title} />
 
-      <div className="px-4 mb-5">
-        <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{l.intro}</p>
+      {/* Print-only header (shown only in the PDF) */}
+      <div className="print-only" style={{ padding: '0 0 12px' }}>
+        <h1 style={{ fontSize: '20px', fontWeight: 700, margin: 0 }}>Tuki Family · {l.title}</h1>
+        <p style={{ fontSize: '12px', color: '#555555', margin: '4px 0 0' }}>
+          {activeChild ? `${activeChild.name} · ` : ''}{new Date().toLocaleDateString(dateLocale)}
+        </p>
+      </div>
+
+      <div className="px-4 mb-5 flex items-start justify-between gap-3">
+        <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed flex-1">{l.intro}</p>
+        <button
+          onClick={handlePrint}
+          className="no-print shrink-0 text-xs font-semibold px-3 py-2 rounded-xl bg-tuki-rot text-white whitespace-nowrap"
+        >
+          {'📄 '}{l.printBtn}
+        </button>
       </div>
 
       <div className="px-4 space-y-3">
@@ -239,7 +272,7 @@ export default function MengenPage() {
           return (
             <div
               key={stage.id}
-              className={`bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden border-2 ${
+              className={`print-card bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden border-2 ${
                 isActive ? 'border-tuki-rot' : 'border-transparent'
               }`}
             >
@@ -272,7 +305,7 @@ export default function MengenPage() {
 
       {/* Disclaimer */}
       <div className="px-4 mt-5">
-        <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl p-4">
+        <div className="print-card bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl p-4">
           <p className="text-xs text-amber-800 dark:text-amber-200 leading-relaxed">
             ⚠️ {l.disclaimer}
           </p>
