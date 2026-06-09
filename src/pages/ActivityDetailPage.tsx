@@ -38,7 +38,8 @@ export default function ActivityDetailPage() {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="pb-8">
       {/* Hero Image */}
       <div className="relative h-56">
-        <img src={activity.image} alt={activity.title} className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-tuki-mint-bg flex items-center justify-center text-7xl">{activity.emoji}</div>
+        <img src={activity.image} alt={activity.title} className="relative w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none' }} />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
         <div className="absolute top-0 left-0 right-0 flex items-center justify-between p-4">
           <button
