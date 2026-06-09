@@ -25,6 +25,8 @@ const de = {
     fridgeCheck: 'Zutaten-Check',
     development: 'Entwicklung',
     starShop: 'Sterne-Shop',
+    foodTracker: 'Lebensmittel',
+    dailyAmounts: 'Tagesmengen',
   },
 
   // Common

@@ -27,6 +27,8 @@ const fr: Translations = {
     fridgeCheck: 'Check ingrédients',
     development: 'Développement',
     starShop: 'Boutique étoiles',
+    foodTracker: 'Suivi alimentaire',
+    dailyAmounts: 'Quantités/jour',
   },
 
   // Common
