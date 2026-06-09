@@ -38,9 +38,9 @@ export default function StepByStepMode({
   const progress = ((currentStep + 1) / steps.length) * 100
   const step = steps[currentStep]
 
-  const gradientClass = variant === 'recipe' ? 'gradient-rot' : 'gradient-mint'
-  const accentText = variant === 'recipe' ? 'text-tuki-rot' : 'text-tuki-mint-dark'
-  const accentBg = variant === 'recipe' ? 'bg-tuki-rot' : 'bg-tuki-mint-dark'
+  // Both variants now use gradient-rot for visibility in dark mode
+  const gradientClass = 'gradient-rot'
+  const accentBg = 'bg-tuki-rot'
 
   function markCurrentDone() {
     setCompletedSteps(prev => {
@@ -92,7 +92,7 @@ export default function StepByStepMode({
           <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 truncate">{emoji} {title}</p>
           <p className="text-xs text-gray-400">{t.stepMode.step} {currentStep + 1} / {steps.length}</p>
         </div>
-        <div className="w-10" /> {/* Spacer for alignment */}
+        <div className="w-10" />
       </div>
 
       {/* Progress Bar */}
@@ -135,7 +135,7 @@ export default function StepByStepMode({
           >
             {/* Step number badge */}
             <div className={`w-14 h-14 rounded-full ${gradientClass} flex items-center justify-center mb-6 shadow-lg`}>
-              <span className={`text-xl font-bold ${variant === 'recipe' ? 'text-white' : 'text-tuki-rot-dark'}`}>
+              <span className="text-xl font-bold text-white">
                 {currentStep + 1}
               </span>
             </div>
@@ -181,7 +181,6 @@ export default function StepByStepMode({
       {/* Bottom Navigation */}
       <div className="px-6 pb-6 pt-3 border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900">
         {isLastStep && completedSteps.has(currentStep) ? (
-          /* Finish / Already done state */
           <motion.button
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -201,7 +200,6 @@ export default function StepByStepMode({
             )}
           </motion.button>
         ) : (
-          /* Nav buttons */
           <div className="flex gap-3">
             <button
               onClick={goPrev}
@@ -223,7 +221,6 @@ export default function StepByStepMode({
           </div>
         )}
 
-        {/* Step counter below buttons */}
         <p className="text-center text-xs text-gray-400 mt-3">
           {completedSteps.size} / {steps.length} {t.stepMode.stepsCompleted}
         </p>
