@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import Header from '../components/Header'
 import { useTranslation } from '../i18n/useTranslation'
 import { useApp } from '../context/AppContext'
@@ -39,6 +40,10 @@ const labels: Record<Lang, {
   yourChild: string
   disclaimer: string
   printBtn: string
+  progressLabel: string
+  reached: string
+  markReached: string
+  allReached: string
   stageTitles: Record<string, string>
   stages: Record<string, StageText>
 }> = {
@@ -51,6 +56,10 @@ const labels: Record<Lang, {
     yourChild: 'Aktuelle Stufe',
     disclaimer: 'Alle Angaben sind unverbindliche Richtwerte, keine medizinische Beratung. Jedes Kind isst unterschiedlich. Folge dem Hunger- und Sättigungsgefühl deines Kindes und besprich Unsicherheiten mit Kinderarzt:in oder Still-/Ernährungsberatung. Für Säuglingsmilch gilt immer die Dosierung auf der Verpackung.',
     printBtn: 'Als PDF speichern',
+    progressLabel: 'Stufen erreicht',
+    reached: 'Erreicht',
+    markReached: 'Als erreicht markieren',
+    allReached: 'Stark! Alle Stufen erreicht 🎉',
     stageTitles: {
       milk_only: 'Nur Milch',
       start: 'Beikoststart',
@@ -105,6 +114,10 @@ const labels: Record<Lang, {
     yourChild: 'Étape actuelle',
     disclaimer: "Toutes les valeurs sont indicatives et ne remplacent pas un avis médical. Chaque enfant mange différemment. Suis les signaux de faim et de satiété de ton enfant et parle de tes doutes avec le/la pédiatre ou une conseillère en allaitement/nutrition. Pour le lait infantile, respecte toujours le dosage sur l'emballage.",
     printBtn: 'Enregistrer en PDF',
+    progressLabel: 'Étapes atteintes',
+    reached: 'Atteint',
+    markReached: 'Marquer comme atteint',
+    allReached: 'Bravo ! Toutes les étapes atteintes 🎉',
     stageTitles: {
       milk_only: 'Lait uniquement',
       start: 'Début de la diversification',
@@ -159,6 +172,10 @@ const labels: Record<Lang, {
     yourChild: 'Current stage',
     disclaimer: 'All values are orientation ranges, not medical advice. Every child eats differently. Follow your child’s hunger and fullness cues and discuss any concerns with your paediatrician or a breastfeeding/nutrition counsellor. For infant formula, always follow the dosage on the packaging.',
     printBtn: 'Save as PDF',
+    progressLabel: 'Stages reached',
+    reached: 'Reached',
+    markReached: 'Mark as reached',
+    allReached: 'Awesome! All stages reached 🎉',
     stageTitles: {
       milk_only: 'Milk only',
       start: 'Starting solids',
@@ -218,7 +235,7 @@ function ageInMonths(birthDate?: string): number | null {
 
 export default function MengenPage() {
   const { language } = useTranslation()
-  const { getActiveChild } = useApp()
+  const { getActiveChild, activeChildId } = useApp()
   const lang = (language || 'de') as Lang
   const l = labels[lang] || labels.de
 
@@ -227,6 +244,24 @@ export default function MengenPage() {
   const activeStageId = months === null
     ? null
     : (stages.find(s => months >= s.minM && months < s.maxM)?.id ?? null)
+
+  const storageKey = activeChildId ? 'tuki-mengen-stages-' + activeChildId : 'tuki-mengen-stages'
+  const [reached, setReached] = useState<string[]>(() => {
+    try { return JSON.parse(localStorage.getItem(storageKey) || '[]') } catch { return [] }
+  })
+  useEffect(() => {
+    const key = activeChildId ? 'tuki-mengen-stages-' + activeChildId : 'tuki-mengen-stages'
+    try { setReached(JSON.parse(localStorage.getItem(key) || '[]')) } catch { setReached([]) }
+  }, [activeChildId])
+
+  const toggleReached = (id: string) => {
+    const next = reached.includes(id) ? reached.filter(x => x !== id) : [...reached, id]
+    setReached(next)
+    try { localStorage.setItem(storageKey, JSON.stringify(next)) } catch {}
+  }
+
+  const reachedCount = stages.filter(s => reached.includes(s.id)).length
+  const progress = Math.round((reachedCount / stages.length) * 100)
 
   const dateLocale = lang === 'en' ? 'en-GB' : lang === 'fr' ? 'fr-CH' : 'de-CH'
 
@@ -265,15 +300,37 @@ export default function MengenPage() {
         </button>
       </div>
 
+      {/* Progress (Stufen-Badges) */}
+      <div className="px-4 mb-4 no-print">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">
+              {l.progressLabel}{activeChild ? ` · ${activeChild.name}` : ''}
+            </span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">{reachedCount} / {stages.length}</span>
+          </div>
+          <div className="w-full h-3 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-tuki-mint to-tuki-mint-dark rounded-full transition-all duration-500"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+          {progress === 100 && (
+            <p className="text-xs text-green-600 dark:text-green-400 font-medium mt-2">{l.allReached}</p>
+          )}
+        </div>
+      </div>
+
       <div className="px-4 space-y-3">
         {stages.map(stage => {
           const st = l.stages[stage.id]
           const isActive = stage.id === activeStageId
+          const done = reached.includes(stage.id)
           return (
             <div
               key={stage.id}
               className={`print-card bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden border-2 ${
-                isActive ? 'border-tuki-rot' : 'border-transparent'
+                done ? 'border-tuki-mint-dark' : isActive ? 'border-tuki-rot' : 'border-transparent'
               }`}
             >
               <div className="flex items-center gap-3 p-4 pb-3">
@@ -292,12 +349,30 @@ export default function MengenPage() {
                 )}
               </div>
 
-              <div className="px-4 pb-4 space-y-2">
+              <div className="px-4 pb-3 space-y-2">
                 <Row emoji="🍼" label={l.milkLabel} value={st.milk} />
                 <Row emoji="🍽️" label={l.mealsLabel} value={st.meals} />
                 <Row emoji="💧" label={l.waterLabel} value={st.water} />
                 <p className="text-xs text-gray-500 dark:text-gray-400 italic pt-1">💡 {st.note}</p>
               </div>
+
+              <button
+                onClick={() => toggleReached(stage.id)}
+                className={`no-print w-full flex items-center justify-center gap-2 py-2.5 text-xs font-semibold border-t transition-colors ${
+                  done
+                    ? 'bg-tuki-mint-bg text-tuki-rot-dark border-transparent'
+                    : 'text-gray-400 dark:text-gray-500 border-gray-100 dark:border-gray-700 hover:text-gray-600 dark:hover:text-gray-300'
+                }`}
+              >
+                <span
+                  className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] ${
+                    done ? 'bg-tuki-mint-dark text-white' : 'border-2 border-gray-300 dark:border-gray-600'
+                  }`}
+                >
+                  {done ? '✓' : ''}
+                </span>
+                {done ? l.reached : l.markReached}
+              </button>
             </div>
           )
         })}
