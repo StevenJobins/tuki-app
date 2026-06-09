@@ -25,19 +25,15 @@ interface PerChildData {
 }
 
 interface AppState {
-  // Active child's data (flat for backward compat)
   favorites: string[]
   completedActivities: string[]
   completedRecipes: string[]
   weekPlan: Record<string, string[]>
   tukiStars: TukiStars
-  // Multi-child
   children: ChildProfile[]
   activeChildId: string | null
   childData: Record<string, PerChildData>
-  // StarShop
   redeemedRewards: string[]
-  // App
   language: 'de' | 'en' | 'fr'
   darkMode: boolean
   isOnboarded: boolean
@@ -147,9 +143,10 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
     localStorage.setItem('tuki-family-state', JSON.stringify(state))
   }, [state])
 
+  // Apply dark-mode class whenever state changes
   useEffect(() => {
     document.body.classList.toggle('dark-mode', state.darkMode)
-  }, [])
+  }, [state.darkMode])
 
   const saveCurrentChildData = useCallback((s: AppState): AppState => {
     if (!s.activeChildId) return s
