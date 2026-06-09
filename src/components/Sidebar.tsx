@@ -21,6 +21,8 @@ export default function Sidebar() {
   const extraItems = [
     { path: '/wochenplan', label: t.nav.weeklyPlan, emoji: '📅' },
     { path: '/zutaten-check', label: t.nav.fridgeCheck, emoji: '🧱' },
+    { path: '/lebensmittel', label: t.nav.foodTracker, emoji: '🥕' },
+    { path: '/mengen', label: t.nav.dailyAmounts, emoji: '🍼' },
     { path: '/entwicklung', label: t.nav.development, emoji: '📈' },
     { path: '/sterne-shop', label: t.nav.starShop, emoji: '⭐' },
   ]
