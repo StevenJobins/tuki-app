@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import Header from '../components/Header'
 import AgeFilter from '../components/AgeFilter'
 import ActivityCard from '../components/ActivityCard'
-import { activities, getTranslatedActivity, getTranslatedCategoryInfo } from '../data/activities'
+import { activities, getTranslatedActivity, getTranslatedCategoryInfo, getTranslatedCapabilityInfo, Capability } from '../data/activities'
 import { useApp } from '../context/AppContext'
 import { useTranslation } from '../i18n/useTranslation'
 
@@ -24,12 +24,24 @@ export default function ActivitiesPage() {
   const autoAgeFilter = childAge !== null ? getAgeRange(childAge) : 'all'
   const [ageFilter, setAgeFilter] = useState(autoAgeFilter)
   const [catFilter, setCatFilter] = useState('all')
+  const [capFilter, setCapFilter] = useState<Capability | 'all'>('all')
 
   const translatedCategoryInfo = getTranslatedCategoryInfo(language)
+  const translatedCapabilityInfo = getTranslatedCapabilityInfo(language)
+
   const categories = [
     { value: 'all', label: t.common.all, emoji: '🎯' },
     ...Object.entries(translatedCategoryInfo).map(([key, val]) => ({
       value: key,
+      label: val.label,
+      emoji: val.emoji,
+    })),
+  ]
+
+  const capabilityOptions = [
+    { value: 'all' as const, label: t.common.all, emoji: '✨' },
+    ...Object.entries(translatedCapabilityInfo).map(([key, val]) => ({
+      value: key as Capability,
       label: val.label,
       emoji: val.emoji,
     })),
@@ -41,8 +53,11 @@ export default function ActivitiesPage() {
       if (a.ageRange[0] > max || a.ageRange[1] < min) return false
     }
     if (catFilter !== 'all' && a.category !== catFilter) return false
+    if (capFilter !== 'all' && !a.capabilities.includes(capFilter)) return false
     return true
   })
+
+  const capLabel = language === 'fr' ? 'Capacités' : language === 'en' ? 'Skills' : 'Fähigkeiten'
 
   return (
     <div className="pb-24">
@@ -64,7 +79,7 @@ export default function ActivitiesPage() {
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all shrink-0 ${
                   isActive
                     ? 'bg-tuki-rot text-white'
-                    : 'bg-white text-gray-600 border border-gray-200'
+                    : 'bg-white text-gray-600 border border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600'
                 }`}
               >
                 <span>{child.avatarEmoji}</span>
@@ -84,11 +99,32 @@ export default function ActivitiesPage() {
             className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-all ${
               catFilter === cat.value
                 ? 'bg-tuki-rot text-white shadow-sm'
-                : 'bg-white text-gray-600 border border-gray-100'
+                : 'bg-white text-gray-600 border border-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600'
             }`}
           >
             <span>{cat.emoji}</span>
             {cat.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Capability Filter */}
+      <div className="px-4 mb-1">
+        <p className="text-xs text-gray-400 dark:text-gray-500 mb-1.5">{capLabel}</p>
+      </div>
+      <div className="flex gap-2 px-4 mb-3 overflow-x-auto no-scrollbar py-1">
+        {capabilityOptions.map(cap => (
+          <button
+            key={cap.value}
+            onClick={() => setCapFilter(cap.value)}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-all ${
+              capFilter === cap.value
+                ? 'bg-amber-500 text-white shadow-sm'
+                : 'bg-white text-gray-600 border border-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600'
+            }`}
+          >
+            <span>{cap.emoji}</span>
+            {cap.label}
           </button>
         ))}
       </div>
@@ -107,7 +143,7 @@ export default function ActivitiesPage() {
 
       {/* Activity Grid */}
       <motion.div
-        className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 lg:gap-4 px-4"
+        className="grid grid-cols-2 gap-3 px-4"
         initial="hidden"
         animate="show"
         variants={{
@@ -127,7 +163,7 @@ export default function ActivitiesPage() {
 
       {filtered.length === 0 && (
         <div className="text-center py-12 px-4">
-          <span className="text-4xl block mb-3">🎯</span>
+          <span className="text-4xl block mb-3">{'🎯'}</span>
           <p className="text-gray-500 text-sm">{t.activitiesPage.noResults}</p>
           <p className="text-gray-400 text-xs mt-1">{t.common.tryOtherFilter}</p>
         </div>
