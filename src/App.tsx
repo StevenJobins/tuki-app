@@ -21,6 +21,7 @@ import OnboardingPage from './pages/OnboardingPage'
 import LoginPage from './pages/LoginPage'
 import AccountSettingsPage from './pages/AccountSettingsPage'
 import FoodTrackerPage from './pages/FoodTrackerPage'
+import MengenPage from './pages/MengenPage'
 
 export default function App() {
   const { user, loading } = useAuth()
@@ -74,6 +75,7 @@ export default function App() {
             <Route path="/sterne-shop" element={<StarShopPage />} />
             <Route path="/konto" element={<AccountSettingsPage />} />
             <Route path="/lebensmittel" element={<FoodTrackerPage />} />
+            <Route path="/mengen" element={<MengenPage />} />
           </Routes>
         </AnimatePresence>
         <BottomNav />
