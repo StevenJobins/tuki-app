@@ -121,12 +121,12 @@ export default function ActivityDetailPage() {
         </div>
       </div>
 
-      {/* Start Activity Mode Button */}
+      {/* Start Activity Mode Button - now gradient-rot like cooking mode */}
       <div className="px-4 mt-6">
         <motion.button
           whileTap={{ scale: 0.97 }}
           onClick={() => setShowActivityMode(true)}
-          className="w-full py-3.5 rounded-2xl font-semibold text-sm gradient-mint text-tuki-rot-dark shadow-lg flex items-center justify-center gap-2"
+          className="w-full py-3.5 rounded-2xl font-semibold text-sm gradient-rot text-white shadow-lg shadow-tuki-rot/25 flex items-center justify-center gap-2"
         >
           🚀 {t.stepMode.startActivity}
         </motion.button>
@@ -144,8 +144,8 @@ export default function ActivityDetailPage() {
               transition={{ delay: i * 0.1 }}
               className="flex gap-3"
             >
-              <div className="w-8 h-8 rounded-full gradient-mint flex items-center justify-center shrink-0 mt-0.5">
-                <span className="text-tuki-rot-dark text-xs font-bold">{i + 1}</span>
+              <div className="w-8 h-8 rounded-full gradient-rot flex items-center justify-center shrink-0 mt-0.5">
+                <span className="text-white text-xs font-bold">{i + 1}</span>
               </div>
               <div className="flex-1">
                 <p className="text-sm text-gray-700 leading-relaxed">{step.text}</p>
