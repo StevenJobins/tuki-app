@@ -119,7 +119,7 @@ export const activitiesEn: Record<string, {
     tukiTip: 'From a walk to a work of art — children learn to appreciate the seasons and express their own creativity.',
   },
 
-  'zaehlen-beim-kochen': {
+  'zählen-beim-kochen': {
     title: 'Counting While Cooking',
     subtitle: 'Maths on the side',
     materials: [
@@ -754,6 +754,139 @@ export const activitiesEn: Record<string, {
     learningGoals: ["Memory", "Concentration", "Pairs & quantities"],
     tukiTip: "At the Tuki table your child joins in at eye level – fair and focused.",
   },
+  "waesche-helfer": {
+    title: "Sorting & Folding Laundry",
+    subtitle: "Practical life, Montessori style",
+    materials: ["Freshly washed laundry", "Laundry basket"],
+    steps: [
+      { text: "Your child sorts the laundry: by color or by family member." },
+      { text: "Finding sock pairs – a real memory game.", tip: "Start with 2-3 pairs and slowly increase." },
+      { text: "Fold simple pieces like washcloths or t-shirts." },
+      { text: "Put the finished piles away in the wardrobe together." },
+    ],
+    learningGoals: ["Fine motor skills", "Understanding categories & order", "Everyday independence"],
+    tukiTip: "Real tasks build pride: what your child folded themselves, they put away with joy. The Tuki worktop is the perfect folding table.",
+  },
+  "bewegungs-parcours": {
+    title: "Movement Obstacle Course",
+    subtitle: "Over, under, around",
+    materials: ["Pillows & blankets", "Chairs", "A rope or tape", "Some space"],
+    steps: [
+      { text: "Build a course together: pillows to climb over, a chair to crawl under, a rope to balance on." },
+      { text: "Show it once, then it's your child's turn.", tip: "Backwards or on tiptoes makes it trickier." },
+      { text: "Count the rounds together – who manages three?" },
+      { text: "At the end, your child helps take the course apart." },
+    ],
+    learningGoals: ["Gross motor skills & balance", "Body awareness", "Stamina & self-confidence"],
+    tukiTip: "Indoor days become gym days. Afterwards comes the well-earned snack – self-made in the Tuki, of course.",
+  },
+  "stoff-fuehl-spiel": {
+    title: "Fabric Feeling Game",
+    subtitle: "Soft, rough, cozy – what is it?",
+    materials: ["4-6 different fabrics (wool, terry, silk, denim, fleece)", "A cloth for covering"],
+    steps: [
+      { text: "Lay the fabrics side by side and feel them together: Which is soft? Which is scratchy?" },
+      { text: "Your child closes their eyes and guesses which fabric they are holding.", tip: "Let them find their own words: cozy, slippery, scratchy …" },
+      { text: "Sort the fabrics: from very soft to very rough." },
+      { text: "Search game: Can you find more things around the home that feel the same?" },
+    ],
+    learningGoals: ["Sharpening the sense of touch", "Vocabulary (adjectives)", "Comparing & ordering"],
+    tukiTip: "On the Tuki worktop all fabrics are ready at eye level – perfect for focused feeling.",
+  },
+  "duft-memory": {
+    title: "Scent Memory",
+    subtitle: "Smell, guess, marvel",
+    materials: ["6-8 small jars or cups", "Scent samples: cinnamon, coffee, lemon, cocoa, herbs", "Cloths for covering"],
+    steps: [
+      { text: "Fill the jars with the scent samples together – always two with the same content." },
+      { text: "Your child smells with closed eyes: What could it be?", tip: "Start with 3-4 familiar scents, e.g. lemon and cocoa." },
+      { text: "Memory variant: Find the scent pairs using only your nose." },
+      { text: "Talk about it: Which scent do you like? What does it remind you of?" },
+    ],
+    learningGoals: ["Training the sense of smell", "Memory", "Linking language & memories"],
+    tukiTip: "Your child knows the spices from helping in the Tuki – now they get to know them again with their nose.",
+  },
+  "bilderbuch-detektiv": {
+    title: "Picture Book Detective",
+    subtitle: "Search, find, tell",
+    materials: ["A favorite picture book with lots of details"],
+    steps: [
+      { text: "Open a busy page: 'Who can find the red bird first?'" },
+      { text: "Role swap: your child gives you search missions.", tip: "Describing instead of pointing – a real vocabulary challenge." },
+      { text: "Level up the missions: 'Can you find something you can eat?'" },
+      { text: "Make up together what happens next on the page." },
+    ],
+    learningGoals: ["Vocabulary & sentence structure", "Careful observation", "Imagination & joy of storytelling"],
+    tukiTip: "Detective breaks fit in anywhere – even while the snack is being made in the Tuki next door: 'Can you find something yellow in the book like our banana?'",
+  },
+  "fluesterpost": {
+    title: "Whisper Game",
+    subtitle: "What comes out at the end?",
+    materials: ["At least 3 players (family counts!)"],
+    steps: [
+      { text: "Whisper a word into your child's ear – they whisper it on." },
+      { text: "The last person says out loud what arrived. Usually: big laughter!", tip: "Start with simple words (banana), then try short sentences." },
+      { text: "Now your child gets to think of a word and start the round." },
+      { text: "Variant: only animal words, only food words – themed rounds make it more exciting." },
+    ],
+    learningGoals: ["Careful listening", "Clear pronunciation", "Social play"],
+    tukiTip: "Perfect while waiting for the cake to be ready: whisper game around the kitchen table, your child right in the middle in the Tuki.",
+  },
+  "kartoffel-stempel": {
+    title: "Potato Stamps",
+    subtitle: "Printing with vegetables",
+    materials: ["2-3 large potatoes", "Finger paint or watercolors", "Paper", "Plate as a palette", "Painting apron"],
+    steps: [
+      { text: "Halve the potatoes and carve simple shapes into them: heart, star, circle (adult job)." },
+      { text: "Your child dips the stamp into the paint and starts printing.", tip: "Try on scrap paper first – that's how they learn the right amount of paint." },
+      { text: "Print patterns: alternating star, heart, star, heart …" },
+      { text: "Let the artworks dry – and you have gift wrap or a greeting card!" },
+    ],
+    learningGoals: ["Creativity", "Fine motor skills & force control", "Recognizing shapes & patterns"],
+    tukiTip: "Stamping works best standing up: in the Tuki your child has the ideal printing height and you have a wipeable surface.",
+  },
+  "musik-schuettler": {
+    title: "Making Music Shakers",
+    subtitle: "Rice becomes an instrument",
+    materials: ["Empty bottles or cans with lids", "Rice, lentils, dried beans", "Tape", "Optional: stickers for decorating"],
+    steps: [
+      { text: "Your child pours rice or lentils into the bottles – each filling sounds different.", tip: "A funnel or spoon helps with aiming. Spills are part of it!" },
+      { text: "Close the lids tightly and secure with tape." },
+      { text: "Shaker concert: quiet as a mouse, loud as a thunderstorm." },
+      { text: "Shake along to favorite songs." },
+    ],
+    learningGoals: ["Sense of rhythm", "Fine motor skills (pouring & aiming)", "Cause & effect: filling = sound"],
+    tukiTip: "Pouring practice is your child's favorite Tuki activity anyway – here it instantly becomes an orchestra.",
+  },
+  "nudel-faedeln": {
+    title: "Pasta Necklaces",
+    subtitle: "Threading, counting, making patterns",
+    materials: ["Tube pasta (penne, rigatoni)", "A sturdy string", "Optional: food coloring"],
+    steps: [
+      { text: "Stiffen the end of the string with tape – it threads more easily." },
+      { text: "Your child threads pasta piece by piece onto the string.", tip: "For the youngest, use rigatoni – the big hole makes it easier." },
+      { text: "Count out loud while threading: one, two, three …" },
+      { text: "Make patterns: two light, one dark, two light … What comes next?" },
+      { text: "Tie the ends together – the pasta necklace is done!" },
+    ],
+    learningGoals: ["Fine motor skills & eye-hand coordination", "Counting & quantities", "Recognizing and continuing patterns"],
+    tukiTip: "Focused threading works great standing up – in the Tuki no pasta rolls away, everything stays at eye level.",
+  },
+  "vogelfutter-anhaenger": {
+    title: "Bird Food Hangers",
+    subtitle: "Homemade treats for hungry visitors",
+    materials: ["250g coconut fat", "300g bird seed mix", "Cookie cutters or cups", "String", "Straw (for the hole)"],
+    steps: [
+      { text: "Melt the coconut fat over low heat (adult job)." },
+      { text: "Your child stirs the bird seed into the fat.", tip: "Stir when slightly cooled – then nothing splashes." },
+      { text: "Fill the mixture into molds and stick in a piece of straw for the hole." },
+      { text: "Chill, remove from the molds and thread a string through." },
+      { text: "Hang outside and watch from the window: Who comes to visit?" },
+    ],
+    learningGoals: ["Discovering nature & animals", "Taking responsibility", "Patience & observation"],
+    tukiTip: "Mixing and filling happens in the Tuki – and bird watching afterwards becomes the daily ritual at the window.",
+  },
+
 }
 
 export const categoryInfoEn: Record<string, { label: string; emoji: string; color: string }> = {

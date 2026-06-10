@@ -91,7 +91,7 @@ export const activitiesFr: Record<string, {
     tukiTip: 'De la promenade à l\'oeuvre d\'art — les enfants apprennent à apprécier les saisons et à exprimer leur créativité.',
   },
 
-  'zaehlen-beim-kochen': {
+  'zählen-beim-kochen': {
     title: 'Compter en cuisinant',
     subtitle: 'Les maths tout naturellement',
     materials: ['Ingrédients de cuisine (pommes, oeufs, cuillères)', 'Recette avec des quantités'],
@@ -608,6 +608,139 @@ export const activitiesFr: Record<string, {
     learningGoals: ["Mémoire", "Concentration", "Paires & quantités"],
     tukiTip: "À la table du Tuki, ton enfant participe à hauteur égale – équitable et concentré.",
   },
+  "waesche-helfer": {
+    title: "Trier & plier le linge",
+    subtitle: "Vie pratique façon Montessori",
+    materials: ["Linge fraîchement lavé", "Panier à linge"],
+    steps: [
+      { text: "Ton enfant trie le linge : par couleurs ou par membre de la famille." },
+      { text: "Chercher les paires de chaussettes – un vrai jeu de memory.", tip: "Commencer avec 2-3 paires et augmenter peu à peu." },
+      { text: "Plier les pièces simples comme les gants de toilette ou les t-shirts." },
+      { text: "Ranger ensemble les piles terminées dans l'armoire." },
+    ],
+    learningGoals: ["Motricité fine", "Comprendre catégories & ordre", "Autonomie au quotidien"],
+    tukiTip: "Les vraies tâches rendent fier : ce que ton enfant a plié lui-même, il le range avec joie. Le plan de travail du Tuki est la table à plier parfaite.",
+  },
+  "bewegungs-parcours": {
+    title: "Parcours de motricité",
+    subtitle: "Dessus, dessous, autour",
+    materials: ["Coussins & couvertures", "Chaises", "Une corde ou du ruban adhésif", "Un peu d'espace"],
+    steps: [
+      { text: "Construisez ensemble un parcours : coussins à escalader, chaise sous laquelle ramper, corde pour faire l'équilibriste." },
+      { text: "Montre une fois, puis c'est au tour de ton enfant.", tip: "En arrière ou sur la pointe des pieds, c'est plus difficile." },
+      { text: "Comptez les tours ensemble – qui en réussit trois ?" },
+      { text: "À la fin, ton enfant aide à démonter le parcours." },
+    ],
+    learningGoals: ["Motricité globale & équilibre", "Conscience du corps", "Endurance & confiance en soi"],
+    tukiTip: "Les jours de pluie deviennent des jours de gym. Ensuite, le goûter bien mérité – préparé soi-même dans le Tuki, bien sûr.",
+  },
+  "stoff-fuehl-spiel": {
+    title: "Jeu tactile des tissus",
+    subtitle: "Doux, rugueux, douillet – qu'est-ce que c'est ?",
+    materials: ["4-6 tissus différents (laine, éponge, soie, jean, polaire)", "Un foulard pour cacher"],
+    steps: [
+      { text: "Posez les tissus côte à côte et touchez-les ensemble : lequel est doux ? Lequel gratte ?" },
+      { text: "Ton enfant ferme les yeux et devine quel tissu il tient dans la main.", tip: "Laisser trouver ses propres mots : douillet, glissant, qui gratte …" },
+      { text: "Triez les tissus : du plus doux au plus rugueux." },
+      { text: "Jeu de recherche : trouvez-vous dans la maison d'autres choses avec la même texture ?" },
+    ],
+    learningGoals: ["Affiner le toucher", "Vocabulaire (adjectifs)", "Comparer & classer"],
+    tukiTip: "Sur le plan de travail du Tuki, tous les tissus sont à hauteur des yeux – parfait pour toucher en pleine concentration.",
+  },
+  "duft-memory": {
+    title: "Memory des odeurs",
+    subtitle: "Sentir, deviner, s'émerveiller",
+    materials: ["6-8 petits pots ou gobelets", "Échantillons : cannelle, café, citron, cacao, herbes", "Foulards pour couvrir"],
+    steps: [
+      { text: "Remplissez ensemble les pots avec les échantillons – toujours deux avec le même contenu." },
+      { text: "Ton enfant sent les yeux fermés : qu'est-ce que ça pourrait être ?", tip: "Commencer avec 3-4 odeurs connues, p.ex. citron et cacao." },
+      { text: "Variante memory : trouvez les paires d'odeurs rien qu'avec le nez." },
+      { text: "Parlez-en : quelle odeur préfères-tu ? À quoi te fait-elle penser ?" },
+    ],
+    learningGoals: ["Entraîner l'odorat", "Mémoire", "Relier langage & souvenirs"],
+    tukiTip: "Ton enfant connaît les épices de la cuisine pour avoir aidé dans le Tuki – maintenant il les redécouvre avec le nez.",
+  },
+  "bilderbuch-detektiv": {
+    title: "Détective du livre d'images",
+    subtitle: "Chercher, trouver, raconter",
+    materials: ["Un livre d'images préféré avec plein de détails"],
+    steps: [
+      { text: "Ouvrez une page bien remplie : « Qui trouve l'oiseau rouge en premier ? »" },
+      { text: "Échange de rôles : ton enfant te donne des missions de recherche.", tip: "Décrire au lieu de montrer – un vrai défi pour le vocabulaire." },
+      { text: "Corser les missions : « Trouves-tu quelque chose qui se mange ? »" },
+      { text: "Inventez ensemble la suite de l'histoire sur la page." },
+    ],
+    learningGoals: ["Vocabulaire & construction de phrases", "Observation précise", "Imagination & plaisir de raconter"],
+    tukiTip: "Les pauses détective s'invitent partout – même pendant que le goûter se prépare dans le Tuki : « Trouves-tu dans le livre quelque chose de jaune comme notre banane ? »",
+  },
+  "fluesterpost": {
+    title: "Téléphone arabe",
+    subtitle: "Qu'est-ce qui sortira à la fin ?",
+    materials: ["Au moins 3 joueurs (la famille compte !)"],
+    steps: [
+      { text: "Chuchote un mot à l'oreille de ton enfant – il le chuchote au suivant." },
+      { text: "La dernière personne dit tout haut ce qui est arrivé. En général : grands éclats de rire !", tip: "Commencer avec des mots simples (banane), puis essayer de courtes phrases." },
+      { text: "Maintenant, c'est ton enfant qui invente un mot et lance le tour." },
+      { text: "Variante : que des mots d'animaux, que des mots de nourriture – les tours à thème pimentent le jeu." },
+    ],
+    learningGoals: ["Écoute attentive", "Articulation claire", "Jeu social"],
+    tukiTip: "Parfait en attendant que le gâteau soit prêt : téléphone arabe autour de la table, ton enfant au milieu dans le Tuki.",
+  },
+  "kartoffel-stempel": {
+    title: "Tampons de pomme de terre",
+    subtitle: "Imprimer avec des légumes",
+    materials: ["2-3 grosses pommes de terre", "Peinture à doigts ou aquarelle", "Papier", "Assiette comme palette", "Tablier"],
+    steps: [
+      { text: "Couper les pommes de terre en deux et y sculpter des formes simples : cœur, étoile, cercle (tâche d'adulte)." },
+      { text: "Ton enfant trempe le tampon dans la peinture et imprime.", tip: "D'abord essayer sur du brouillon – pour apprendre la bonne quantité de peinture." },
+      { text: "Imprimer des motifs : en alternance étoile, cœur, étoile, cœur …" },
+      { text: "Laisser sécher les œuvres – et voilà du papier cadeau ou une carte de vœux !" },
+    ],
+    learningGoals: ["Créativité", "Motricité fine & dosage de la force", "Reconnaître formes & motifs"],
+    tukiTip: "Tamponner debout marche le mieux : dans le Tuki, ton enfant a la hauteur d'impression idéale et toi une surface lavable.",
+  },
+  "musik-schuettler": {
+    title: "Fabriquer des maracas",
+    subtitle: "Du riz devient un instrument",
+    materials: ["Bouteilles vides ou boîtes avec couvercle", "Riz, lentilles, haricots secs", "Ruban adhésif", "En option : autocollants pour décorer"],
+    steps: [
+      { text: "Ton enfant verse du riz ou des lentilles dans les bouteilles – chaque remplissage sonne différemment.", tip: "Un entonnoir ou une cuillère aide à viser. Ce qui se renverse fait partie du jeu !" },
+      { text: "Bien fermer le couvercle et le sécuriser avec du ruban adhésif." },
+      { text: "Concert de maracas : doucement comme une souris, fort comme un orage." },
+      { text: "Secouer en rythme sur les chansons préférées." },
+    ],
+    learningGoals: ["Sens du rythme", "Motricité fine (verser & viser)", "Cause & effet : remplissage = son"],
+    tukiTip: "Verser, c'est de toute façon l'activité préférée dans le Tuki – ici, ça devient tout de suite un orchestre.",
+  },
+  "nudel-faedeln": {
+    title: "Colliers de pâtes",
+    subtitle: "Enfiler, compter, créer des motifs",
+    materials: ["Pâtes tubes (penne, rigatoni)", "Une ficelle solide", "En option : colorant alimentaire"],
+    steps: [
+      { text: "Rigidifier le bout de la ficelle avec du ruban adhésif – plus facile à enfiler." },
+      { text: "Ton enfant enfile les pâtes une à une sur la ficelle.", tip: "Pour les plus petits, prendre des rigatoni – le grand trou facilite les choses." },
+      { text: "Comptez à voix haute en enfilant : un, deux, trois …" },
+      { text: "Créer des motifs : deux claires, une foncée, deux claires … Qu'est-ce qui vient ensuite ?" },
+      { text: "Nouer les extrémités – le collier de pâtes est prêt !" },
+    ],
+    learningGoals: ["Motricité fine & coordination œil-main", "Compter & quantités", "Reconnaître et continuer des motifs"],
+    tukiTip: "Enfiler avec concentration marche super bien debout – dans le Tuki, aucune pâte ne roule par terre, tout reste à hauteur des yeux.",
+  },
+  "vogelfutter-anhaenger": {
+    title: "Suspensions pour oiseaux",
+    subtitle: "Fait maison pour les invités affamés",
+    materials: ["250 g de graisse de coco", "300 g de mélange de graines pour oiseaux", "Emporte-pièces ou tasses", "Ficelle", "Paille (pour le trou)"],
+    steps: [
+      { text: "Faire fondre la graisse de coco à feu doux (tâche d'adulte)." },
+      { text: "Ton enfant mélange les graines à la graisse.", tip: "Remuer quand c'est légèrement refroidi – ça n'éclabousse pas." },
+      { text: "Verser dans les moules et planter un bout de paille pour le trou." },
+      { text: "Mettre au frais, démouler et passer une ficelle." },
+      { text: "Suspendre dehors et observer depuis la fenêtre : qui vient en visite ?" },
+    ],
+    learningGoals: ["Découvrir nature & animaux", "Prendre des responsabilités", "Patience & observation"],
+    tukiTip: "On mélange et on remplit dans le Tuki – et l'observation des oiseaux devient ensuite le rituel quotidien à la fenêtre.",
+  },
+
 }
 
 export const categoryInfoFr: Record<string, { label: string; emoji: string; color: string }> = {
