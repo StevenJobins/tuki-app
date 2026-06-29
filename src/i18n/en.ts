@@ -179,6 +179,7 @@ const en: Translations = {
     resultsCount: (count: number, name?: string) =>
       `${count} recipes ${name ? `for ${name} ` : ''}found`,
     noResults: 'No recipes found.',
+    done: 'Done',
   },
 
   // Recipe Detail

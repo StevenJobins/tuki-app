@@ -177,6 +177,7 @@ const de = {
     resultsCount: (count: number, name?: string) =>
       `${count} Rezepte ${name ? `für ${name} ` : ''}gefunden`,
     noResults: 'Keine Rezepte gefunden.',
+    done: 'Erledigt',
   },
 
   // Recipe Detail
