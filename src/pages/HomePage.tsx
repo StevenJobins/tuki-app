@@ -33,6 +33,14 @@ function getSeasonName(t: any): string {
   return t.seasons.winter
 }
 
+function getSeasonKey(): 'spring' | 'summer' | 'autumn' | 'winter' {
+  const month = new Date().getMonth()
+  if (month >= 2 && month <= 4) return 'spring'
+  if (month >= 5 && month <= 7) return 'summer'
+  if (month >= 8 && month <= 10) return 'autumn'
+  return 'winter'
+}
+
 function getPhaseInsight(age: number, t: any): { title: string; text: string; emoji: string } {
   if (age < 1) return { emoji: '🌱', title: t.phases.discovery.title, text: t.phases.discovery.text }
   if (age < 2) return { emoji: '🚶', title: t.phases.littleSteps.title, text: t.phases.littleSteps.text }
@@ -40,6 +48,7 @@ function getPhaseInsight(age: number, t: any): { title: string; text: string; em
   if (age < 5) return { emoji: '🧪', title: t.phases.explorer.title, text: t.phases.explorer.text }
   return { emoji: '👩‍🍳', title: t.phases.miniChef.title, text: t.phases.miniChef.text }
 }
+
 
 const container = {
   hidden: { opacity: 0 },
@@ -58,6 +67,7 @@ export default function HomePage() {
   const activeChild = getActiveChild()
   const childAge = getChildAge()
 
+  // Filter recipes/activities by child's age
   const seasonalRecipes = getSeasonalRecipes()
   const ageFilteredRecipes = childAge !== null
     ? seasonalRecipes.filter(r => childAge >= r.ageRange[0] && childAge <= r.ageRange[1])
@@ -71,6 +81,9 @@ export default function HomePage() {
 
   const phase = childAge !== null ? getPhaseInsight(childAge, t) : null
 
+  const seasonTip = (t.seasonalTip as Record<string, { emoji: string; title: string; text: string }>)[getSeasonKey()]
+
+  // Daily tip rotation
   const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000)
   const dailyTip = t.dailyTips[dayOfYear % t.dailyTips.length]
 
@@ -78,14 +91,21 @@ export default function HomePage() {
     <motion.div variants={container} initial="hidden" animate="show" className="pb-24 overflow-x-hidden">
       <Header />
 
+      {/* Child Switcher */}
       {children.length > 1 && (
         <motion.div variants={item} className="px-4 mt-1 mb-3">
           <div className="flex gap-2 overflow-x-auto no-scrollbar py-1">
             {children.map(child => {
               const isActive = child.id === activeChildId
               return (
-                <button key={child.id} onClick={() => setActiveChild(child.id)}
-                  className={`flex items-center gap-2 px-3.5 py-2 rounded-full whitespace-nowrap transition-all shrink-0 ${isActive ? 'bg-tuki-rot text-white shadow-sm' : 'bg-white text-gray-600 border border-gray-200'}`}
+                <button
+                  key={child.id}
+                  onClick={() => setActiveChild(child.id)}
+                  className={`flex items-center gap-2 px-3.5 py-2 rounded-full whitespace-nowrap transition-all shrink-0 ${
+                    isActive
+                      ? 'bg-tuki-rot text-white shadow-sm'
+                      : 'bg-white text-gray-600 border border-gray-200'
+                  }`}
                 >
                   <span className="text-base">{child.avatarEmoji}</span>
                   <span className="text-xs font-medium">{child.name}</span>
@@ -96,6 +116,7 @@ export default function HomePage() {
         </motion.div>
       )}
 
+      {/* Hero Section */}
       <motion.div variants={item} className="px-4 mt-2 mb-6">
         <div className="relative rounded-3xl overflow-hidden gradient-mint p-5">
           <div className="relative z-10">
@@ -103,7 +124,10 @@ export default function HomePage() {
               {getGreeting(t)} {activeChild ? activeChild.avatarEmoji : '👋'}
             </p>
             <h1 className="text-2xl font-bold text-gray-800 mt-1 leading-tight">
-              {activeChild ? <>{t.home.heroQuestion(activeChild.name)}</> : <>{t.home.heroQuestionGeneric}</>}
+              {activeChild
+                ? <>{t.home.heroQuestion(activeChild.name)}</>
+                : <>{t.home.heroQuestionGeneric}</>
+              }
             </h1>
             <div className="flex items-center gap-3 mt-4">
               <div className="bg-white/70 dark:bg-white/10 rounded-xl px-3 py-2 flex items-center gap-2">
@@ -127,6 +151,7 @@ export default function HomePage() {
         </div>
       </motion.div>
 
+      {/* Phase Insight — only when a child is active */}
       {phase && activeChild && (
         <motion.div variants={item} className="px-4 mb-6">
           <div className="bg-white rounded-2xl p-4 shadow-sm border border-purple-100">
@@ -143,6 +168,22 @@ export default function HomePage() {
         </motion.div>
       )}
 
+      {/* Seasonal Tip */}
+      <motion.div variants={item} className="px-4 mb-6">
+        <div className="bg-amber-50 rounded-2xl p-4 shadow-sm border border-amber-100">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center shrink-0">
+              <span className="text-lg">{seasonTip.emoji}</span>
+            </div>
+            <div>
+              <h3 className="font-semibold text-sm text-amber-900">{seasonTip.title}</h3>
+              <p className="text-xs text-amber-800/80 mt-1 leading-relaxed">{seasonTip.text}</p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Quick Actions */}
       <motion.div variants={item} className="px-4 mb-6">
         <div className="grid grid-cols-4 gap-2">
           {[
@@ -151,7 +192,9 @@ export default function HomePage() {
             { emoji: '📊', label: t.home.quickActions.development, path: '/entwicklung' },
             { emoji: '👨‍👩‍👧', label: t.home.quickActions.community, path: '/community' },
           ].map(action => (
-            <button key={action.path} onClick={() => navigate(action.path)}
+            <button
+              key={action.path}
+              onClick={() => navigate(action.path)}
               className="flex flex-col items-center gap-1.5 py-3 bg-white rounded-2xl shadow-sm border border-gray-100 active:scale-95 transition-transform"
             >
               <span className="text-2xl">{action.emoji}</span>
@@ -161,8 +204,12 @@ export default function HomePage() {
         </div>
       </motion.div>
 
+      {/* Seasonal Banner */}
       <motion.div variants={item} className="px-4 mb-6">
-        <button onClick={() => navigate('/rezepte')} className="w-full bg-tuki-warm rounded-2xl p-4 border border-orange-100 text-left">
+        <button
+          onClick={() => navigate('/rezepte')}
+          className="w-full bg-tuki-warm rounded-2xl p-4 border border-orange-100 text-left"
+        >
           <div className="flex items-center gap-3">
             <span className="text-3xl">{getSeasonEmoji()}</span>
             <div>
@@ -181,8 +228,13 @@ export default function HomePage() {
         </button>
       </motion.div>
 
+      {/* Featured Recipes */}
       <motion.div variants={item}>
-        <SectionHeader title={activeChild ? t.home.recipesFor(activeChild.name) : t.home.popularRecipes} emoji="🍳" linkTo="/rezepte" />
+        <SectionHeader
+          title={activeChild ? t.home.recipesFor(activeChild.name) : t.home.popularRecipes}
+          emoji="🍳"
+          linkTo="/rezepte"
+        />
         <div className="flex gap-4 overflow-x-auto px-4 pb-2 no-scrollbar snap-x max-w-full">
           {displayRecipes.map(recipe => (
             <RecipeCard key={recipe.id} recipe={getTranslatedRecipe(recipe, language)} size="featured" />
@@ -190,15 +242,21 @@ export default function HomePage() {
         </div>
       </motion.div>
 
+      {/* Activities */}
       <motion.div variants={item} className="mt-6">
-        <SectionHeader title={activeChild ? t.home.activitiesFor(activeChild.name) : t.home.activitiesToday} emoji="🎯" linkTo="/aktivitaeten" />
-        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 lg:gap-4 px-4">
+        <SectionHeader
+          title={activeChild ? t.home.activitiesFor(activeChild.name) : t.home.activitiesToday}
+          emoji="🎯"
+          linkTo="/aktivitaeten"
+        />
+        <div className="grid grid-cols-2 gap-3 px-4">
           {displayActivities.map(activity => (
             <ActivityCard key={activity.id} activity={getTranslatedActivity(activity, language)} />
           ))}
         </div>
       </motion.div>
 
+      {/* Tuki Tip of the Day */}
       <motion.div variants={item} className="mt-6 px-4">
         <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
           <div className="flex items-start gap-3">
@@ -213,6 +271,7 @@ export default function HomePage() {
         </div>
       </motion.div>
 
+      {/* Level Progress */}
       <motion.div variants={item} className="mt-6 px-4 mb-4">
         <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-4 border border-yellow-200/50">
           <div className="flex items-center justify-between mb-2">
@@ -220,7 +279,12 @@ export default function HomePage() {
             <span className="text-xs text-gray-500">{t.home.levelProgress(tukiStars.level + 1)}</span>
           </div>
           <div className="w-full h-2 bg-yellow-100 rounded-full overflow-hidden">
-            <motion.div className="h-full bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full" initial={{ width: 0 }} animate={{ width: `${Math.min((tukiStars.total / 100) * 100, 100)}%` }} transition={{ duration: 1, delay: 0.5 }} />
+            <motion.div
+              className="h-full bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full"
+              initial={{ width: 0 }}
+              animate={{ width: `${Math.min((tukiStars.total / 100) * 100, 100)}%` }}
+              transition={{ duration: 1, delay: 0.5 }}
+            />
           </div>
           <p className="text-[10px] text-gray-500 mt-1.5">
             {t.home.starsToNext(Math.max(0, [10, 25, 50, 100][tukiStars.level] || 100 - tukiStars.total))}
@@ -228,9 +292,13 @@ export default function HomePage() {
         </div>
       </motion.div>
 
+      {/* No children prompt */}
       {children.length === 0 && (
         <motion.div variants={item} className="px-4 mb-4">
-          <button onClick={() => navigate('/profil')} className="w-full bg-gradient-to-r from-tuki-mint to-green-50 rounded-2xl p-4 border border-green-200/50 text-left">
+          <button
+            onClick={() => navigate('/profil')}
+            className="w-full bg-gradient-to-r from-tuki-mint to-green-50 rounded-2xl p-4 border border-green-200/50 text-left"
+          >
             <div className="flex items-center gap-3">
               <span className="text-2xl">👶</span>
               <div className="flex-1">
