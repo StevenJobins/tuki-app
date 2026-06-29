@@ -22,6 +22,13 @@ const fr: Translations = {
     activities: 'Activités',
     community: 'Communauté',
     profile: 'Profil',
+    favorites: 'Favoris',
+    weeklyPlan: 'Plan de la semaine',
+    fridgeCheck: 'Check ingrédients',
+    development: 'Développement',
+    starShop: 'Boutique étoiles',
+    foodTracker: 'Suivi alimentaire',
+    dailyAmounts: 'Quantités/jour',
   },
 
   // Common
@@ -195,7 +202,7 @@ const fr: Translations = {
     resultsCount: (count: number, name?: string) =>
       `${count} activités ${name ? `pour ${name} ` : ''}trouvées`,
     noResults: 'Aucune activité trouvée.',
-    done: 'Fait',
+  done: 'Fait',
   },
 
   // Activity Detail
@@ -227,7 +234,7 @@ const fr: Translations = {
     disclaimer: '📋 Chaque enfant se développe à son propre rythme. Ces jalons servent d\'orientation — pas de liste de contrôle. En cas de questions, parlez-en à votre pédiatre.',
     achieved: (count: number, total: number) => `${count}/${total} atteints`,
     allAchieved: '🎉 Tous les jalons de cette phase sont atteints !',
-    ageGroups: ['12-18 mois', '18-24 mois', '2-3 ans', '3-5 ans'],
+    ageGroups: ['12-18 mois', '18-24 mois', '2-3 ans', '3-5 ans', '5-8 ans'],
     milestoneCategories: {
       motorik: 'Motricité',
       feinmotorik: 'Motricité fine',
@@ -236,13 +243,15 @@ const fr: Translations = {
       kognition: 'Cognition',
       sozial: 'Social',
     },
+    developmentOf: (name: string) => `Développement de ${name}`,
+    trackIndividually: 'Suivre les jalons individuellement',
     milestones: {
       m1: { title: 'Premiers pas tout seul', description: 'Votre enfant fait ses premiers pas sans aide.' },
       m2: { title: 'Tour de 2-3 cubes', description: 'Sait empiler des cubes et construire une petite tour.' },
       m3: { title: 'Premiers mots (5-10)', description: 'Dit volontairement ses premiers mots comme maman, papa, balle, chien...' },
       m4: { title: 'Boire au gobelet', description: 'Sait boire dans un gobelet ouvert avec les deux mains.' },
       m5: { title: 'Monter les escaliers (avec aide)', description: 'Monte les escaliers en se tenant à la rampe ou à la main.' },
-      m6: { title: 'Phrases de deux mots', description: '« Maman là », « veux balle », « encore lait » : premières combinaisons de deux mots.' },
+      m6: { title: 'Phrases de deux mots', description: 'Maman là, veux balle, encore lait : premières combinaisons de deux mots.' },
       m7: { title: 'Manger à la cuillère', description: 'Sait (le plus souvent) manger seul à la cuillère, même si ça déborde !' },
       m8: { title: 'Gribouiller au crayon', description: 'Tient un crayon et fait des gribouillis volontaires sur le papier.' },
       m9: { title: 'Courir et sauter', description: 'Sait courir sans tomber et essaie de sauter.' },
@@ -251,8 +260,12 @@ const fr: Translations = {
       m12: { title: 'Compter jusqu\'à 10', description: 'Compte (avec ou sans erreurs) jusqu\'à au moins 10.' },
       m13: { title: 'Couper avec des ciseaux', description: 'Sait couper le long d\'une ligne avec des ciseaux pour enfants.' },
       m14: { title: 'Écrire son prénom', description: 'Écrit son propre prénom (peut-être à l\'envers).' },
-      m15: { title: 'Se faire des amis', description: 'Joue volontairement avec certains enfants et les appelle « ami ».' },
+      m15: { title: 'Se faire des amis', description: 'Joue volontairement avec certains enfants et les appelle ami.' },
       m16: { title: 'Raconter des histoires', description: 'Sait raconter une histoire simple avec ses propres mots.' },
+      m17: { title: 'Faire du vélo (sans roulettes)', description: 'Fait du vélo en sécurité sans roulettes.' },
+      m18: { title: 'Lire l\'heure (heures pleines)', description: 'Sait lire l\'heure et nommer les heures pleines.' },
+      m19: { title: 'Exprimer son opinion', description: 'Sait exprimer clairement ses souhaits et opinions.' },
+      m20: { title: 'Lire de courts textes', description: 'Lit des mots simples et de courtes phrases tout seul.' },
     },
   },
 
@@ -356,8 +369,10 @@ const fr: Translations = {
     deleteConfirmWord: 'SUPPRIMER',
     deleteForever: 'Supprimer définitivement',
   },
+
+  // Star Shop
   starShop: {
-    title: 'Boutique d\'étoiles',
+    title: 'Boutique étoiles',
     all: 'Tout',
     badges: 'Badges',
     titles: 'Titres',
@@ -367,21 +382,21 @@ const fr: Translations = {
     spent: 'Dépensé',
     redeemed: 'Échangé !',
     owned: 'Obtenu',
-    noStarsTitle: 'Pas encore d\'étoiles',
-    noStarsDesc: 'Termine des recettes et des activités pour gagner des étoiles !',
+    noStarsTitle: 'Pas encore d’étoiles',
+    noStarsDesc: 'Complète des recettes et activités pour gagner des étoiles !',
     rewards: {
-      'badge-chef': { name: 'Badge Chef', desc: 'Montre ton talent de cuisinier' },
+      'badge-chef': { name: 'Badge Chef', desc: 'Montre ton talent culinaire' },
       'badge-star': { name: 'Badge Superstar', desc: 'Tu es une superstar' },
       'badge-rocket': { name: 'Badge Fusée', desc: 'Direction les étoiles' },
       'badge-crown': { name: 'Badge Couronne', desc: 'Roi de la cuisine' },
       'badge-rainbow': { name: 'Badge Arc-en-ciel', desc: 'Cuisiner en couleurs' },
       'badge-heart': { name: 'Badge Cœur', desc: 'Cuisiné avec amour' },
-      'title-explorer': { name: 'Titre Explorateur', desc: 'Nouveau titre pour le profil' },
+      'title-explorer': { name: 'Titre Explorateur', desc: 'Nouveau titre pour ton profil' },
       'title-superchef': { name: 'Titre Superchef', desc: 'Le titre ultime' },
-      'activity-baking': { name: 'Aventure Pâtisserie', desc: 'Débloque une activité bonus' },
+      'activity-baking': { name: 'Aventure Pâtisserie', desc: 'Débloquer une activité bonus' },
       'activity-painting': { name: 'Aventure Peinture', desc: 'Deviens créatif' },
-      'activity-garden': { name: 'Aventure Jardin', desc: 'Découvre les plantes' },
-      'activity-music': { name: 'Aventure Musique', desc: 'Vis le rythme' },
+      'activity-garden': { name: 'Aventure Jardin', desc: 'Découvrir les plantes' },
+      'activity-music': { name: 'Aventure Musique', desc: 'Vivre le rythme' },
     } as Record<string, { name: string; desc: string }>,
   },
 }
