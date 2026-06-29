@@ -3,22 +3,36 @@ import { motion } from 'framer-motion'
 import { Recipe } from '../data/recipes'
 import FavoriteButton from './FavoriteButton'
 import { useTranslation } from '../i18n/useTranslation'
+import { useApp } from '../context/AppContext'
 
 interface RecipeCardProps {
   recipe: Recipe
   size?: 'normal' | 'featured'
 }
 
+function DoneBadge({ label }: { label: string }) {
+  return (
+    <span className="flex items-center gap-1 text-[10px] font-semibold px-2 py-1 rounded-full bg-green-500 text-white shadow-sm">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      {label}
+    </span>
+  )
+}
+
 export default function RecipeCard({ recipe, size = 'normal' }: RecipeCardProps) {
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const { completedRecipes } = useApp()
+  const isDone = completedRecipes.includes(recipe.id)
 
   if (size === 'featured') {
     return (
       <motion.div
         whileTap={{ scale: 0.98 }}
         onClick={() => navigate(`/rezept/${recipe.id}`)}
-        className="relative rounded-2xl overflow-hidden shadow-md cursor-pointer min-w-[280px] h-[200px] snap-start"
+        className={`relative rounded-2xl overflow-hidden shadow-md cursor-pointer min-w-[280px] h-[200px] snap-start ${
+          isDone ? 'ring-2 ring-green-400' : ''
+        }`}
       >
         <img
           src={recipe.image}
@@ -31,6 +45,7 @@ export default function RecipeCard({ recipe, size = 'normal' }: RecipeCardProps)
           <FavoriteButton id={recipe.id} />
         </div>
         <div className="absolute top-3 left-3 flex gap-1">
+          {isDone && <DoneBadge label={t.recipesPage.done} />}
           {recipe.diet && (
             <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${recipe.diet === 'vegan' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
               {recipe.diet === 'vegan' ? '🌱 Vegan' : '🥚 Vegetarisch'}
@@ -55,13 +70,15 @@ export default function RecipeCard({ recipe, size = 'normal' }: RecipeCardProps)
     <motion.div
       whileTap={{ scale: 0.97 }}
       onClick={() => navigate(`/rezept/${recipe.id}`)}
-      className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer"
+      className={`bg-white rounded-2xl overflow-hidden shadow-sm border cursor-pointer ${
+        isDone ? 'border-green-400 ring-2 ring-green-400' : 'border-gray-100'
+      }`}
     >
       <div className="relative h-36">
         <img
           src={recipe.image}
           alt={recipe.title}
-          className="w-full h-full object-cover"
+          className={`w-full h-full object-cover ${isDone ? 'opacity-90' : ''}`}
           loading="lazy"
         />
         <div className="absolute top-2 right-2">
@@ -79,6 +96,11 @@ export default function RecipeCard({ recipe, size = 'normal' }: RecipeCardProps)
             </span>
           )}
         </div>
+        {isDone && (
+          <div className="absolute bottom-2 left-2">
+            <DoneBadge label={t.recipesPage.done} />
+          </div>
+        )}
       </div>
       <div className="p-3">
         <div className="flex items-start justify-between gap-2">
