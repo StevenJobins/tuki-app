@@ -52,11 +52,13 @@ export default function ActivityCard({ activity, size = 'normal' }: ActivityCard
       }`}
     >
       <div className="relative h-36">
+        <div className="absolute inset-0 bg-tuki-mint-bg flex items-center justify-center text-5xl">{activity.emoji}</div>
         <img
           src={activity.image}
           alt={activity.title}
-          className={`w-full h-full object-cover ${isDone ? 'opacity-90' : ''}`}
+          className={`relative w-full h-full object-cover ${isDone ? 'opacity-90' : ''}`}
           loading="lazy"
+          onError={(e) => { e.currentTarget.style.display = 'none' }}
         />
         <div className="absolute top-2 right-2">
           <FavoriteButton id={activity.id} />
