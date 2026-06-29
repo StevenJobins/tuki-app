@@ -22,13 +22,6 @@ const en: Translations = {
     activities: 'Activities',
     community: 'Community',
     profile: 'Profile',
-    favorites: 'Favourites',
-    weeklyPlan: 'Weekly Plan',
-    fridgeCheck: 'Ingredient Check',
-    development: 'Development',
-    starShop: 'Star Shop',
-    foodTracker: 'Food Tracker',
-    dailyAmounts: 'Daily Amounts',
   },
 
   // Common
@@ -121,6 +114,13 @@ const en: Translations = {
     winter: 'Winter',
   },
 
+  seasonalTip: {
+    spring: { emoji: '🌷', title: 'Spring tip', text: 'Head outside: puddles, first flowers and birdsong are wonderful discoveries. A light jacket is usually enough, the weather changes quickly.' },
+    summer: { emoji: '🌡️', title: 'Heat tip for hot days', text: 'Offer your child water regularly, plan playtime in the shade and avoid the strong midday sun (around 11am-3pm). Light, airy clothing, a sun hat and a cool foot bath or paddling pool help against the heat.' },
+    autumn: { emoji: '🍂', title: 'Autumn tip', text: 'Collecting colourful leaves, rustling through them and hunting for chestnuts is great fun. Dress in layers: chilly in the morning, often still warm at midday.' },
+    winter: { emoji: '❄️', title: 'Winter tip', text: 'Fresh air does good even in the cold: wrap up warm and don\'t forget a hat. Indoors, active games help against cabin fever.' },
+  },
+
   // Phase Insights
   phases: {
     discovery: {
@@ -195,6 +195,7 @@ const en: Translations = {
     resultsCount: (count: number, name?: string) =>
       `${count} activities ${name ? `for ${name} ` : ''}found`,
     noResults: 'No activities found.',
+    done: 'Done',
   },
 
   // Activity Detail
@@ -234,6 +235,24 @@ const en: Translations = {
       selbstständigkeit: 'Independence',
       kognition: 'Cognition',
       sozial: 'Social',
+    },
+    milestones: {
+      m1: { title: 'First steps alone', description: 'Your child takes their first steps without help.' },
+      m2: { title: 'Tower of 2-3 blocks', description: 'Can stack blocks and build a small tower.' },
+      m3: { title: 'First words (5-10)', description: 'Deliberately says first words like mum, dad, ball, dog...' },
+      m4: { title: 'Drinking from a cup', description: 'Can drink from an open cup with both hands.' },
+      m5: { title: 'Climbing stairs (with help)', description: 'Goes up stairs while holding the railing or a hand.' },
+      m6: { title: 'Two-word sentences', description: '"Mum there", "want ball", "more milk": first two-word combinations.' },
+      m7: { title: 'Eating with a spoon', description: 'Can (mostly) eat with a spoon alone, even if it gets messy!' },
+      m8: { title: 'Scribbling with a pen', description: 'Holds a pen and makes deliberate scribbles on paper.' },
+      m9: { title: 'Running & jumping', description: 'Can run without falling and tries to jump.' },
+      m10: { title: 'Naming colours', description: 'Recognises and names at least 3-4 basic colours.' },
+      m11: { title: 'Getting dressed (partly)', description: 'Can put on and take off shoes, hat or jacket (partly) alone.' },
+      m12: { title: 'Counting to 10', description: 'Counts (with or without mistakes) to at least 10.' },
+      m13: { title: 'Cutting with scissors', description: 'Can cut along a line with child-safe scissors.' },
+      m14: { title: 'Writing their own name', description: 'Writes their own name (maybe mirror-inverted).' },
+      m15: { title: 'Making friends', description: 'Plays with specific children on purpose and calls them "friend".' },
+      m16: { title: 'Retelling stories', description: 'Can retell a simple story in their own words.' },
     },
   },
 
@@ -337,15 +356,13 @@ const en: Translations = {
     deleteConfirmWord: 'DELETE',
     deleteForever: 'Delete forever',
   },
-
-  // Star Shop
   starShop: {
     title: 'Star Shop',
     all: 'All',
     badges: 'Badges',
     titles: 'Titles',
     activities: 'Activities',
-    yourBalance: 'Your Balance',
+    yourBalance: 'Your balance',
     totalEarned: 'Total earned',
     spent: 'Spent',
     redeemed: 'Redeemed!',
@@ -355,13 +372,13 @@ const en: Translations = {
     rewards: {
       'badge-chef': { name: 'Chef Badge', desc: 'Show your cooking talent' },
       'badge-star': { name: 'Superstar Badge', desc: 'You are a superstar' },
-      'badge-rocket': { name: 'Rocket Badge', desc: 'Reach for the stars' },
+      'badge-rocket': { name: 'Rocket Badge', desc: 'Off to the stars' },
       'badge-crown': { name: 'Crown Badge', desc: 'King of the kitchen' },
-      'badge-rainbow': { name: 'Rainbow Badge', desc: 'Colourful cooking' },
+      'badge-rainbow': { name: 'Rainbow Badge', desc: 'Cook colourfully' },
       'badge-heart': { name: 'Heart Badge', desc: 'Cooked with love' },
       'title-explorer': { name: 'Explorer Title', desc: 'New title for your profile' },
       'title-superchef': { name: 'Superchef Title', desc: 'The ultimate title' },
-      'activity-baking': { name: 'Baking Adventure', desc: 'Unlock bonus activity' },
+      'activity-baking': { name: 'Baking Adventure', desc: 'Unlock a bonus activity' },
       'activity-painting': { name: 'Painting Adventure', desc: 'Get creative' },
       'activity-garden': { name: 'Garden Adventure', desc: 'Discover plants' },
       'activity-music': { name: 'Music Adventure', desc: 'Experience rhythm' },

@@ -20,13 +20,6 @@ const de = {
     activities: 'Aktivitäten',
     community: 'Community',
     profile: 'Profil',
-    favorites: 'Favoriten',
-    weeklyPlan: 'Wochenplan',
-    fridgeCheck: 'Zutaten-Check',
-    development: 'Entwicklung',
-    starShop: 'Sterne-Shop',
-    foodTracker: 'Lebensmittel',
-    dailyAmounts: 'Tagesmengen',
   },
 
   // Common
@@ -119,6 +112,13 @@ const de = {
     winter: 'Winter',
   },
 
+  seasonalTip: {
+    spring: { emoji: '🌷', title: 'Frühlings-Tipp', text: 'Ab nach draussen: Pfützen, erste Blumen und Vogelstimmen sind tolle Entdeckungen. Eine dünne Jacke reicht meist, das Wetter wechselt schnell.' },
+    summer: { emoji: '🌡️', title: 'Hitze-Tipp für heisse Tage', text: 'Biete deinem Kind regelmässig Wasser an, plant Spielzeit in den Schatten und meidet die pralle Mittagssonne (ca. 11-15 Uhr). Leichte, luftige Kleidung, Sonnenhut und ein kühles Fussbad oder Planschbecken helfen gegen die Hitze.' },
+    autumn: { emoji: '🍂', title: 'Herbst-Tipp', text: 'Bunte Blätter sammeln, durch Laub raschen und Kastanien suchen macht Spass. Zwiebellook anziehen, morgens ist es frisch, mittags oft noch warm.' },
+    winter: { emoji: '❄️', title: 'Winter-Tipp', text: 'Auch bei Kälte tut frische Luft gut: warm einpacken, Mütze nicht vergessen. Drinnen helfen Bewegungsspiele gegen den Lagerkoller.' },
+  },
+
   // Phase Insights
   phases: {
     discovery: {
@@ -193,6 +193,7 @@ const de = {
     resultsCount: (count: number, name?: string) =>
       `${count} Aktivitäten ${name ? `für ${name} ` : ''}gefunden`,
     noResults: 'Keine Aktivitäten gefunden.',
+    done: 'Erledigt',
   },
 
   // Activity Detail
@@ -232,6 +233,24 @@ const de = {
       selbstständigkeit: 'Selbstständigkeit',
       kognition: 'Kognition',
       sozial: 'Sozial',
+    },
+    milestones: {
+      m1: { title: 'Erste Schritte alleine', description: 'Dein Kind läuft die ersten Schritte ohne Hilfe.' },
+      m2: { title: 'Turm aus 2-3 Klötzen', description: 'Kann Bauklötze stapeln und einen kleinen Turm bauen.' },
+      m3: { title: 'Erste Wörter (5-10)', description: 'Sagt bewusst erste Wörter wie Mama, Papa, Ball, Hund...' },
+      m4: { title: 'Aus Becher trinken', description: 'Kann mit beiden Händen aus einem offenen Becher trinken.' },
+      m5: { title: 'Treppe steigen (mit Hilfe)', description: 'Geht Treppen hoch, hält sich dabei am Geländer oder an der Hand.' },
+      m6: { title: '2-Wort-Sätze', description: '"Mama da", "Ball haben", "Mehr Milch": erste Zwei-Wort-Kombinationen.' },
+      m7: { title: 'Mit Löffel essen', description: 'Kann (meistens) selbst mit dem Löffel essen, auch wenn es kleckert!' },
+      m8: { title: 'Kritzeln mit Stift', description: 'Hält einen Stift und macht bewusste Kritzelstriche auf Papier.' },
+      m9: { title: 'Rennen & Hüpfen', description: 'Kann rennen ohne hinzufallen und versucht zu hüpfen.' },
+      m10: { title: 'Farben benennen', description: 'Erkennt und benennt mindestens 3-4 Grundfarben.' },
+      m11: { title: 'Sich selbst anziehen (teilweise)', description: 'Kann Schuhe, Mütze oder Jacke (teilweise) selbst an- und ausziehen.' },
+      m12: { title: 'Bis 10 zählen', description: 'Zählt (mit oder ohne Fehler) bis mindestens 10.' },
+      m13: { title: 'Mit Schere schneiden', description: 'Kann mit einer Kinderschere entlang einer Linie schneiden.' },
+      m14: { title: 'Eigenen Namen schreiben', description: 'Schreibt (vielleicht spiegelverkehrt) den eigenen Namen.' },
+      m15: { title: 'Freundschaften schliessen', description: 'Spielt gezielt mit bestimmten Kindern und nennt sie "Freund".' },
+      m16: { title: 'Geschichten nacherzählen', description: 'Kann eine einfache Geschichte in eigenen Worten nacherzählen.' },
     },
   },
 
