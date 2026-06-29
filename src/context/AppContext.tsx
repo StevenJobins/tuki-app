@@ -25,20 +25,17 @@ interface PerChildData {
 }
 
 interface AppState {
-  // Active child's data (flat for backward compat)
   favorites: string[]
   completedActivities: string[]
   completedRecipes: string[]
   weekPlan: Record<string, string[]>
   tukiStars: TukiStars
-  // Multi-child
   children: ChildProfile[]
   activeChildId: string | null
   childData: Record<string, PerChildData>
-  // StarShop
   redeemedRewards: string[]
-  // App
   language: 'de' | 'en' | 'fr'
+  darkMode: boolean
   isOnboarded: boolean
 }
 
@@ -55,6 +52,7 @@ interface AppContextType extends AppState {
   setActiveChild: (childId: string) => void
   setOnboarded: () => void
   setLanguage: (lang: 'de' | 'en' | 'fr') => void
+  toggleDarkMode: () => void
   starBalance: () => number
   spendStars: (amount: number, rewardId: string) => boolean
   getActiveChild: () => ChildProfile | null
@@ -114,6 +112,7 @@ const defaultState: AppState = {
   childData: {},
   redeemedRewards: [],
   language: 'de',
+  darkMode: false,
   isOnboarded: false,
 }
 
@@ -122,12 +121,10 @@ function loadState(): AppState {
     const saved = localStorage.getItem('tuki-family-state')
     if (saved) {
       const parsed = JSON.parse(saved)
-      // Migration: old format had favorites as array with no childData
       if (parsed && !parsed.childData) {
         parsed.childData = {}
         parsed.activeChildId = parsed.activeChildId || null
       }
-      // Auto-set active child if children exist but none is active
       if (parsed.children?.length > 0 && !parsed.activeChildId) {
         parsed.activeChildId = parsed.children[0].id
       }
@@ -146,7 +143,11 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
     localStorage.setItem('tuki-family-state', JSON.stringify(state))
   }, [state])
 
-  // Save current child's data into childData before switching
+  // Apply dark-mode class whenever state changes
+  useEffect(() => {
+    document.body.classList.toggle('dark-mode', state.darkMode)
+  }, [state.darkMode])
+
   const saveCurrentChildData = useCallback((s: AppState): AppState => {
     if (!s.activeChildId) return s
     return {
@@ -196,20 +197,14 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
   const addToWeekPlan = (day: string, id: string) => {
     setState(s => ({
       ...s,
-      weekPlan: {
-        ...s.weekPlan,
-        [day]: [...(s.weekPlan[day] || []), id],
-      },
+      weekPlan: { ...s.weekPlan, [day]: [...(s.weekPlan[day] || []), id] },
     }))
   }
 
   const removeFromWeekPlan = (day: string, id: string) => {
     setState(s => ({
       ...s,
-      weekPlan: {
-        ...s.weekPlan,
-        [day]: (s.weekPlan[day] || []).filter(i => i !== id),
-      },
+      weekPlan: { ...s.weekPlan, [day]: (s.weekPlan[day] || []).filter(i => i !== id) },
     }))
   }
 
@@ -217,53 +212,32 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
     setState(s => {
       const isFirst = s.children.length === 0
       let newState = { ...s, children: [...s.children, child] }
-
       if (isFirst) {
-        // Migrate existing data to first child
-        newState.childData = {
-          ...newState.childData,
-          [child.id]: {
-            favorites: s.favorites,
-            completedActivities: s.completedActivities,
-            completedRecipes: s.completedRecipes,
-            weekPlan: s.weekPlan,
-            tukiStars: s.tukiStars,
-          },
-        }
+        newState.childData = { ...newState.childData, [child.id]: { favorites: s.favorites, completedActivities: s.completedActivities, completedRecipes: s.completedRecipes, weekPlan: s.weekPlan, tukiStars: s.tukiStars } }
         newState.activeChildId = child.id
       } else {
-        // Save current child data, then init new child with defaults
         newState = saveCurrentChildData(newState)
-        newState.childData = {
-          ...newState.childData,
-          [child.id]: { ...defaultPerChild },
-        }
+        newState.childData = { ...newState.childData, [child.id]: { ...defaultPerChild } }
       }
       return newState
     })
   }
 
   const updateChild = (child: ChildProfile) => {
-    setState(s => ({
-      ...s,
-      children: s.children.map(c => (c.id === child.id ? child : c)),
-    }))
+    setState(s => ({ ...s, children: s.children.map(c => (c.id === child.id ? child : c)) }))
   }
 
   const removeChild = (childId: string) => {
     setState(s => {
       const newChildren = s.children.filter(c => c.id !== childId)
       const { [childId]: _, ...restChildData } = s.childData
-
       let newActiveId = s.activeChildId
       let newFavorites = s.favorites
       let newCompletedAct = s.completedActivities
       let newCompletedRec = s.completedRecipes
       let newWeekPlan = s.weekPlan
       let newStars = s.tukiStars
-
       if (s.activeChildId === childId) {
-        // Switch to another child or null
         if (newChildren.length > 0) {
           newActiveId = newChildren[0].id
           const data = restChildData[newActiveId] || defaultPerChild
@@ -281,37 +255,16 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
           newStars = { total: 0, spent: 0, level: 0, levelName: 'Kleiner Entdecker' }
         }
       }
-
-      return {
-        ...s,
-        children: newChildren,
-        childData: restChildData,
-        activeChildId: newActiveId,
-        favorites: newFavorites,
-        completedActivities: newCompletedAct,
-        completedRecipes: newCompletedRec,
-        weekPlan: newWeekPlan,
-        tukiStars: newStars,
-      }
+      return { ...s, children: newChildren, childData: restChildData, activeChildId: newActiveId, favorites: newFavorites, completedActivities: newCompletedAct, completedRecipes: newCompletedRec, weekPlan: newWeekPlan, tukiStars: newStars }
     })
   }
 
   const setActiveChild = (childId: string) => {
     setState(s => {
       if (s.activeChildId === childId) return s
-      // Save current child's data
       const saved = saveCurrentChildData(s)
-      // Load new child's data
       const data = saved.childData[childId] || defaultPerChild
-      return {
-        ...saved,
-        activeChildId: childId,
-        favorites: data.favorites,
-        completedActivities: data.completedActivities,
-        completedRecipes: data.completedRecipes,
-        weekPlan: data.weekPlan,
-        tukiStars: data.tukiStars,
-      }
+      return { ...saved, activeChildId: childId, favorites: data.favorites, completedActivities: data.completedActivities, completedRecipes: data.completedRecipes, weekPlan: data.weekPlan, tukiStars: data.tukiStars }
     })
   }
 
@@ -321,6 +274,14 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
 
   const setLanguage = (lang: 'de' | 'en' | 'fr') => {
     setState(s => ({ ...s, language: lang }))
+  }
+
+  const toggleDarkMode = () => {
+    setState(s => {
+      const newDark = !s.darkMode
+      document.body.classList.toggle('dark-mode', newDark)
+      return { ...s, darkMode: newDark }
+    })
   }
 
   const starBalance = (): number => {
@@ -359,22 +320,10 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
     <AppContext.Provider
       value={{
         ...state,
-        toggleFavorite,
-        isFavorite,
-        completeActivity,
-        completeRecipe,
-        addToWeekPlan,
-        removeFromWeekPlan,
-        addChild,
-        updateChild,
-        removeChild,
-        setActiveChild,
-        setOnboarded,
-        setLanguage,
-        starBalance,
-        spendStars,
-        getActiveChild,
-        getChildAge,
+        toggleFavorite, isFavorite, completeActivity, completeRecipe,
+        addToWeekPlan, removeFromWeekPlan, addChild, updateChild,
+        removeChild, setActiveChild, setOnboarded, setLanguage, toggleDarkMode,
+        starBalance, spendStars, getActiveChild, getChildAge,
       }}
     >
       {childNodes}
