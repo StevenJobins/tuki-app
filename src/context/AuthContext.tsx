@@ -117,7 +117,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email,
       password,
       options: {
-        emailRedirectTo: 'https://stevenjobins.github.io/tuki-app/',
+        emailRedirectTo: window.location.origin + '/',
         data: { display_name: displayName }
       }
     })
