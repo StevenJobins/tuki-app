@@ -23,6 +23,7 @@ import LoginPage from './pages/LoginPage'
 import AccountSettingsPage from './pages/AccountSettingsPage'
 import FoodTrackerPage from './pages/FoodTrackerPage'
 import MengenPage from './pages/MengenPage'
+import GastHinweis from './components/GastHinweis'
 
 export default function App() {
   const { user, loading } = useAuth()
@@ -44,12 +45,8 @@ export default function App() {
     )
   }
 
-  // Not logged in -> show login/register page
-  if (!user) {
-    return <LoginPage />
-  }
-
-  // Logged in but not onboarded -> show onboarding (child setup)
+  // Ohne Geburtsdatum kann die App nichts filtern, das ist der einzige Pflichtschritt.
+  // Ein Konto braucht es dafuer nicht: wer nur schauen will, kommt ohne Anmeldung rein.
   if (!isOnboarded) {
     return <OnboardingPage />
   }
@@ -78,8 +75,10 @@ export default function App() {
             <Route path="/konto" element={<AccountSettingsPage />} />
             <Route path="/lebensmittel" element={<FoodTrackerPage />} />
             <Route path="/mengen" element={<MengenPage />} />
+            <Route path="/anmelden" element={<LoginPage />} />
           </Routes>
         </AnimatePresence>
+        {!user && <GastHinweis />}
         <BottomNav />
       </main>
     </div>
