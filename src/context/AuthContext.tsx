@@ -117,6 +117,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email,
       password,
       options: {
+        // Zeigte bis August 2026 noch auf die alte GitHub-Pages-Adresse. Wer sich
+        // registrierte, landete nach dem Bestaetigen auf einer toten Seite.
         emailRedirectTo: window.location.origin + '/',
         data: { display_name: displayName }
       }

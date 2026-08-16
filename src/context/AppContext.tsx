@@ -1,6 +1,12 @@
-import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react'
 import { recipes } from '../data/recipes'
 import { activities } from '../data/activities'
+import { useAuth } from './AuthContext'
+import {
+  ladeServerZustand, speichereServerZustand, vereineZustaende,
+  spiegleKinder, spiegleFavoriten, spiegleErledigte,
+  alleFavoriten, alleErledigten,
+} from '../lib/sync'
 
 export interface ChildProfile {
   id: string
@@ -57,6 +63,10 @@ interface AppContextType extends AppState {
   spendStars: (amount: number, rewardId: string) => boolean
   getActiveChild: () => ChildProfile | null
   getChildAge: (childId?: string) => number | null
+  /** Kein Konto: die App laeuft rein lokal auf diesem Geraet. */
+  istGast: boolean
+  /** Konto vorhanden und Erstabgleich mit dem Server erledigt. */
+  wirdGesichert: boolean
 }
 
 const LEVELS = [
@@ -138,10 +148,49 @@ const AppContext = createContext<AppContextType | null>(null)
 
 export function AppProvider({ children: childNodes }: { children: ReactNode }) {
   const [state, setState] = useState<AppState>(loadState)
+  const { user } = useAuth()
+  const [wirdGesichert, setWirdGesichert] = useState(false)
+  const geladenFuer = useRef<string | null>(null)
+  const abgleichTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     localStorage.setItem('tuki-family-state', JSON.stringify(state))
   }, [state])
+
+  // Beim Anmelden einmal den Serverzustand holen und mit dem Geraet vereinen.
+  // Genau hier landen die Daten, die jemand vorher ohne Konto gesammelt hat.
+  useEffect(() => {
+    if (!user) {
+      geladenFuer.current = null
+      setWirdGesichert(false)
+      return
+    }
+    if (geladenFuer.current === user.id) return
+    geladenFuer.current = user.id
+    let aktiv = true
+    ;(async () => {
+      const server = await ladeServerZustand(user.id)
+      if (!aktiv) return
+      if (server) setState(s => vereineZustaende(server, s))
+      setWirdGesichert(true)
+    })()
+    return () => { aktiv = false }
+  }, [user?.id])
+
+  // Danach jede Aenderung sichern, gebuendelt statt bei jedem Tastendruck.
+  useEffect(() => {
+    if (!user || !wirdGesichert) return
+    if (abgleichTimer.current) clearTimeout(abgleichTimer.current)
+    abgleichTimer.current = setTimeout(async () => {
+      const id = user.id
+      await speichereServerZustand(id, state)
+      await spiegleKinder(id, state.children)
+      const { rezepte, aktivitaeten } = alleErledigten(state)
+      await spiegleFavoriten(id, alleFavoriten(state))
+      await spiegleErledigte(id, rezepte, aktivitaeten)
+    }, 1500)
+    return () => { if (abgleichTimer.current) clearTimeout(abgleichTimer.current) }
+  }, [user?.id, wirdGesichert, state])
 
   // Apply dark-mode class whenever state changes
   useEffect(() => {
@@ -324,6 +373,7 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
         addToWeekPlan, removeFromWeekPlan, addChild, updateChild,
         removeChild, setActiveChild, setOnboarded, setLanguage, toggleDarkMode,
         starBalance, spendStars, getActiveChild, getChildAge,
+        istGast: !user, wirdGesichert,
       }}
     >
       {childNodes}
