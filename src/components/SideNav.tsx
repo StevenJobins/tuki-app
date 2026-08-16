@@ -20,7 +20,7 @@ export default function SideNav() {
   const location = useLocation()
   const navigate = useNavigate()
   const { tukiStars } = useApp()
-  const basePath = (import.meta as any).env?.BASE_URL || '/tuki-app/'
+  const basePath = (import.meta as any).env?.BASE_URL || '/'
 
   return (
     <nav className="hidden md:flex flex-col w-64 min-h-screen bg-white border-r border-gray-100 p-4 shrink-0 sticky top-0 h-screen overflow-y-auto">
