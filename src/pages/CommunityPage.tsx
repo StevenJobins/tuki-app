@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
+import { useApp } from '../context/AppContext'
 import Header from '../components/Header'
 import { useTranslation } from '../i18n/useTranslation'
 import { supabase } from '../lib/supabaseClient'
@@ -181,6 +183,9 @@ function saveClubMembership(value: boolean) {
 
 export default function CommunityPage() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
+  const { istGast } = useApp()
+  const istAngemeldet = !istGast
   const [activeTab, setActiveTab] = useState<'feed' | 'join'>('feed')
   const [liked, setLiked] = useState<string[]>([])
   const [expandedComments, setExpandedComments] = useState<string[]>([])
@@ -573,6 +578,32 @@ export default function CommunityPage() {
 
   // Confetti particles
   const confettiColors = ['#8F5652', '#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD']
+
+  // Der einzige Bereich, der ohne Konto nicht funktioniert: hier schreiben
+  // Leute unter ihrem Namen, das braucht ein Profil.
+  if (!istAngemeldet) {
+    return (
+      <div className="pb-24">
+        <Header title={t.community.title} />
+        <div className="px-4 mt-6">
+          <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 text-center">
+            <span className="text-4xl">💬</span>
+            <h2 className="text-lg font-bold text-gray-800 mt-3">Für die Community brauchst du ein Konto</h2>
+            <p className="text-sm text-gray-500 mt-2 leading-relaxed">
+              Hier tauschen sich Familien untereinander aus. Damit klar ist, wer schreibt,
+              geht das nur mit Konto. Alles andere in der App bleibt ohne Anmeldung offen.
+            </p>
+            <button
+              onClick={() => navigate('/anmelden')}
+              className="w-full mt-5 py-3 rounded-xl font-semibold text-white gradient-rot"
+            >
+              Konto anlegen
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="pb-24">

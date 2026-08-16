@@ -101,6 +101,32 @@ export default function AccountSettingsPage() {
     navigate('/')
   }
 
+  // Ohne Konto gibt es hier nichts zu verwalten, dafuer etwas anzubieten.
+  if (!user) {
+    return (
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="pb-24">
+        <Header title={acc.title} showBack />
+        <div className="px-4 mt-6">
+          <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 text-center">
+            <span className="text-4xl">💾</span>
+            <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mt-3">Du nutzt Tuki ohne Konto</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 leading-relaxed">
+              Alles liegt auf diesem Gerät. Löschst du die Browserdaten oder wechselst
+              das Gerät, sind deine Angaben weg. Mit einem Konto bleiben sie erhalten,
+              und du kannst in der Community mitschreiben.
+            </p>
+            <button
+              onClick={() => navigate('/anmelden')}
+              className="w-full mt-5 py-3 rounded-xl font-semibold text-white gradient-rot"
+            >
+              Konto anlegen
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    )
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0 }}

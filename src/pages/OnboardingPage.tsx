@@ -18,10 +18,11 @@ export default function OnboardingPage() {
   const [saving, setSaving] = useState(false)
   const [addedChildren, setAddedChildren] = useState<ChildDraft[]>([])
 
+  // Nur das Geburtsdatum ist Pflicht, danach kann die App filtern.
+  // Der Name ist eine Nettigkeit, kein Grund zum Abbrechen.
   const addCurrentChild = () => {
-    if (!name.trim() || !birthDate) return
-    setAddedChildren(prev => [...prev, { name: name.trim(), birthDate, avatarEmoji }])
-    // Reset for next child
+    if (!birthDate) return
+    setAddedChildren(prev => [...prev, { name: name.trim() || 'Dein Kind', birthDate, avatarEmoji }])
     setName('')
     setBirthDate('')
     setAvatarEmoji('👶')
@@ -71,12 +72,12 @@ export default function OnboardingPage() {
             <span className="text-white font-bold text-2xl">T</span>
           </div>
           <h1 className="text-2xl font-bold text-gray-800">
-            {step === 3 ? 'Deine Kinder' : 'Fast geschafft!'}
+            {step === 3 ? 'Deine Kinder' : 'Willkommen bei Tuki'}
           </h1>
           <p className="text-sm text-gray-500 mt-1">
             {step === 3
               ? addedChildren.length === 1 ? '1 Kind hinzugefügt' : addedChildren.length + ' Kinder hinzugefügt'
-              : 'Erstelle ein Profil für dein Kind.'}
+              : 'Eine Angabe, dann kann es losgehen.'}
           </p>
         </div>
 
@@ -92,23 +93,32 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* Step 0: Child Name */}
+        {/* Schritt 0: Geburtsdatum. Der einzige Pflichtschritt, deshalb steht er zuerst. */}
         {step === 0 && (
           <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 animate-fadeIn">
             <div className="text-center mb-6">
-              <span className="text-4xl">👋</span>
+              <span className="text-4xl">🎂</span>
               <h2 className="text-lg font-bold text-gray-800 mt-3">
-                {addedChildren.length > 0 ? 'Wie heisst dein nächstes Kind?' : 'Wie heisst dein Kind?'}
+                {addedChildren.length > 0 ? 'Wann wurde dein nächstes Kind geboren?' : 'Wann wurde dein Kind geboren?'}
               </h2>
+              <p className="text-xs text-gray-400 mt-1">
+                Das ist alles, was wir brauchen. Danach zeigt dir die App nur, was zum Alter passt.
+              </p>
             </div>
             <input
-              type="text"
-              value={name}
-              onChange={e => setName(e.target.value)}
-              placeholder="Vorname eingeben..."
+              type="date"
+              value={birthDate}
+              onChange={e => setBirthDate(e.target.value)}
+              max={new Date().toISOString().split('T')[0]}
+              min="2018-01-01"
               className="w-full px-4 py-3 rounded-xl border border-gray-200 text-center text-lg focus:outline-none focus:ring-2 focus:ring-tuki-rot/30 focus:border-tuki-rot"
               autoFocus
             />
+            {ageText && (
+              <p className="text-center text-sm text-tuki-rot font-medium mt-3">
+                {ageText} alt
+              </p>
+            )}
             <div className="flex gap-3 mt-6">
               {addedChildren.length > 0 && (
                 <button
@@ -119,37 +129,35 @@ export default function OnboardingPage() {
                 </button>
               )}
               <button
-                onClick={() => name.trim() && setStep(1)}
-                disabled={!name.trim()}
+                onClick={() => birthDate && setStep(1)}
+                disabled={!birthDate}
                 className="flex-1 py-3 rounded-xl font-semibold text-white gradient-rot disabled:opacity-40 transition-opacity"
               >
                 Weiter
               </button>
             </div>
+            <p className="text-center text-[11px] text-gray-400 mt-4">
+              Kein Konto nötig. Ein Spitzname genügt.
+            </p>
           </div>
         )}
 
-        {/* Step 1: Birth date */}
+        {/* Schritt 1: Name, freiwillig */}
         {step === 1 && (
           <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 animate-fadeIn">
             <div className="text-center mb-6">
-              <span className="text-4xl">🎂</span>
-              <h2 className="text-lg font-bold text-gray-800 mt-3">Wann wurde {name} geboren?</h2>
-              <p className="text-xs text-gray-400 mt-1">So können wir altersgerechte Inhalte empfehlen</p>
+              <span className="text-4xl">👋</span>
+              <h2 className="text-lg font-bold text-gray-800 mt-3">Wie sollen wir dein Kind nennen?</h2>
+              <p className="text-xs text-gray-400 mt-1">Freiwillig. Ein Spitzname reicht völlig.</p>
             </div>
             <input
-              type="date"
-              value={birthDate}
-              onChange={e => setBirthDate(e.target.value)}
-              max={new Date().toISOString().split('T')[0]}
-              min="2018-01-01"
+              type="text"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="Vorname oder Spitzname..."
               className="w-full px-4 py-3 rounded-xl border border-gray-200 text-center text-lg focus:outline-none focus:ring-2 focus:ring-tuki-rot/30 focus:border-tuki-rot"
+              autoFocus
             />
-            {ageText && (
-              <p className="text-center text-sm text-tuki-rot font-medium mt-3">
-                {name} ist {ageText} alt
-              </p>
-            )}
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => setStep(0)}
@@ -158,11 +166,10 @@ export default function OnboardingPage() {
                 Zurück
               </button>
               <button
-                onClick={() => birthDate && setStep(2)}
-                disabled={!birthDate}
-                className="flex-1 py-3 rounded-xl font-semibold text-white gradient-rot disabled:opacity-40 transition-opacity"
+                onClick={() => setStep(2)}
+                className="flex-1 py-3 rounded-xl font-semibold text-white gradient-rot transition-opacity"
               >
-                Weiter
+                {name.trim() ? 'Weiter' : 'Überspringen'}
               </button>
             </div>
           </div>
@@ -173,7 +180,9 @@ export default function OnboardingPage() {
           <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 animate-fadeIn">
             <div className="text-center mb-6">
               <span className="text-5xl">{avatarEmoji}</span>
-              <h2 className="text-lg font-bold text-gray-800 mt-3">Wähle ein Profilbild für {name}</h2>
+              <h2 className="text-lg font-bold text-gray-800 mt-3">
+                Wähle ein Bild {name.trim() ? 'für ' + name.trim() : 'aus'}
+              </h2>
             </div>
             <div className="grid grid-cols-4 gap-3">
               {AVATAR_EMOJIS.map(emoji => (
@@ -249,6 +258,10 @@ export default function OnboardingPage() {
             >
               {saving ? 'Wird gespeichert...' : 'Los gehts!'}
             </button>
+            <p className="text-center text-xs text-gray-400 mt-4">
+              Ohne Konto. Ein Konto kannst du später anlegen, wenn du deine Angaben
+              auf mehreren Geräten haben oder in der Community mitschreiben möchtest.
+            </p>
           </div>
         )}
       </div>

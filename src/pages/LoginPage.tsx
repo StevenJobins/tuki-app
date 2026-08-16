@@ -1,10 +1,16 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useApp } from '../context/AppContext'
 import { supabase } from '../lib/supabase'
 
 export default function LoginPage() {
   const { signIn, signUp } = useAuth()
-  const [isRegister, setIsRegister] = useState(false)
+  const { isOnboarded, children } = useApp()
+  const navigate = useNavigate()
+  // Wer schon ohne Konto unterwegs war, will hier sichern, nicht sich anmelden.
+  const alsGast = isOnboarded && children.length > 0
+  const [isRegister, setIsRegister] = useState(alsGast)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [displayName, setDisplayName] = useState('')
@@ -33,6 +39,7 @@ export default function LoginPage() {
       }
     } else {
       const { error } = await signIn(email, password)
+      if (!error && alsGast) navigate('/')
       if (error) {
         if (error === 'EMAIL_NOT_CONFIRMED') {
           setError('Deine E-Mail-Adresse ist noch nicht bestätigt. Bitte prüfe dein Postfach (auch Spam-Ordner).')
@@ -72,6 +79,12 @@ export default function LoginPage() {
           <p className="text-gray-500 text-sm mt-2">
             {isRegister ? 'Erstelle dein Familienkonto' : 'Willkommen zurück!'}
           </p>
+          {alsGast && (
+            <p className="text-xs text-gray-400 mt-3 leading-relaxed">
+              Deine bisherigen Angaben gehen nicht verloren. Sie werden mit dem
+              Konto verknüpft, sobald du angemeldet bist.
+            </p>
+          )}
         </div>
 
         {/* Form */}
@@ -159,6 +172,14 @@ export default function LoginPage() {
             )}
           </button>
         </div>
+
+        {alsGast && (
+          <div className="text-center mt-4">
+            <button onClick={() => navigate('/')} className="text-sm text-gray-400">
+              Später, erst mal weiterschauen
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )
