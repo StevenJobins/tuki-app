@@ -10,6 +10,24 @@ interface Comment {
   avatar: string
   timeAgo: string
   text: string
+  profileId?: string
+}
+
+// Melde-Gründe, wie sie im Auswahlfenster erscheinen
+const REPORT_REASONS = [
+  'Beleidigend oder verletzend',
+  'Werbung oder Spam',
+  'Falsche oder gefährliche Angaben',
+  'Verstösst gegen die Privatsphäre',
+  'Etwas anderes',
+]
+
+// Sehr einfacher Wortfilter. Fängt die groben Fälle ab, ersetzt keine Moderation.
+const BLOCKED_WORDS = ['arschloch', 'fotze', 'wichser', 'hurensohn', 'nutte', 'schlampe', 'fuck you', 'bastard']
+
+function enthaeltVerbotenes(text: string): boolean {
+  const t = text.toLowerCase()
+  return BLOCKED_WORDS.some(w => t.includes(w))
 }
 
 interface CommunityPost {
@@ -183,6 +201,16 @@ export default function CommunityPage() {
   const [userAvatar, setUserAvatar] = useState('\u{1F9D1}')
   const [dbLikedPostIds, setDbLikedPostIds] = useState<string[]>([])
 
+  // ─── Moderation: Melden und Blockieren ──────────────────
+  const [blockedIds, setBlockedIds] = useState<string[]>([])
+  const [hiddenPostIds, setHiddenPostIds] = useState<string[]>(() => {
+    try { return JSON.parse(localStorage.getItem('tuki-hidden-posts') || '[]') } catch { return [] }
+  })
+  const [moderationPost, setModerationPost] = useState<CommunityPost | null>(null)
+  const [reportReason, setReportReason] = useState<string | null>(null)
+  const [moderationHinweis, setModerationHinweis] = useState('')
+  const [postFehler, setPostFehler] = useState('')
+
   // ─── Fetch from Supabase on mount ───────────────────────
   useEffect(() => {
     let cancelled = false
@@ -254,6 +282,13 @@ export default function CommunityPage() {
         likeCounts.set(l.post_id, (likeCounts.get(l.post_id) || 0) + 1)
       })
 
+      // Blockierte Profile laden, damit deren Inhalte gar nicht erst erscheinen
+      const { data: blocked } = await supabase
+        .from('blocked_profiles')
+        .select('blocked_id')
+        .eq('blocker_id', user.id)
+      if (!cancelled) setBlockedIds((blocked || []).map(b => b.blocked_id))
+
       // Fetch user's own likes
       const { data: myLikes } = await supabase
         .from('post_likes')
@@ -278,6 +313,7 @@ export default function CommunityPage() {
                 avatar: commentProfile?.avatar_emoji || '\u{1F9D1}',
                 timeAgo: formatTimeAgo(c.created_at),
                 text: c.content,
+                profileId: c.profile_id,
               }
             })
 
@@ -411,6 +447,11 @@ export default function CommunityPage() {
   // ─── New Post ───────────────────────────────────────────
   const handleNewPost = useCallback(async () => {
     if (!newPostText.trim()) return
+    if (enthaeltVerbotenes(newPostText)) {
+      setPostFehler('Dieser Beitrag enthält Ausdrücke, die hier nicht erwünscht sind. Bitte formuliere ihn um.')
+      return
+    }
+    setPostFehler('')
 
     if (userId) {
       // Optimistic local add
@@ -487,6 +528,48 @@ export default function CommunityPage() {
   }
 
   const allPosts = [...dbPosts, ...seedPosts]
+    .filter(p => !hiddenPostIds.includes(p.id))
+    .filter(p => !(p.profileId && blockedIds.includes(p.profileId)))
+
+  // ─── Melden und Blockieren ──────────────────────────────
+  const meldeInhalt = async () => {
+    if (!moderationPost || !reportReason) return
+    const istDbBeitrag = isDbPost(moderationPost.id)
+    if (userId) {
+      await supabase.from('content_reports').insert({
+        reporter_id: userId,
+        post_id: istDbBeitrag ? moderationPost.id : null,
+        target_ref: istDbBeitrag ? null : moderationPost.id,
+        reason: reportReason,
+      })
+    }
+    // Gemeldetes verschwindet fuer die meldende Person sofort
+    const neu = [...hiddenPostIds, moderationPost.id]
+    setHiddenPostIds(neu)
+    try { localStorage.setItem('tuki-hidden-posts', JSON.stringify(neu)) } catch { /* egal */ }
+    setModerationHinweis('Danke. Wir schauen uns den Beitrag innert 24 Stunden an.')
+    setModerationPost(null)
+    setReportReason(null)
+    setTimeout(() => setModerationHinweis(''), 6000)
+  }
+
+  const blockiereAutor = async () => {
+    if (!moderationPost) return
+    const ziel = moderationPost.profileId
+    if (userId && ziel && ziel !== userId) {
+      await supabase.from('blocked_profiles').insert({ blocker_id: userId, blocked_id: ziel })
+      setBlockedIds(prev => [...prev, ziel])
+    } else {
+      // Beispielbeiträge haben kein Profil, dann wird nur ausgeblendet
+      const neu = [...hiddenPostIds, moderationPost.id]
+      setHiddenPostIds(neu)
+      try { localStorage.setItem('tuki-hidden-posts', JSON.stringify(neu)) } catch { /* egal */ }
+    }
+    setModerationHinweis('Du siehst von diesem Profil nichts mehr.')
+    setModerationPost(null)
+    setReportReason(null)
+    setTimeout(() => setModerationHinweis(''), 6000)
+  }
 
   // Confetti particles
   const confettiColors = ['#8F5652', '#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD']
@@ -717,13 +800,20 @@ export default function CommunityPage() {
                       Posten
                     </button>
                   </div>
+                  {postFehler && (
+                    <p className="text-xs text-red-500 font-medium mt-2">{postFehler}</p>
+                  )}
+                  <p className="text-[10px] text-gray-400 mt-2 leading-relaxed">
+                    Bitte respektvoll bleiben. Beiträge können gemeldet werden, wir entfernen sie innert 24 Stunden.
+                    Fragen an info@tuki.ch.
+                  </p>
                 </div>
               )}
             </motion.div>
           )}
 
           {allPosts.map(post => {
-            const allComments = getAllComments(post)
+            const allComments = getAllComments(post).filter(c => !(c.profileId && blockedIds.includes(c.profileId)))
             const isExpanded = expandedComments.includes(post.id)
             const postLiked = isPostLiked(post.id)
             const likeCount = getPostLikeCount(post)
@@ -748,6 +838,15 @@ export default function CommunityPage() {
                     </div>
                     <span className="text-[10px] text-gray-400">{post.timeAgo}</span>
                   </div>
+                  {post.author !== 'Du' && (
+                    <button
+                      onClick={() => { setModerationPost(post); setReportReason(null) }}
+                      aria-label="Beitrag melden oder Profil blockieren"
+                      className="w-8 h-8 -mr-1 rounded-full flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    >
+                      <span className="text-lg leading-none">&#8943;</span>
+                    </button>
+                  )}
                 </div>
 
                 {/* Content */}
@@ -936,6 +1035,92 @@ export default function CommunityPage() {
           )}
         </div>
       )}
+
+      {/* Hinweis nach Melden oder Blockieren */}
+      <AnimatePresence>
+        {moderationHinweis && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed bottom-24 left-4 right-4 z-50 bg-gray-900 text-white text-sm rounded-2xl px-4 py-3 shadow-lg"
+          >
+            {moderationHinweis}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Melden und Blockieren */}
+      <AnimatePresence>
+        {moderationPost && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-4"
+            onClick={() => { setModerationPost(null); setReportReason(null) }}
+          >
+            <motion.div
+              initial={{ y: 40 }}
+              animate={{ y: 0 }}
+              exit={{ y: 40 }}
+              onClick={e => e.stopPropagation()}
+              className="w-full max-w-md bg-white dark:bg-gray-800 rounded-3xl p-5 space-y-4"
+            >
+              <div>
+                <h3 className="font-bold text-gray-800 dark:text-white">Beitrag melden</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Wir schauen uns gemeldete Beiträge innert 24 Stunden an und entfernen, was nicht hierher gehört.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                {REPORT_REASONS.map(grund => (
+                  <button
+                    key={grund}
+                    onClick={() => setReportReason(grund)}
+                    className={`w-full text-left px-4 py-2.5 rounded-xl text-sm border transition-colors ${
+                      reportReason === grund
+                        ? 'border-tuki-rot bg-tuki-rot/5 text-tuki-rot font-medium'
+                        : 'border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300'
+                    }`}
+                  >
+                    {grund}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={meldeInhalt}
+                disabled={!reportReason}
+                className="w-full py-3 rounded-xl bg-tuki-rot text-white text-sm font-semibold disabled:opacity-40"
+              >
+                Melden
+              </button>
+
+              <div className="border-t border-gray-100 dark:border-gray-700 pt-4 space-y-2">
+                <button
+                  onClick={blockiereAutor}
+                  className="w-full py-3 rounded-xl border border-gray-200 dark:border-gray-600 text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Dieses Profil blockieren
+                </button>
+                <p className="text-[11px] text-gray-400 text-center leading-relaxed">
+                  Du siehst dann keine Beiträge und Kommentare mehr von diesem Profil.
+                  Bei dringenden Fällen schreib uns an info@tuki.ch.
+                </p>
+              </div>
+
+              <button
+                onClick={() => { setModerationPost(null); setReportReason(null) }}
+                className="w-full py-2 text-sm text-gray-500"
+              >
+                Abbrechen
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
