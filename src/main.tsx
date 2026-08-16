@@ -1,15 +1,21 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { HashRouter } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import { AppProvider } from './context/AppContext'
 import { AuthProvider } from './context/AuthContext'
 import { NotificationProvider } from './context/NotificationContext'
 import './index.css'
 
+// Alte Hash-Links (app.tuki.ch/#/rezepte) auf saubere Pfade umschreiben
+if (window.location.hash.startsWith('#/')) {
+  const target = window.location.hash.slice(1)
+  window.history.replaceState(null, '', target)
+}
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <HashRouter>
+    <BrowserRouter>
       <AuthProvider>
         <AppProvider>
           <NotificationProvider>
@@ -17,7 +23,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           </NotificationProvider>
         </AppProvider>
       </AuthProvider>
-    </HashRouter>
+    </BrowserRouter>
   </React.StrictMode>,
 )
 
