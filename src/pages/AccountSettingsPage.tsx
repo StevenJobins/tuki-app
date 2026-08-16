@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Header from '../components/Header'
 import { useApp } from '../context/AppContext'
+import { useAuth } from '../context/AuthContext'
+import { supabase } from '../lib/supabase'
 import { useTranslation } from '../i18n/useTranslation'
 
 const AVATARS = ['🧒', '👧', '👦', '🧒🏽', '👧🏽', '👦🏽', '🧒🏿', '👧🏿', '👦🏿', '🐻', '🦊', '🐰']
@@ -11,6 +13,7 @@ export default function AccountSettingsPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { getActiveChild, updateChild } = useApp()
+  const { user, signOut } = useAuth()
   const activeChild = getActiveChild()
 
   const [profileName, setProfileName] = useState(activeChild?.name || '')
@@ -25,6 +28,9 @@ export default function AccountSettingsPage() {
   const [passwordSuccess, setPasswordSuccess] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [deleteText, setDeleteText] = useState('')
+  const [emailError, setEmailError] = useState('')
+  const [deleteError, setDeleteError] = useState('')
+  const [busy, setBusy] = useState(false)
 
   const acc = t.accountSettings
 
@@ -34,15 +40,22 @@ export default function AccountSettingsPage() {
     setShowAvatarPicker(false)
   }
 
-  const handleChangeEmail = () => {
+  const handleChangeEmail = async () => {
+    setEmailError('')
     if (!newEmail.trim() || !newEmail.includes('@')) return
-    // TODO: Supabase auth.updateUser({ email: newEmail })
+    setBusy(true)
+    const { error } = await supabase.auth.updateUser({ email: newEmail.trim() })
+    setBusy(false)
+    if (error) {
+      setEmailError(error.message)
+      return
+    }
     setEmailSuccess(true)
-    setTimeout(() => setEmailSuccess(false), 3000)
+    setTimeout(() => setEmailSuccess(false), 5000)
     setNewEmail('')
   }
 
-  const handleChangePassword = () => {
+  const handleChangePassword = async () => {
     setPasswordError('')
     if (newPassword.length < 6) {
       setPasswordError(acc.passwordTooShort)
@@ -52,18 +65,40 @@ export default function AccountSettingsPage() {
       setPasswordError(acc.passwordMismatch)
       return
     }
-    // TODO: Supabase auth.updateUser({ password: newPassword })
+    setBusy(true)
+    const { error } = await supabase.auth.updateUser({ password: newPassword })
+    setBusy(false)
+    if (error) {
+      setPasswordError(error.message)
+      return
+    }
     setPasswordSuccess(true)
-    setTimeout(() => setPasswordSuccess(false), 3000)
+    setTimeout(() => setPasswordSuccess(false), 5000)
     setCurrentPassword('')
     setNewPassword('')
     setConfirmPassword('')
   }
 
-  const handleDeleteAccount = () => {
+  const handleDeleteAccount = async () => {
     if (deleteText !== acc.deleteConfirmWord) return
-    // TODO: Supabase auth.admin.deleteUser() or RPC
-    navigate('/profil')
+    setDeleteError('')
+    setBusy(true)
+    // Loescht Konto und alle abhaengigen Daten in der Datenbank (Kaskade)
+    const { error } = await supabase.rpc('delete_own_account')
+    if (error) {
+      setBusy(false)
+      setDeleteError(error.message)
+      return
+    }
+    // Lokale Spuren mitnehmen, sonst sieht der naechste Login alte Kinderdaten
+    try {
+      localStorage.removeItem('tuki-family-state')
+      localStorage.removeItem('tuki-klaviyo-sync')
+    } catch {
+      /* egal */
+    }
+    await signOut()
+    navigate('/')
   }
 
   return (
@@ -143,7 +178,7 @@ export default function AccountSettingsPage() {
             <div>
               <label className="text-xs font-medium text-gray-500 dark:text-gray-400 block mb-1">{acc.currentEmail}</label>
               <p className="text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 px-3 py-2.5 rounded-xl">
-                beta@tuki.ch
+                {user?.email || '-'}
               </p>
             </div>
             <div>
@@ -156,6 +191,9 @@ export default function AccountSettingsPage() {
                 placeholder={acc.newEmailPlaceholder}
               />
             </div>
+            {emailError && (
+              <p className="text-xs text-red-500 font-medium">{emailError}</p>
+            )}
             {emailSuccess && (
               <p className="text-xs text-green-500 font-medium">{acc.emailSuccess}</p>
             )}
@@ -222,8 +260,8 @@ export default function AccountSettingsPage() {
         {/* Logout */}
         <section className="mx-4">
           <button
-            onClick={() => {
-              // TODO: Supabase auth.signOut()
+            onClick={async () => {
+              await signOut()
               navigate('/')
             }}
             className="w-full py-3 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
@@ -256,6 +294,9 @@ export default function AccountSettingsPage() {
                   className="w-full px-3 py-2.5 rounded-xl bg-white dark:bg-gray-800 border border-red-300 dark:border-red-700 text-sm text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-red-300 outline-none"
                   placeholder={acc.deleteConfirmWord}
                 />
+                {deleteError && (
+                  <p className="text-xs text-red-600 font-medium">{deleteError}</p>
+                )}
                 <div className="flex gap-2">
                   <button
                     onClick={() => { setShowDeleteConfirm(false); setDeleteText('') }}
@@ -265,7 +306,7 @@ export default function AccountSettingsPage() {
                   </button>
                   <button
                     onClick={handleDeleteAccount}
-                    disabled={deleteText !== acc.deleteConfirmWord}
+                    disabled={deleteText !== acc.deleteConfirmWord || busy}
                     className="flex-1 py-2.5 rounded-xl bg-red-500 text-white text-sm font-medium disabled:opacity-40"
                   >
                     {acc.deleteForever}
