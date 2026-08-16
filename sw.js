@@ -1,5 +1,5 @@
-const CACHE_NAME = 'tuki-family-v31'
-const urlsToCache = ['/tuki-app/', '/tuki-app/index.html']
+const CACHE_NAME = 'tuki-family-v32'
+const urlsToCache = ['/', '/index.html']
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -13,7 +13,7 @@ self.addEventListener('fetch', (event) => {
     caches.match(event.request).then((response) => {
       return response || fetch(event.request).catch(() => {
         if (event.request.destination === 'document') {
-          return caches.match('/tuki-app/index.html')
+          return caches.match('/index.html')
         }
       })
     })
@@ -43,10 +43,10 @@ self.addEventListener('push', (event) => {
 
   const options = {
     body: data.body || 'Schau vorbei!',
-    icon: '/tuki-app/tuki-icon-192.png',
-    badge: '/tuki-app/tuki-icon-192.png',
+    icon: '/tuki-icon-192.png',
+    badge: '/tuki-icon-192.png',
     tag: data.tag || 'tuki-daily',
-    data: { url: data.url || '/tuki-app/' },
+    data: { url: data.url || '/' },
     actions: data.actions || [
       { action: 'open', title: 'Anschauen' }
     ],
@@ -61,11 +61,11 @@ self.addEventListener('push', (event) => {
 // Notification click handler
 self.addEventListener('notificationclick', (event) => {
   event.notification.close()
-  const url = event.notification.data?.url || '/tuki-app/'
+  const url = event.notification.data?.url || '/'
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
       for (const client of clientList) {
-        if (client.url.includes('tuki-app') && 'focus' in client) {
+        if (client.url.startsWith(self.location.origin) && 'focus' in client) {
           return client.focus()
         }
       }
