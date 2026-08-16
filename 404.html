@@ -4,20 +4,17 @@
   <meta charset="UTF-8" />
   <title>Tuki Family</title>
   <script>
-    // SPA redirect for GitHub Pages
-    // Converts path-based URLs to hash-based for React Router
-    var path = window.location.pathname;
-    var base = "/";
-    if (path.startsWith(base)) {
-      var route = path.slice(base.length);
-      if (route && route !== "index.html") {
-        window.location.replace(base + "#/" + route + window.location.search);
-      } else {
-        window.location.replace(base);
-      }
-    } else {
-      window.location.replace(base);
-    }
+    // GitHub Pages kennt nur statische Dateien: unbekannte Pfade landen hier.
+    // Wir packen den Pfad in die Query und index.html stellt ihn wieder her.
+    (function () {
+      var l = window.location;
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        '/?/' + l.pathname.slice(1).replace(/&/g, '~and~') +
+        (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+        l.hash
+      );
+    })();
   </script>
 </head>
 <body>
