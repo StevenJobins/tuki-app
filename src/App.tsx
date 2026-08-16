@@ -3,6 +3,7 @@ import { useApp } from './context/AppContext'
 import { useAuth } from './context/AuthContext'
 import { AnimatePresence } from 'framer-motion'
 import { useAutoNotifications } from './hooks/useAutoNotifications'
+import { useKlaviyoSync } from './hooks/useKlaviyoSync'
 import BottomNav from './components/BottomNav'
 import Sidebar from './components/Sidebar'
 import HomePage from './pages/HomePage'
@@ -27,6 +28,7 @@ export default function App() {
   const { user, loading } = useAuth()
   const { isOnboarded } = useApp()
   useAutoNotifications()
+  useKlaviyoSync()
 
   // Show loading screen while checking auth
   if (loading) {
