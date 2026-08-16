@@ -48,7 +48,7 @@ export default function LoginPage() {
   const handleResend = async () => {
     setLoading(true)
     setError('')
-    const { error } = await supabase.auth.resend({ type: 'signup', email, options: { emailRedirectTo: 'https://stevenjobins.github.io/tuki-app/' } })
+    const { error } = await supabase.auth.resend({ type: 'signup', email, options: { emailRedirectTo: window.location.origin + '/' } })
     if (error) {
       setError('Fehler beim Senden: ' + error.message)
     } else {
