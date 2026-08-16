@@ -18,6 +18,18 @@
     <meta property="og:type" content="website" />
     <meta property="og:image" content="https://app.tuki.ch/og-image.png" />
     <meta property="og:url" content="https://app.tuki.ch/" />
+    <script>
+      // Gegenstueck zu 404.html: /?/rezepte wieder zu /rezepte machen
+      (function () {
+        var l = window.location;
+        if (l.search[1] === '/') {
+          var decoded = l.search.slice(1).split('&').map(function (part) {
+            return part.replace(/~and~/g, '&')
+          }).join('?');
+          window.history.replaceState(null, '', l.pathname.slice(0, -1) + decoded + l.hash);
+        }
+      })();
+    </script>
     <title>Tuki Family</title>
   </head>
   <body>
