@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tuki-family-v32'
+const CACHE_NAME = 'tuki-family-v33'
 const urlsToCache = ['/', '/index.html']
 
 self.addEventListener('install', (event) => {
@@ -8,14 +8,33 @@ self.addEventListener('install', (event) => {
   self.skipWaiting()
 })
 
+/**
+ * Die Seite selbst kommt zuerst aus dem Netz, alles andere zuerst aus dem Cache.
+ *
+ * Vorher war auch index.html cache-first. Damit blieb bei jedem, der die App
+ * schon einmal geoeffnet hatte, die alte Seite stehen: sie verwies auf das alte
+ * JavaScript, und neue Versionen kamen nie an. Offline funktioniert weiterhin
+ * alles, dann greift der Cache als Rueckfallebene.
+ */
 self.addEventListener('fetch', (event) => {
+  const istSeite = event.request.mode === 'navigate' || event.request.destination === 'document'
+
+  if (istSeite) {
+    event.respondWith(
+      fetch(event.request)
+        .then((antwort) => {
+          const kopie = antwort.clone()
+          caches.open(CACHE_NAME).then((cache) => cache.put('/index.html', kopie))
+          return antwort
+        })
+        .catch(() => caches.match(event.request).then((r) => r || caches.match('/index.html')))
+    )
+    return
+  }
+
   event.respondWith(
     caches.match(event.request).then((response) => {
-      return response || fetch(event.request).catch(() => {
-        if (event.request.destination === 'document') {
-          return caches.match('/index.html')
-        }
-      })
+      return response || fetch(event.request)
     })
   )
 })
