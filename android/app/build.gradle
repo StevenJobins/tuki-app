@@ -1,5 +1,11 @@
 apply plugin: 'com.android.application'
 
+// Aus der Umgebung lesen, bevor der android-Block laeuft. Direkt in der
+// defaultConfig verschluckt Groovy den Elvis-Operator und uebergibt null.
+def tukiVersionCode = (System.getenv("ANDROID_VERSION_CODE") ?: "1").toInteger()
+def tukiVersionName = System.getenv("ANDROID_VERSION_NAME") ?: "1.0.0"
+def tukiKeystore = System.getenv("ANDROID_KEYSTORE_PATH")
+
 android {
     namespace "ch.tuki.family"
     compileSdk rootProject.ext.compileSdkVersion
@@ -8,8 +14,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         // versionCode kommt aus dem CI-Lauf (Play verlangt bei jedem Upload eine hoehere Zahl)
-        versionCode (System.getenv("ANDROID_VERSION_CODE") ?: "1").toInteger()
-        versionName System.getenv("ANDROID_VERSION_NAME") ?: "1.0.0"
+        versionCode tukiVersionCode
+        versionName tukiVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -21,9 +27,8 @@ android {
     // Ohne Key entsteht ein unsigniertes Bundle, der Build bricht nicht ab.
     signingConfigs {
         release {
-            def storeFilePath = System.getenv("ANDROID_KEYSTORE_PATH")
-            if (storeFilePath) {
-                storeFile file(storeFilePath)
+            if (tukiKeystore) {
+                storeFile file(tukiKeystore)
                 storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
                 keyAlias System.getenv("ANDROID_KEY_ALIAS")
                 keyPassword System.getenv("ANDROID_KEY_PASSWORD")
@@ -35,7 +40,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            if (System.getenv("ANDROID_KEYSTORE_PATH")) {
+            if (tukiKeystore) {
                 signingConfig signingConfigs.release
             }
         }
