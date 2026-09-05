@@ -213,7 +213,7 @@ export const milestones: Milestone[] = [
     expertTip: 'Zählen lernt man am besten mit echtem Zweck: Treppenstufen, Äpfel im Korb, Finger an der Hand. Kochen bietet endlose Zählanlässe — "Drei Eier, bitte!"',
     expertName: 'Dr. Sarah Keller', expertTitle: 'Logopädin & Sprachtherapeutin',
     linkedRecipes: ['mini-pizzen', 'guetzli'],
-    linkedActivities: ['zaehlen-beim-kochen'],
+    linkedActivities: ['zählen-beim-kochen'],
     suggestedProducts: [],
   },
   // 3-5 Jahre
@@ -275,7 +275,7 @@ export const milestones: Milestone[] = [
     expertTip: 'Kochen und Backen sind angewandte Mathematik: Brüche, Gewichte, Zeitrechnung. Aber auch Bastelprojekte und Experimente fördern das Verständnis für Mengen und Masse.',
     expertName: 'Prof. Martin Weber', expertTitle: 'Entwicklungspsychologe',
     linkedRecipes: ['guetzli', 'bananen-pancakes'],
-    linkedActivities: ['zaehlen-beim-kochen'],
+    linkedActivities: ['zählen-beim-kochen'],
     suggestedProducts: [],
   },
   {
