@@ -24,6 +24,8 @@ import AccountSettingsPage from './pages/AccountSettingsPage'
 import FoodTrackerPage from './pages/FoodTrackerPage'
 import MengenPage from './pages/MengenPage'
 import GastHinweis from './components/GastHinweis'
+import OfflineHinweis from './components/OfflineHinweis'
+import NotificationPrompt from './components/NotificationPrompt'
 
 export default function App() {
   const { user, loading } = useAuth()
@@ -53,6 +55,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-tuki-cream flex overflow-x-hidden w-full">
+      <OfflineHinweis />
       {/* Desktop Sidebar */}
       <Sidebar />
 
@@ -79,6 +82,7 @@ export default function App() {
           </Routes>
         </AnimatePresence>
         {!user && <GastHinweis />}
+        <NotificationPrompt />
         <BottomNav />
       </main>
     </div>

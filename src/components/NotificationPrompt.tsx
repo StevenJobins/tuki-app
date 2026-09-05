@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
+import { isNative, registerPush } from '../lib/native'
 
 const VAPID_PUBLIC_KEY = 'BG89SIUwDKguddpp125gYZDT7XdL600DzEnScYBTe0k-MzPorKnVrvi9IBtGQipZBQbuzXpA3UD7mM3ASvKBnCI'
 
@@ -22,6 +23,12 @@ export default function NotificationPrompt() {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
+    // Nativ (App Store / Play Store): Capacitor fragt das System, kein Service Worker noetig
+    if (isNative) {
+      const timer = setTimeout(() => setShow(true), 20000)
+      timerRef.current = timer
+      return () => { if (timerRef.current) clearTimeout(timerRef.current) }
+    }
     if (!('Notification' in window) || !('serviceWorker' in navigator)) return
     // Don't show if already granted or denied
     if (Notification.permission !== 'default') return
@@ -44,6 +51,10 @@ export default function NotificationPrompt() {
   const handleEnable = async () => {
     setSubscribing(true)
     try {
+      if (isNative) {
+        await registerPush()
+        return
+      }
       const permission = await Notification.requestPermission()
       if (permission !== 'granted') {
         setShow(false)

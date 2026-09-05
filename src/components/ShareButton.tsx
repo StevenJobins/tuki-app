@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { share, canShare as canShareNative } from '../lib/native'
 
 interface ShareButtonProps {
   title: string
@@ -12,12 +13,12 @@ interface ShareButtonProps {
 export default function ShareButton({ title, text, className = '', recipeId, activityId }: ShareButtonProps) {
   const navigate = useNavigate()
   const [showMenu, setShowMenu] = useState(false)
-  const canShare = typeof navigator !== 'undefined' && !!navigator.share
+  const canShare = canShareNative()
 
   function handleNativeShare() {
     setShowMenu(false)
     if (canShare) {
-      navigator.share({ title, text, url: window.location.href }).catch(() => {})
+      share({ title, text, url: window.location.href }).catch(() => {})
     }
   }
 

@@ -6,6 +6,7 @@ import { AppProvider } from './context/AppContext'
 import { AuthProvider } from './context/AuthContext'
 import { NotificationProvider } from './context/NotificationContext'
 import { applyCachedContent, refreshContent, CONTENT_UPDATED_EVENT } from './data/contentStore'
+import { initNative } from './lib/native'
 import './index.css'
 
 // Alte Hash-Links (app.tuki.ch/#/rezepte) auf saubere Pfade umschreiben
@@ -52,6 +53,7 @@ function start() {
 applyCachedContent()
 start()
 refreshContent()
+initNative()
 
 // Register Service Worker (im nativen App-Container nicht noetig)
 const isNative = typeof (window as any).Capacitor !== 'undefined' && (window as any).Capacitor?.isNativePlatform?.()
