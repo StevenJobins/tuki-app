@@ -1,39 +1,61 @@
 {
   "name": "Tuki Family",
   "short_name": "Tuki",
-  "description": "Rezepte, Aktivit\u00e4ten & Community f\u00fcr Lernturm-Familien",
+  "description": "Rezepte, Aktivitäten & Community für Lernturm-Familien",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#FAF8F5",
+  "background_color": "#FFFDF8",
   "theme_color": "#8F5652",
   "orientation": "portrait",
-  "categories": ["food", "kids", "lifestyle"],
+  "categories": [
+    "food",
+    "kids",
+    "lifestyle"
+  ],
   "lang": "de",
   "icons": [
     {
-      "src": "/tuki-icon-192.png",
+      "src": "../icons/icon-48.webp",
+      "type": "image/png",
+      "sizes": "48x48",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "../icons/icon-72.webp",
+      "type": "image/png",
+      "sizes": "72x72",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "../icons/icon-96.webp",
+      "type": "image/png",
+      "sizes": "96x96",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "../icons/icon-128.webp",
+      "type": "image/png",
+      "sizes": "128x128",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "../icons/icon-192.webp",
+      "type": "image/png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
-      "src": "/tuki-icon-512.png",
+      "src": "../icons/icon-256.webp",
+      "type": "image/png",
+      "sizes": "256x256",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "../icons/icon-512.webp",
+      "type": "image/png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/tuki-icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/tuki-icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
   ]
 }
