@@ -8,6 +8,10 @@ const config: CapacitorConfig = {
   // Das ist Voraussetzung fuer Apple Richtlinie 4.2 und fuer den Offline-Zustand.
   android: {
     allowMixedContent: false,
+    // Ab Android 15 erzwingt das System Edge-to-Edge. 'auto' setzt die
+    // noetigen Abstaende, damit die Ansicht nicht unter Status- und
+    // Navigationsleiste rutscht.
+    adjustMarginsForEdgeToEdge: 'auto',
   },
   ios: {
     contentInset: 'always',
