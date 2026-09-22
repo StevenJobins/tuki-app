@@ -63,6 +63,7 @@ jobs:
           xcodebuild -workspace App.xcworkspace \
             -scheme App \
             -configuration Release \
+            TARGETED_DEVICE_FAMILY=1 IPHONEOS_DEPLOYMENT_TARGET=15.0 \
             -destination 'generic/platform=iOS' \
             -archivePath "$RUNNER_TEMP/App.xcarchive" \
             -allowProvisioningUpdates \
