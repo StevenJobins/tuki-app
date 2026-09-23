@@ -29,6 +29,31 @@ body {
   flex-direction: column;
 }
 
+/* Nichts darf seitlich ueberstehen (verhindert das verschobene, abgeschnittene Bild) */
+html, body { overflow-x: hidden; max-width: 100%; }
+
+/* iOS zoomt in Felder mit weniger als 16px Schrift hinein. Auf Touch-Geraeten daher mindestens 16px. */
+@media (max-width: 1023px) {
+  input, select, textarea { font-size: 16px !important; }
+}
+
+/* iOS-Datumsfeld: ohne das ragt der graue Datums-Kasten ueber das Feld hinaus */
+input[type="date"] {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 3rem;
+  line-height: 1.5rem;
+}
+input[type="date"]::-webkit-date-and-time-value { text-align: inherit; margin: 0; }
+input[type="date"]::-webkit-datetime-edit { padding: 0; }
+
+/* Abstand fuer Hinweiskarten ueber der unteren Navigation */
+.ueber-nav { bottom: calc(5.25rem + env(safe-area-inset-bottom, 0px)); }
+@media (min-width: 1024px) { .ueber-nav { bottom: 1rem; } }
+
 /* Custom scrollbar */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
