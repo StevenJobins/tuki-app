@@ -1,5 +1,10 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { supabase } from '../lib/supabase'
+import { isNative } from '../lib/native'
+
+// In der App ist window.location.origin "capacitor://localhost". Ein Link dorthin
+// oeffnet sich im Mail-Programm nicht, deshalb landet die Bestaetigung auf der Web-App.
+export const authRedirect = isNative ? 'https://app.tuki.ch/' : window.location.origin + '/'
 import type { User, Session } from '@supabase/supabase-js'
 
 interface Profile {
@@ -14,7 +19,7 @@ interface AuthContextType {
   profile: Profile | null
   session: Session | null
   loading: boolean
-  signUp: (email: string, password: string, displayName: string) => Promise<{ error: string | null }>
+  signUp: (email: string, password: string, displayName: string) => Promise<{ error: string | null; alreadyRegistered?: boolean; loggedIn?: boolean }>
   signIn: (email: string, password: string) => Promise<{ error: string | null }>
   signOut: () => Promise<void>
   updateProfile: (updates: Partial<Profile>) => Promise<void>
@@ -113,18 +118,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const signUp = async (email: string, password: string, displayName: string) => {
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        // Zeigte bis August 2026 noch auf die alte GitHub-Pages-Adresse. Wer sich
-        // registrierte, landete nach dem Bestaetigen auf einer toten Seite.
-        emailRedirectTo: window.location.origin + '/',
+        emailRedirectTo: authRedirect,
         data: { display_name: displayName }
       }
     })
     if (error) return { error: error.message }
-    return { error: null }
+    // Gibt es die Adresse schon, meldet Supabase trotzdem Erfolg (Schutz gegen
+    // Konto-Suche), schickt aber keine Mail. Erkennbar an der leeren identities-Liste.
+    const alreadyRegistered = !!data.user && (data.user.identities?.length ?? 0) === 0
+    return { error: null, alreadyRegistered, loggedIn: !!data.session }
   }
 
   const signIn = async (email: string, password: string) => {
