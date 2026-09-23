@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { isNative, registerPush } from '../lib/native'
@@ -21,6 +22,7 @@ export default function NotificationPrompt() {
   const [show, setShow] = useState(false)
   const [subscribing, setSubscribing] = useState(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const { pathname } = useLocation()
 
   useEffect(() => {
     // Nativ (App Store / Play Store): Capacitor fragt das System, kein Service Worker noetig
@@ -47,6 +49,11 @@ export default function NotificationPrompt() {
   }, [])
 
   if (!show) return null
+  // Nicht ueber Anmelde- und Konto-Formularen einblenden
+  if (pathname === '/anmelden' || pathname === '/konto') return null
+  // Nicht gleichzeitig mit dem Gast-Hinweis, sonst stapeln sich zwei Karten
+  const gastHinweisSichtbar = !user && sessionStorage.getItem('tuki-gasthinweis-weg') !== '1'
+  if (gastHinweisSichtbar) return null
 
   const handleEnable = async () => {
     setSubscribing(true)
@@ -86,7 +93,7 @@ export default function NotificationPrompt() {
   }
 
   return (
-    <div className="fixed bottom-20 left-4 right-4 z-50 animate-slide-up md:left-auto md:right-4 md:max-w-sm">
+    <div className="fixed ueber-nav left-4 right-4 z-50 animate-slide-up md:left-auto md:right-4 md:max-w-sm">
       <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4 flex items-center gap-3">
         <div className="w-12 h-12 rounded-xl bg-tuki-mint flex items-center justify-center shrink-0">
           <span className="text-2xl">{'🔔'}</span>

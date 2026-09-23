@@ -21,7 +21,10 @@ export default function GastHinweis() {
   }
 
   return (
-    <div className="fixed bottom-16 lg:bottom-4 left-0 right-0 z-40 px-3 pb-2 pointer-events-none">
+    <>
+    {/* Platzhalter: so kann man den letzten Inhalt ueber den Hinweis hinaus scrollen */}
+    <div className="h-20 lg:hidden" aria-hidden="true" />
+    <div className="fixed ueber-nav left-0 right-0 z-40 px-3 pointer-events-none">
       <div className="max-w-lg lg:max-w-md mx-auto lg:mx-0 bg-white rounded-2xl shadow-lg border border-gray-100 p-3 flex items-center gap-3 pointer-events-auto">
         <span className="text-xl shrink-0">💾</span>
         <p className="text-xs text-gray-600 leading-snug flex-1">
@@ -42,5 +45,6 @@ export default function GastHinweis() {
         </button>
       </div>
     </div>
+    </>
   )
 }
