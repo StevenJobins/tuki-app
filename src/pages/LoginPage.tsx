@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { useAuth, authRedirect } from '../context/AuthContext'
 import { useApp } from '../context/AppContext'
 import { supabase } from '../lib/supabase'
 
@@ -31,11 +31,17 @@ export default function LoginPage() {
         setLoading(false)
         return
       }
-      const { error } = await signUp(email, password, displayName.trim())
-      if (error) {
-        setError(error)
+      const res = await signUp(email, password, displayName.trim())
+      if (res.error) {
+        setError(res.error)
+      } else if (res.alreadyRegistered) {
+        setIsRegister(false)
+        setSuccess('Mit dieser E-Mail-Adresse gibt es schon ein Konto. Bitte melde dich mit deinem Passwort an.')
+      } else if (res.loggedIn) {
+        navigate('/')
       } else {
-        setSuccess('Konto erstellt! Bitte prüfe deine E-Mails zur Bestätigung.')
+        setIsRegister(false)
+        setSuccess('Fast geschafft! Wir haben dir eine Bestätigungsmail geschickt. Tippe auf den Link darin und melde dich danach hier an.')
       }
     } else {
       const { error } = await signIn(email, password)
@@ -55,7 +61,7 @@ export default function LoginPage() {
   const handleResend = async () => {
     setLoading(true)
     setError('')
-    const { error } = await supabase.auth.resend({ type: 'signup', email, options: { emailRedirectTo: window.location.origin + '/' } })
+    const { error } = await supabase.auth.resend({ type: 'signup', email, options: { emailRedirectTo: authRedirect } })
     if (error) {
       setError('Fehler beim Senden: ' + error.message)
     } else {
