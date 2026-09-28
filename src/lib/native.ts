@@ -58,6 +58,22 @@ export async function registerPush(): Promise<'granted' | 'denied' | 'unsupporte
   return 'granted'
 }
 
+/**
+ * Nach dem Anmelden das Geraete-Token neu melden, falls Push schon erlaubt ist.
+ * Beim Abmelden loeschen wir die Zeile in push_subscriptions, damit das Geraet
+ * keine Meldungen des alten Kontos mehr bekommt. Ohne diesen Schritt bliebe
+ * ein erneut angemeldetes Konto bis zum naechsten Push-Hinweis stumm.
+ */
+export async function pushNachAnmeldungErneuern(): Promise<void> {
+  if (!isNative) return
+  try {
+    const permission = await PushNotifications.checkPermissions()
+    if (permission.receive === 'granted') await PushNotifications.register()
+  } catch (err) {
+    console.warn('[push] Erneuern nach Anmeldung fehlgeschlagen', err)
+  }
+}
+
 async function saveToken(token: string) {
   try {
     const { data } = await supabase.auth.getUser()

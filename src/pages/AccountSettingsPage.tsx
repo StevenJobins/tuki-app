@@ -12,7 +12,7 @@ const AVATARS = ['🧒', '👧', '👦', '🧒🏽', '👧🏽', '👦🏽', '�
 export default function AccountSettingsPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { getActiveChild, updateChild } = useApp()
+  const { getActiveChild, updateChild, abmelden } = useApp()
   const { user, signOut } = useAuth()
   const activeChild = getActiveChild()
 
@@ -287,7 +287,7 @@ export default function AccountSettingsPage() {
         <section className="mx-4">
           <button
             onClick={async () => {
-              await signOut()
+              await abmelden()
               navigate('/')
             }}
             className="w-full py-3 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"

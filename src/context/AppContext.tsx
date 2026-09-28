@@ -7,6 +7,8 @@ import {
   spiegleKinder, spiegleFavoriten, spiegleErledigte,
   alleFavoriten, alleErledigten,
 } from '../lib/sync'
+import { supabase } from '../lib/supabase'
+import { pushNachAnmeldungErneuern } from '../lib/native'
 
 export interface ChildProfile {
   id: string
@@ -67,6 +69,12 @@ interface AppContextType extends AppState {
   istGast: boolean
   /** Konto vorhanden und Erstabgleich mit dem Server erledigt. */
   wirdGesichert: boolean
+  /**
+   * Abmelden ohne Datenleck: offene Aenderungen sichern, Push-Anmeldung des
+   * Geraets loesen, abmelden. Den lokalen Zustand raeumt danach der
+   * Abmelde-Effekt weg.
+   */
+  abmelden: () => Promise<void>
 }
 
 const LEVELS = [
@@ -144,18 +152,54 @@ function loadState(): AppState {
   return defaultState
 }
 
+async function sichereAufServer(id: string, state: AppState): Promise<void> {
+  await speichereServerZustand(id, state)
+  await spiegleKinder(id, state.children)
+  const { rezepte, aktivitaeten } = alleErledigten(state)
+  await spiegleFavoriten(id, alleFavoriten(state))
+  await spiegleErledigte(id, rezepte, aktivitaeten)
+}
+
 const AppContext = createContext<AppContextType | null>(null)
 
 export function AppProvider({ children: childNodes }: { children: ReactNode }) {
   const [state, setState] = useState<AppState>(loadState)
-  const { user } = useAuth()
+  const { user, signOut } = useAuth()
   const [wirdGesichert, setWirdGesichert] = useState(false)
   const geladenFuer = useRef<string | null>(null)
   const abgleichTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  const stateRef = useRef(state)
+  stateRef.current = state
+  const vorherigerUser = useRef<string | null>(null)
+
   useEffect(() => {
     localStorage.setItem('tuki-family-state', JSON.stringify(state))
   }, [state])
+
+  // Beim Wechsel von "angemeldet" zu "abgemeldet" alles Kontobezogene vom
+  // Geraet nehmen. Sonst bleiben Kinder, Favoriten und Sterne im Speicher,
+  // und der naechste Login vereint sie mit einem fremden Konto.
+  // Greift auch, wenn Supabase die Sitzung selbst beendet (abgelaufenes Token)
+  // und nach dem Loeschen des Kontos. Reine Gaeste (nie angemeldet) bleiben
+  // unberuehrt, ihre Daten existieren nur hier.
+  useEffect(() => {
+    const vorher = vorherigerUser.current
+    vorherigerUser.current = user?.id ?? null
+    if (!vorher || user) return
+    if (abgleichTimer.current) clearTimeout(abgleichTimer.current)
+    setState(s => ({
+      ...defaultState,
+      // Geraete-Einstellungen, keine Kontodaten
+      language: s.language,
+      darkMode: s.darkMode,
+      isOnboarded: s.isOnboarded,
+    }))
+    try {
+      localStorage.removeItem('tuki-klaviyo-sync')
+      localStorage.removeItem('tuki-notifications')
+    } catch { /* egal */ }
+  }, [user?.id])
 
   // Beim Anmelden einmal den Serverzustand holen und mit dem Geraet vereinen.
   // Genau hier landen die Daten, die jemand vorher ohne Konto gesammelt hat.
@@ -173,6 +217,7 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
       if (!aktiv) return
       if (server) setState(s => vereineZustaende(server, s))
       setWirdGesichert(true)
+      pushNachAnmeldungErneuern()
     })()
     return () => { aktiv = false }
   }, [user?.id])
@@ -181,16 +226,27 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
   useEffect(() => {
     if (!user || !wirdGesichert) return
     if (abgleichTimer.current) clearTimeout(abgleichTimer.current)
-    abgleichTimer.current = setTimeout(async () => {
-      const id = user.id
-      await speichereServerZustand(id, state)
-      await spiegleKinder(id, state.children)
-      const { rezepte, aktivitaeten } = alleErledigten(state)
-      await spiegleFavoriten(id, alleFavoriten(state))
-      await spiegleErledigte(id, rezepte, aktivitaeten)
+    abgleichTimer.current = setTimeout(() => {
+      abgleichTimer.current = null
+      sichereAufServer(user.id, state)
     }, 1500)
     return () => { if (abgleichTimer.current) clearTimeout(abgleichTimer.current) }
   }, [user?.id, wirdGesichert, state])
+
+  const abmelden = async () => {
+    const id = user?.id
+    if (id) {
+      // Was in den letzten 1.5 s geaendert wurde, liegt noch nicht auf dem Server
+      if (abgleichTimer.current && wirdGesichert) {
+        clearTimeout(abgleichTimer.current)
+        abgleichTimer.current = null
+        try { await sichereAufServer(id, stateRef.current) } catch { /* Abmelden trotzdem */ }
+      }
+      // Geraet nicht mehr fuer dieses Konto anpingen
+      try { await supabase.from('push_subscriptions').delete().eq('profile_id', id) } catch { /* egal */ }
+    }
+    await signOut()
+  }
 
   // Apply dark-mode class whenever state changes
   useEffect(() => {
@@ -373,7 +429,7 @@ export function AppProvider({ children: childNodes }: { children: ReactNode }) {
         addToWeekPlan, removeFromWeekPlan, addChild, updateChild,
         removeChild, setActiveChild, setOnboarded, setLanguage, toggleDarkMode,
         starBalance, spendStars, getActiveChild, getChildAge,
-        istGast: !user, wirdGesichert,
+        istGast: !user, wirdGesichert, abmelden,
       }}
     >
       {childNodes}
